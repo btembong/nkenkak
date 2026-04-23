@@ -1,0 +1,11 @@
+const router = require('express').Router();
+const c = require('../controllers/projectsController');
+const { authenticate, optionalAuth, isLeader, isAdmin } = require('../middleware/auth');
+router.get('/', optionalAuth, c.getAll);
+router.get('/stats/summary', c.stats);
+router.get('/:slug', optionalAuth, c.getOne);
+router.post('/', authenticate, isLeader, c.create);
+router.patch('/:id', authenticate, isLeader, c.update);
+router.delete('/:id', authenticate, isAdmin, c.remove);
+router.post('/:id/updates', authenticate, isLeader, c.addUpdate);
+module.exports = router;

@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const c = require('../controllers/forumController');
+const { authenticate } = require('../middleware/auth');
+router.get('/categories', c.getCategories);
+router.get('/threads', c.getThreads);
+router.get('/threads/:id', c.getThread);
+router.post('/threads', authenticate, c.createThread);
+router.post('/threads/:id/replies', authenticate, c.addReply);
+router.post('/replies/:id/like', authenticate, c.likeReply);
+module.exports = router;
