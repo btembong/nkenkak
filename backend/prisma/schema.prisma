@@ -1,0 +1,1240 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// =============================================================
+// USERS
+// =============================================================
+model User {
+  id                 String    @id @default(uuid())
+  email              String    @unique
+  passwordHash       String    @map("password_hash")
+  role               String    @default("member")
+  status             String    @default("pending")
+
+  firstName          String    @map("first_name")
+  lastName           String    @map("last_name")
+  phone              String?
+  avatarUrl          String?   @map("avatar_url")
+  bio                String?
+  dateOfBirth        DateTime? @db.Date @map("date_of_birth")
+  gender             String?
+
+  villageQuarter     String?   @map("village_quarter")
+  city               String?
+  country            String    @default("Cameroon")
+  latitude           Float?
+  longitude          Float?
+
+  isDiaspora         Boolean   @default(false) @map("is_diaspora")
+  isPremium          Boolean   @default(false) @map("is_premium")
+  premiumUntil       DateTime? @map("premium_until")
+  newsletter         Boolean   @default(true)
+  emailVerified      Boolean   @default(false) @map("email_verified")
+  emailVerifyToken   String?   @map("email_verify_token")
+  resetToken         String?   @map("reset_token")
+  resetTokenExpiry   DateTime? @map("reset_token_expiry")
+
+  lastLogin          DateTime? @map("last_login")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  refreshTokens    RefreshToken[]
+  donations        Donation[]
+  notifications    Notification[]
+  forumThreads     ForumThread[]
+  forumReplies     ForumReply[]
+  forumLikes       ForumLike[]
+  votes            Vote[]
+  diasporaPins     DiasporaPin[]
+  auditLogs        AuditLog[]
+  news             News[]              @relation("NewsAuthor")
+  events           Event[]             @relation("EventOrganizer")
+  gallery          Gallery[]           @relation("GalleryUploader")
+  polls            Poll[]              @relation("PollCreator")
+  teamMember       TeamMember[]        @relation("TeamUser")
+  applications     TeamApplication[]   @relation("TeamApplicant")
+  reviewedApps     TeamApplication[]   @relation("TeamReviewer")
+  projectUpdates   ProjectUpdate[]
+  projectComments  ProjectComment[]
+  contactReplies   ContactMessage[]    @relation("ContactReplier")
+  heroSlides         HeroSlide[]         @relation("HeroCreator")
+  eventRsvps         EventRsvp[]
+  eventRegistrations EventRegistration[]
+  documentsUploaded  Document[]          @relation("DocUploader")
+  noticesAuthored    Notice[]            @relation("NoticeAuthor")
+  mentorProfile      Mentor?             @relation("UserMentor")
+  mentorApplications MentorApplication[] @relation("ApplicantUser")
+  volunteerHours     VolunteerHour[]     @relation("HourLogger")
+  approvedHours      VolunteerHour[]     @relation("HourApprover")
+  threadSubs           ThreadSubscription[]
+  pushSubscriptions    PushSubscription[]
+  newsComments         NewsComment[]
+  scholarshipApps      ScholarshipApplication[]
+  chatMessages         ChatMessage[]
+  sentMessages         DirectMessage[]      @relation("DMSender")
+  receivedMessages     DirectMessage[]      @relation("DMRecipient")
+  petitions            Petition[]           @relation("PetitionAuthor")
+  petitionSignatures   PetitionSignature[]
+  jobPosts             JobPost[]            @relation("JobAuthor")
+  wikiPages            WikiPage[]           @relation("WikiAuthor")
+  emailCampaigns       EmailCampaign[]      @relation("CampaignAuthor")
+  candidacies          Candidate[]          @relation("CandidateUser")
+  electionVotes        ElectionVote[]       @relation("ElectionVoter")
+  electionsAuthored    Election[]           @relation("ElectionAuthor")
+  hostedRooms          LiveRoom[]           @relation("RoomHost")
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique @db.VarChar(512)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User @relation(fields:[userId], references:[id], onDelete:Cascade)
+
+  @@map("refresh_tokens")
+}
+
+// =============================================================
+// PROJECTS
+// =============================================================
+model Project {
+  id            String    @id @default(uuid())
+  slug          String    @unique
+  title         String
+  summary       String
+  description   String
+  category      String
+  status        String    @default("upcoming")
+
+  goalAmount    Decimal   @default(0) @db.Decimal(15,2) @map("goal_amount")
+  raisedAmount  Decimal   @default(0) @db.Decimal(15,2) @map("raised_amount")
+  currency      String    @default("XAF")
+
+  coverImage    String?   @map("cover_image")
+  galleryUrls   String[]  @map("gallery_urls")   // TEXT[] — extra image URLs for the project
+
+  location      String?
+  startDate     DateTime? @db.Date @map("start_date")
+  endDate       DateTime? @db.Date @map("end_date")
+  beneficiaries Int       @default(0)
+  createdBy     String?   @map("created_by")
+
+  viewCount     Int       @default(0) @map("view_count")
+  donorCount    Int       @default(0) @map("donor_count")
+  isFeatured    Boolean   @default(false) @map("is_featured")
+  isUrgent      Boolean   @default(false) @map("is_urgent")
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  donations     Donation[]
+  updates       ProjectUpdate[]
+  comments      ProjectComment[]
+  gallery       Gallery[]
+  polls         Poll[]
+
+  @@map("projects")
+}
+
+model ProjectComment {
+  id        String   @id @default(uuid())
+  projectId String   @map("project_id")
+  userId    String?  @map("user_id")
+  name      String
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  project   Project  @relation(fields:[projectId], references:[id], onDelete:Cascade)
+  user      User?    @relation(fields:[userId],     references:[id], onDelete:SetNull)
+
+  @@map("project_comments")
+}
+
+model ProjectUpdate {
+  id        String   @id @default(uuid())
+  projectId String   @map("project_id")
+  authorId  String?  @map("author_id")
+  title     String
+  content   String
+  imageUrl  String?  @map("image_url")   // update can have its own image
+  createdAt DateTime @default(now()) @map("created_at")
+
+  project   Project @relation(fields:[projectId], references:[id], onDelete:Cascade)
+  author    User?   @relation(fields:[authorId],  references:[id], onDelete:SetNull)
+
+  @@map("project_updates")
+}
+
+// =============================================================
+// DONATIONS
+// =============================================================
+model Donation {
+  id          String   @id @default(uuid())
+  reference   String   @unique @db.VarChar(100)
+  userId      String?  @map("user_id")
+  projectId   String?  @map("project_id")
+
+  donorName   String?  @map("donor_name")
+  donorEmail  String?  @map("donor_email")
+  donorPhone  String?  @map("donor_phone")
+  isAnonymous Boolean  @default(false) @map("is_anonymous")
+
+  amount      Decimal  @db.Decimal(15,2)
+  currency    String   @default("XAF")
+
+  provider    String                        // mtn_momo|orange_money|paypal|stripe|bank_transfer|cash
+  providerRef String?  @map("provider_ref") // payment gateway transaction ref
+  status      String   @default("pending")  // pending|completed|failed|refunded
+
+  message     String?
+  isRecurring Boolean  @default(false) @map("is_recurring") // monthly/recurring donor
+  receiptSent Boolean  @default(false) @map("receipt_sent") // email receipt was sent
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user        User?    @relation(fields:[userId],    references:[id], onDelete:SetNull)
+  project     Project? @relation(fields:[projectId], references:[id], onDelete:SetNull)
+
+  @@map("donations")
+}
+
+// =============================================================
+// EVENTS
+// =============================================================
+model Event {
+  id            String    @id @default(uuid())
+  slug          String    @unique
+  title         String
+  description   String
+  category      String    @default("community")
+  coverImage    String?   @map("cover_image")
+
+  startDate     DateTime  @map("start_date")
+  endDate       DateTime? @map("end_date")
+  isAllDay      Boolean   @default(false) @map("is_all_day")    // all-day events show differently
+  isRecurring   Boolean   @default(false) @map("is_recurring")  // repeating events
+  recurrence    String?                                          // 'weekly'|'monthly'|'yearly'
+
+  venue         String?
+  locationUrl   String?   @map("location_url")  // Google Maps link
+  isOnline      Boolean   @default(false) @map("is_online")
+  meetingLink   String?   @map("meeting_link")
+
+  organizerId   String?   @map("organizer_id")
+  organizerName String?   @map("organizer_name") // display name if no user account
+  maxAttendees  Int?      @map("max_attendees")
+  isPublished   Boolean   @default(true)  @map("is_published")
+  isFeatured    Boolean   @default(false) @map("is_featured")
+  requiresRsvp  Boolean   @default(false) @map("requires_rsvp")
+  ticketPrice   Decimal?  @db.Decimal(10,2) @map("ticket_price") // null = free event
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  organizer      User?              @relation("EventOrganizer", fields:[organizerId], references:[id], onDelete:SetNull)
+  rsvps          EventRsvp[]
+  registrations  EventRegistration[]
+
+  @@map("events")
+}
+
+model EventRegistration {
+  id          String   @id @default(uuid())
+  eventId     String   @map("event_id")
+  userId      String?  @map("user_id")
+  name        String
+  email       String
+  phone       String?
+  ticketRef   String   @unique @map("ticket_ref")
+  status      String   @default("confirmed") // confirmed|cancelled|attended
+  isPaid      Boolean  @default(false) @map("is_paid")
+  amount      Decimal? @db.Decimal(10,2)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  event       Event @relation(fields:[eventId], references:[id], onDelete:Cascade)
+  user        User? @relation(fields:[userId],  references:[id], onDelete:SetNull)
+
+  @@map("event_registrations")
+}
+
+model EventRsvp {
+  id        String   @id @default(uuid())
+  eventId   String   @map("event_id")
+  userId    String   @map("user_id")      // SQL references users directly
+  status    String   @default("attending")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  event     Event @relation(fields:[eventId], references:[id], onDelete:Cascade)
+  user      User  @relation(fields:[userId],  references:[id], onDelete:Cascade)
+
+  @@unique([eventId, userId])
+  @@map("event_rsvps")
+}
+
+// =============================================================
+// NEWS / ARTICLES
+// =============================================================
+model News {
+  id          String    @id @default(uuid())
+  slug        String    @unique
+  title       String
+  excerpt     String                   // NOT NULL in SQL — required for card display
+  content     String                   // NOT NULL in SQL
+  coverImage  String?   @map("cover_image")
+  category    String?
+  tags        String[]                 // TEXT[] array
+
+  authorId    String?   @map("author_id")
+  status      String    @default("draft") // draft|published|archived|scheduled
+  isFeatured  Boolean   @default(false) @map("is_featured")
+
+  viewCount   Int       @default(0) @map("view_count")
+  scheduledAt DateTime? @map("scheduled_at")  // publish at this time if status=scheduled
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  author      User?         @relation("NewsAuthor", fields:[authorId], references:[id], onDelete:SetNull)
+  comments    NewsComment[]
+
+  @@map("news")
+}
+
+model NewsComment {
+  id        String   @id @default(uuid())
+  newsId    String   @map("news_id")
+  userId    String?  @map("user_id")
+  name      String
+  content   String
+  isApproved Boolean @default(true) @map("is_approved")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  news      News  @relation(fields:[newsId], references:[id], onDelete:Cascade)
+  user      User? @relation(fields:[userId], references:[id], onDelete:SetNull)
+
+  @@map("news_comments")
+}
+
+// =============================================================
+// TEAM MEMBERS
+// =============================================================
+model TeamMember {
+  id        String   @id @default(uuid())
+  userId    String?  @map("user_id")     // optional link to a user account
+  name      String
+  roleTitle String   @map("role_title")
+  team      String
+  bio       String?
+  avatarUrl String?  @map("avatar_url")
+  sortOrder Int      @default(0) @map("sort_order")
+  isActive  Boolean  @default(true) @map("is_active")
+
+  facebook  String?
+  twitter   String?
+  linkedin  String?
+  instagram String?                     // was missing from Prisma
+  email     String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user      User? @relation("TeamUser", fields:[userId], references:[id], onDelete:SetNull)
+
+  @@map("team_members")
+}
+
+model TeamApplication {
+  id          String    @id @default(uuid())
+  userId      String?   @map("user_id")       // can link to existing user
+  fullName    String    @map("full_name")
+  email       String
+  phone       String?
+  location    String?
+  teamChoice  String    @map("team_choice")
+  skills      String?
+  motivation  String?
+  status      String    @default("pending")
+  reviewedBy  String?   @map("reviewed_by")   // admin who reviewed
+  reviewedAt  DateTime? @map("reviewed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user        User? @relation("TeamApplicant", fields:[userId],    references:[id], onDelete:SetNull)
+  reviewer    User? @relation("TeamReviewer",  fields:[reviewedBy], references:[id], onDelete:SetNull)
+
+  @@map("team_applications")
+}
+
+// =============================================================
+// GALLERY
+// =============================================================
+model GalleryAlbum {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  coverUrl    String?  @map("cover_url")
+  isPublic    Boolean  @default(true) @map("is_public")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  items       Gallery[]
+
+  @@map("gallery_albums")
+}
+
+model Gallery {
+  id          String   @id @default(uuid())
+  title       String?
+  description String?
+  url         String
+  thumbnail   String?
+  mediaType   String   @default("image") @map("media_type") // image|video|document
+  albumId     String?  @map("album_id")
+  projectId   String?  @map("project_id")
+  eventId     String?  @map("event_id")
+  uploadedBy  String?  @map("uploaded_by")
+  tags        String[]
+  showInGallery Boolean @default(true) @map("show_in_gallery")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  album       GalleryAlbum? @relation(fields:[albumId],   references:[id], onDelete:SetNull)
+  project     Project?      @relation(fields:[projectId], references:[id], onDelete:SetNull)
+  uploader    User?         @relation("GalleryUploader", fields:[uploadedBy], references:[id], onDelete:SetNull)
+
+  @@map("gallery")
+}
+
+// =============================================================
+// FORUM
+// =============================================================
+model ForumCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  color       String?                   // hex color for category badges e.g. '#C9A84C'
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  threads     ForumThread[]
+
+  @@map("forum_categories")
+}
+
+model ForumThread {
+  id          String   @id @default(uuid())
+  categoryId  String   @map("category_id")
+  authorId    String   @map("author_id")  // NOT NULL in SQL
+  title       String
+  content     String
+  status      String   @default("open")   // open|closed|pinned|archived
+  isPinned    Boolean  @default(false) @map("is_pinned")
+  viewCount   Int      @default(0) @map("view_count")
+  replyCount  Int      @default(0) @map("reply_count")
+  lastReplyAt DateTime @default(now()) @map("last_reply_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  category     ForumCategory       @relation(fields:[categoryId], references:[id], onDelete:Cascade)
+  author       User                @relation(fields:[authorId],   references:[id], onDelete:Cascade)
+  replies      ForumReply[]
+  attachments  ForumAttachment[]   @relation("ThreadAttachment")
+  subscribers  ThreadSubscription[]
+
+  @@map("forum_threads")
+}
+
+model ForumReply {
+  id         String   @id @default(uuid())
+  threadId   String   @map("thread_id")
+  authorId   String   @map("author_id")  // NOT NULL in SQL
+  content    String
+  parentId   String?  @map("parent_id")
+  isSolution Boolean  @default(false) @map("is_solution")
+  likeCount  Int      @default(0) @map("like_count")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  thread      ForumThread      @relation(fields:[threadId], references:[id], onDelete:Cascade)
+  author      User             @relation(fields:[authorId], references:[id], onDelete:Cascade)
+  likes       ForumLike[]
+  attachments ForumAttachment[] @relation("ReplyAttachment")
+
+  @@map("forum_replies")
+}
+
+model ForumLike {
+  id        String   @id @default(uuid())
+  replyId   String   @map("reply_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  reply     ForumReply @relation(fields:[replyId], references:[id], onDelete:Cascade)
+  user      User       @relation(fields:[userId],  references:[id], onDelete:Cascade)
+
+  @@unique([replyId, userId])
+  @@map("forum_likes")
+}
+
+// =============================================================
+// POLLS & VOTES
+// =============================================================
+model Poll {
+  id          String    @id @default(uuid())
+  projectId   String?   @map("project_id")
+  threadId    String?   @map("thread_id")
+  title       String
+  description String?
+  options     String[]  @default([]) // choices for multi-option polls
+  closesAt    DateTime? @map("closes_at")
+  isActive    Boolean   @default(true) @map("is_active")
+  createdBy   String?   @map("created_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  project     Project? @relation(fields:[projectId], references:[id], onDelete:Cascade)
+  creator     User?    @relation("PollCreator", fields:[createdBy], references:[id], onDelete:SetNull)
+  votes       Vote[]
+
+  @@map("polls")
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  pollId    String   @map("poll_id")
+  userId    String   @map("user_id")
+  vote      String                      // approve|reject|abstain
+  comment   String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  poll      Poll @relation(fields:[pollId], references:[id], onDelete:Cascade)
+  user      User @relation(fields:[userId], references:[id], onDelete:Cascade)
+
+  @@unique([pollId, userId])
+  @@map("votes")
+}
+
+// =============================================================
+// NOTIFICATIONS
+// =============================================================
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  type      String   @default("system")  // donation|project_update|event_reminder|forum_reply|system|news
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User @relation(fields:[userId], references:[id], onDelete:Cascade)
+
+  @@map("notifications")
+}
+
+// =============================================================
+// NEWSLETTER SUBSCRIBERS
+// =============================================================
+model NewsletterSubscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  isActive  Boolean  @default(true) @map("is_active")
+  token     String?                     // unsubscribe token
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("newsletter_subscribers")
+}
+
+// =============================================================
+// DIASPORA MAP PINS
+// =============================================================
+model DiasporaPin {
+  id          String   @id @default(uuid())
+  userId      String?  @map("user_id")
+  displayName String   @map("display_name")
+  city        String
+  country     String
+  latitude    Float
+  longitude   Float
+  isPublic    Boolean  @default(true) @map("is_public")  // hide pin from public map
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User? @relation(fields:[userId], references:[id], onDelete:Cascade)
+
+  @@map("diaspora_pins")
+}
+
+// =============================================================
+// AUDIT LOG
+// =============================================================
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?  @map("user_id")
+  action     String
+  resource   String?
+  resourceId String?  @map("resource_id")
+  details    Json?
+  ipAddress  String?  @map("ip_address")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user       User? @relation(fields:[userId], references:[id], onDelete:SetNull)
+
+  @@map("audit_logs")
+}
+
+// =============================================================
+// CONTACT MESSAGES
+// =============================================================
+model ContactMessage {
+  id        String    @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String
+  status    String    @default("unread")   // unread|read|replied|archived
+  repliedAt DateTime? @map("replied_at")
+  repliedBy String?   @map("replied_by")
+  replyNote String?   @map("reply_note")
+  ipAddress String?   @map("ip_address")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  replier   User? @relation("ContactReplier", fields:[repliedBy], references:[id], onDelete:SetNull)
+
+  @@map("contact_messages")
+}
+
+// =============================================================
+// HERO SLIDES  (addition — not in original SQL)
+// =============================================================
+model HeroSlide {
+  id             String   @id @default(uuid())
+  title          String?
+  subtitle       String?
+  ctaText        String?  @map("cta_text")
+  ctaLink        String?  @map("cta_link")
+  imageUrl       String   @map("image_url")
+  publicId       String?  @map("public_id")  // Cloudinary public_id for deletion
+  overlayOpacity Decimal  @default(0.45) @db.Decimal(3,2) @map("overlay_opacity")
+  sortOrder      Int      @default(99) @map("sort_order")
+  isActive       Boolean  @default(true) @map("is_active")
+  createdBy      String?  @map("created_by")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  creator        User? @relation("HeroCreator", fields:[createdBy], references:[id], onDelete:SetNull)
+
+  @@map("hero_slides")
+}
+
+// =============================================================
+// DOCUMENT ARCHIVE
+// =============================================================
+model Document {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  category    String   @default("general") // constitution|minutes|report|proposal|policy|general
+  fileUrl     String   @map("file_url")
+  fileType    String   @default("pdf") @map("file_type")
+  fileSize    Int?     @map("file_size")
+  year        Int?
+  isPublic    Boolean  @default(true) @map("is_public")
+  uploadedBy  String?  @map("uploaded_by")
+  downloads   Int      @default(0)
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  uploader    User? @relation("DocUploader", fields:[uploadedBy], references:[id], onDelete:SetNull)
+
+  @@map("documents")
+}
+
+// =============================================================
+// SCHOLARSHIPS
+// =============================================================
+model Scholarship {
+  id          String   @id @default(uuid())
+  name        String
+  school      String
+  level       String   @default("university") // primary|secondary|university|vocational
+  subject     String?
+  year        Int
+  amount      Decimal? @db.Decimal(10,2)
+  currency    String   @default("XAF")
+  sponsorName String?  @map("sponsor_name")
+  bio         String?
+  photoUrl    String?  @map("photo_url")
+  status      String   @default("active") // active|completed|suspended
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("scholarships")
+}
+
+model ScholarshipProgram {
+  id            String   @id @default(uuid())
+  title         String
+  description   String
+  eligibility   String?
+  benefits      String?
+  deadline      DateTime? @db.Date
+  academicYear  String   @map("academic_year")
+  level         String   @default("university") // primary|secondary|university|vocational
+  slots         Int      @default(1)
+  isOpen        Boolean  @default(true) @map("is_open")
+  isPublished   Boolean  @default(true) @map("is_published")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  applications  ScholarshipApplication[]
+
+  @@map("scholarship_programs")
+}
+
+model ScholarshipApplication {
+  id          String    @id @default(uuid())
+  programId   String    @map("program_id")
+  userId      String?   @map("user_id")
+  fullName    String    @map("full_name")
+  email       String
+  phone       String?
+  dateOfBirth DateTime? @db.Date @map("date_of_birth")
+  school      String
+  level       String
+  subject     String?
+  gpa         String?
+  motivation  String
+  documents   String[]  // URLs to uploaded supporting docs
+  status      String    @default("pending") // pending|reviewing|approved|rejected
+  reviewNote  String?   @map("review_note")
+  reviewedBy  String?   @map("reviewed_by")
+  reviewedAt  DateTime? @map("reviewed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  program     ScholarshipProgram @relation(fields:[programId], references:[id], onDelete:Cascade)
+  user        User?              @relation(fields:[userId],    references:[id], onDelete:SetNull)
+
+  @@map("scholarship_applications")
+}
+
+// =============================================================
+// COMMUNITY NOTICE BOARD
+// =============================================================
+model Notice {
+  id          String    @id @default(uuid())
+  title       String
+  content     String
+  category    String    @default("general") // general|meeting|emergency|community
+  priority    String    @default("normal")  // low|normal|high|urgent
+  authorId    String?   @map("author_id")
+  isPublished Boolean   @default(true) @map("is_published")
+  expiresAt   DateTime? @map("expires_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  author      User? @relation("NoticeAuthor", fields:[authorId], references:[id], onDelete:SetNull)
+
+  @@map("notices")
+}
+
+// =============================================================
+// BUSINESS DIRECTORY
+// =============================================================
+model Business {
+  id          String   @id @default(uuid())
+  name        String
+  category    String   @default("other") // agriculture|crafts|retail|services|tech|health|education|construction|food|other
+  description String?
+  ownerName   String   @map("owner_name")
+  location    String?
+  country     String   @default("Cameroon")
+  city        String?
+  phone       String?
+  email       String?
+  website     String?
+  logoUrl     String?  @map("logo_url")
+  isDiaspora  Boolean  @default(false) @map("is_diaspora")
+  isApproved  Boolean  @default(false) @map("is_approved")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("businesses")
+}
+
+// =============================================================
+// MENTORSHIP PROGRAMME
+// =============================================================
+model Mentor {
+  id          String   @id @default(uuid())
+  userId      String?  @unique @map("user_id")
+  name        String
+  profession  String
+  company     String?
+  bio         String?
+  expertise   String[] // TEXT[] array of areas
+  country     String
+  city        String?
+  photoUrl    String?  @map("photo_url")
+  linkedin    String?
+  email       String?
+  isAvailable Boolean  @default(true) @map("is_available")
+  maxMentees  Int      @default(2) @map("max_mentees")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user         User?               @relation("UserMentor", fields:[userId], references:[id], onDelete:SetNull)
+  applications MentorApplication[]
+
+  @@map("mentors")
+}
+
+model MentorApplication {
+  id         String   @id @default(uuid())
+  mentorId   String?  @map("mentor_id")
+  userId     String?  @map("user_id")
+  name       String
+  email      String
+  phone      String?
+  age        Int?
+  education  String?
+  goals      String
+  message    String?
+  status     String   @default("pending") // pending|accepted|rejected
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  mentor     Mentor?  @relation(fields:[mentorId], references:[id], onDelete:Cascade)
+  user       User?    @relation("ApplicantUser", fields:[userId], references:[id], onDelete:SetNull)
+
+  @@map("mentor_applications")
+}
+
+// =============================================================
+// MEMORIAL / HALL OF FAME
+// =============================================================
+model Memorial {
+  id           String   @id @default(uuid())
+  name         String
+  type         String   @default("memorial") // memorial|hero
+  role         String?
+  birthYear    Int?     @map("birth_year")
+  deathYear    Int?     @map("death_year")
+  bio          String?
+  photoUrl     String?  @map("photo_url")
+  achievements String[]
+  isPublished  Boolean  @default(true) @map("is_published")
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("memorials")
+}
+
+// =============================================================
+// LANGUAGE / VOCABULARY
+// =============================================================
+model VocabWord {
+  id            String   @id @default(uuid())
+  word          String
+  translation   String
+  pronunciation String?
+  category      String   @default("general") // greetings|numbers|family|nature|customs|proverbs|general
+  audioUrl      String?  @map("audio_url")
+  example       String?
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("vocab_words")
+}
+
+// =============================================================
+// VOLUNTEER HOURS TRACKER
+// =============================================================
+model VolunteerHour {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  activity    String
+  hours       Float
+  date        DateTime  @db.Date
+  description String?
+  status      String    @default("pending")  // pending|approved|rejected
+  approvedBy  String?   @map("approved_by")
+  approvedAt  DateTime? @map("approved_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user        User  @relation("HourLogger",   fields:[userId],     references:[id], onDelete:Cascade)
+  approver    User? @relation("HourApprover", fields:[approvedBy], references:[id], onDelete:SetNull)
+
+  @@map("volunteer_hours")
+}
+
+// =============================================================
+// FORUM ATTACHMENTS
+// =============================================================
+model ForumAttachment {
+  id        String   @id @default(uuid())
+  threadId  String?  @map("thread_id")
+  replyId   String?  @map("reply_id")
+  fileUrl   String   @map("file_url")
+  fileName  String   @map("file_name")
+  fileSize  Int?     @map("file_size")
+  fileType  String?  @map("file_type")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  thread    ForumThread? @relation("ThreadAttachment", fields:[threadId], references:[id], onDelete:Cascade)
+  reply     ForumReply?  @relation("ReplyAttachment",  fields:[replyId],  references:[id], onDelete:Cascade)
+
+  @@map("forum_attachments")
+}
+
+// =============================================================
+// THREAD SUBSCRIPTIONS (for reply email notifications)
+// =============================================================
+model ThreadSubscription {
+  id        String   @id @default(uuid())
+  threadId  String   @map("thread_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  thread    ForumThread @relation(fields:[threadId], references:[id], onDelete:Cascade)
+  user      User        @relation(fields:[userId],   references:[id], onDelete:Cascade)
+
+  @@unique([threadId, userId])
+  @@map("thread_subscriptions")
+}
+
+// =============================================================
+// PUSH NOTIFICATION SUBSCRIPTIONS (PWA)
+// =============================================================
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  endpoint  String   @unique
+  p256dh    String   @map("p256dh")
+  auth      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User @relation(fields:[userId], references:[id], onDelete:Cascade)
+
+  @@map("push_subscriptions")
+}
+
+model PushLog {
+  id             String   @id @default(uuid())
+  title          String
+  body           String
+  url            String   @default("/")
+  target         String   @default("all")   // all|specific
+  sentBy         String?  @map("sent_by")
+  recipientCount Int      @default(0) @map("recipient_count")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@map("push_logs")
+}
+
+// =============================================================
+// FINANCIAL REPORTS / TRANSPARENCY
+// =============================================================
+model FinancialReport {
+  id            String   @id @default(uuid())
+  title         String
+  year          Int
+  period        String   @default("Annual") // Q1|Q2|Q3|Q4|Annual|H1|H2
+  fileUrl       String?  @map("file_url")
+  totalIncome   Decimal? @db.Decimal(15,2) @map("total_income")
+  totalExpenses Decimal? @db.Decimal(15,2) @map("total_expenses")
+  summary       String?
+  highlights    String[] // key bullet points
+  isPublished   Boolean  @default(true) @map("is_published")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("financial_reports")
+}
+
+// =============================================================
+// COMMUNITY CHAT
+// =============================================================
+model ChatRoom {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  icon        String   @default("fa-comments")
+  color       String   @default("#5B2D8E")
+  isPublic    Boolean  @default(true) @map("is_public")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  messages    ChatMessage[]
+
+  @@map("chat_rooms")
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  roomId    String   @map("room_id")
+  userId    String?  @map("user_id")
+  guestName String?  @map("guest_name")
+  content   String
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  room      ChatRoom @relation(fields:[roomId], references:[id], onDelete:Cascade)
+  user      User?    @relation(fields:[userId], references:[id], onDelete:SetNull)
+
+  @@map("chat_messages")
+}
+
+// =============================================================
+// PRIVATE MESSAGING (DIRECT MESSAGES)
+// =============================================================
+model DirectMessage {
+  id          String   @id @default(uuid())
+  senderId    String   @map("sender_id")
+  recipientId String   @map("recipient_id")
+  content     String
+  isRead      Boolean  @default(false) @map("is_read")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  sender      User @relation("DMSender",    fields:[senderId],    references:[id], onDelete:Cascade)
+  recipient   User @relation("DMRecipient", fields:[recipientId], references:[id], onDelete:Cascade)
+
+  @@map("direct_messages")
+}
+
+// =============================================================
+// PETITIONS
+// =============================================================
+model Petition {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  goal        Int       @default(100) // target signatures
+  category    String    @default("community")
+  authorId    String?   @map("author_id")
+  imageUrl    String?   @map("image_url")
+  isPublished Boolean   @default(true) @map("is_published")
+  isClosed    Boolean   @default(false) @map("is_closed")
+  expiresAt   DateTime? @map("expires_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  author      User?             @relation("PetitionAuthor", fields:[authorId], references:[id], onDelete:SetNull)
+  signatures  PetitionSignature[]
+
+  @@map("petitions")
+}
+
+model PetitionSignature {
+  id         String   @id @default(uuid())
+  petitionId String   @map("petition_id")
+  userId     String?  @map("user_id")
+  name       String
+  email      String
+  comment    String?
+  isAnon     Boolean  @default(false) @map("is_anon")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  petition   Petition @relation(fields:[petitionId], references:[id], onDelete:Cascade)
+  user       User?    @relation(fields:[userId], references:[id], onDelete:SetNull)
+
+  @@unique([petitionId, email])
+  @@map("petition_signatures")
+}
+
+// =============================================================
+// JOB BOARD & CLASSIFIEDS
+// =============================================================
+model JobPost {
+  id           String    @id @default(uuid())
+  type         String    @default("job")   // job|service|item_sale|item_wanted
+  title        String
+  description  String
+  category     String    @default("other") // agriculture|tech|health|education|construction|services|other
+  location     String?
+  country      String    @default("Cameroon")
+  salary       String?   // free text e.g. "Negotiable" or "50,000 XAF/month"
+  contactName  String    @map("contact_name")
+  contactEmail String?   @map("contact_email")
+  contactPhone String?   @map("contact_phone")
+  imageUrl     String?   @map("image_url")
+
+  companyName        String?   @map("company_name")
+  companyAddress     String?   @map("company_address")
+  companyWebsite     String?   @map("company_website")
+  linkedIn           String?   @map("linked_in")
+  facebook           String?
+  twitter            String?
+  whatsapp           String?
+  applicationProcess String?   @map("application_process")
+
+  authorId     String?   @map("author_id")
+  isApproved   Boolean   @default(false) @map("is_approved")
+  isFeatured   Boolean   @default(false) @map("is_featured")
+  expiresAt    DateTime? @map("expires_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  author       User? @relation("JobAuthor", fields:[authorId], references:[id], onDelete:SetNull)
+
+  @@map("job_posts")
+}
+
+// =============================================================
+// TRADITIONAL KNOWLEDGE WIKI
+// =============================================================
+model WikiPage {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  content     String   // HTML content
+  category    String   @default("customs") // customs|proverbs|recipes|history|language|nature|governance
+  coverImage  String?  @map("cover_image")
+  authorId    String?  @map("author_id")
+  isPublished Boolean  @default(true) @map("is_published")
+  viewCount   Int      @default(0) @map("view_count")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  author      User? @relation("WikiAuthor", fields:[authorId], references:[id], onDelete:SetNull)
+
+  @@map("wiki_pages")
+}
+
+// =============================================================
+// BUDGET ENTRIES (Village Budget Transparency)
+// =============================================================
+model BudgetEntry {
+  id          String   @id @default(uuid())
+  year        Int
+  quarter     String   @default("Q1") // Q1|Q2|Q3|Q4|Annual
+  category    String   // e.g. "Infrastructure", "Education", "Health"
+  type        String   @default("expense") // income|expense
+  amount      Decimal  @db.Decimal(15,2)
+  currency    String   @default("XAF")
+  description String?
+  receiptUrl  String?  @map("receipt_url")
+  projectId   String?  @map("project_id")
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("budget_entries")
+}
+
+// =============================================================
+// EMAIL CAMPAIGNS
+// =============================================================
+// =============================================================
+// ELECTIONS & VOTING
+// =============================================================
+model Election {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  type        String    @default("leadership")  // leadership|committee|general
+  status      String    @default("draft")       // draft|nominations|voting|closed
+  eligibility String    @default("all")         // all|verified|approved
+  maxWinners  Int       @default(1) @map("max_winners")
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  authorId    String?   @map("author_id")
+  coverImage  String?   @map("cover_image")
+  isPublished Boolean   @default(true) @map("is_published")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  author      User?         @relation("ElectionAuthor", fields:[authorId], references:[id], onDelete:SetNull)
+  candidates  Candidate[]
+  votes       ElectionVote[]
+
+  @@map("elections")
+}
+
+model Candidate {
+  id         String   @id @default(uuid())
+  electionId String   @map("election_id")
+  userId     String?  @map("user_id")
+  name       String
+  bio        String?
+  manifesto  String?
+  imageUrl   String?  @map("image_url")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  election   Election       @relation(fields:[electionId], references:[id], onDelete:Cascade)
+  user       User?          @relation("CandidateUser", fields:[userId], references:[id], onDelete:SetNull)
+  votes      ElectionVote[]
+
+  @@map("candidates")
+}
+
+model ElectionVote {
+  id          String   @id @default(uuid())
+  electionId  String   @map("election_id")
+  candidateId String   @map("candidate_id")
+  voterId     String   @map("voter_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  election    Election  @relation(fields:[electionId],  references:[id], onDelete:Cascade)
+  candidate   Candidate @relation(fields:[candidateId], references:[id], onDelete:Cascade)
+  voter       User      @relation("ElectionVoter", fields:[voterId], references:[id], onDelete:Cascade)
+
+  @@unique([electionId, voterId])
+  @@map("election_votes")
+}
+
+// =============================================================
+// LIVE MEETING ROOMS (Daily.co)
+// =============================================================
+model LiveRoom {
+  id              String    @id @default(uuid())
+  name            String
+  slug            String    @unique
+  description     String?
+  dailyRoomName   String?   @map("daily_room_name")
+  dailyRoomUrl    String?   @map("daily_room_url")
+  hostId          String?   @map("host_id")
+  scheduledAt     DateTime? @map("scheduled_at")
+  endedAt         DateTime? @map("ended_at")
+  status          String    @default("scheduled") // scheduled|live|ended
+  isPrivate       Boolean   @default(false) @map("is_private")
+  maxParticipants Int?      @map("max_participants")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  host            User? @relation("RoomHost", fields:[hostId], references:[id], onDelete:SetNull)
+
+  @@map("live_rooms")
+}
+
+// =============================================================
+// EMAIL CAMPAIGNS
+// =============================================================
+model EmailCampaign {
+  id           String    @id @default(uuid())
+  name         String    @default("")
+  subject      String
+  body         String    // HTML
+  audience     String    @default("all") // all|diaspora|local|members
+  status       String    @default("draft") // draft|scheduled|sent|failed
+  scheduledAt  DateTime? @map("scheduled_at")
+  sentAt       DateTime? @map("sent_at")
+  recipientCount Int     @default(0) @map("recipient_count")
+  openCount    Int       @default(0) @map("open_count")
+  authorId     String?   @map("author_id")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  author       User? @relation("CampaignAuthor", fields:[authorId], references:[id], onDelete:SetNull)
+
+  @@map("email_campaigns")
+}

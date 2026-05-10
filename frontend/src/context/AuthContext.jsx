@@ -32,6 +32,13 @@ export function AuthProvider({ children }) {
 
   useEffect(() => { loadUser() }, [loadUser])
 
+  // Re-sync user data on window focus (catches admin premium toggle etc.)
+  useEffect(() => {
+    const onFocus = () => { if (localStorage.getItem('accessToken')) loadUser() }
+    window.addEventListener('focus', onFocus)
+    return () => window.removeEventListener('focus', onFocus)
+  }, [loadUser])
+
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password })
     localStorage.setItem('accessToken',  res.data.accessToken)
@@ -61,7 +68,7 @@ export function AuthProvider({ children }) {
   const isMember = ['admin','leader','member'].includes(user?.role)
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, loadUser, isAdmin, isLeader, isMember }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, loadUser, refreshUser: loadUser, isAdmin, isLeader, isMember }}>
       {children}
     </AuthContext.Provider>
   )

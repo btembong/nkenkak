@@ -1,51 +1,38 @@
-const jwt = require('jsonwebtoken');
-const { query } = require('../config/database');
+const jwt = require('jsonwebtoken')
+const { prisma } = require('../config/database')
 
-// Verify access token
 const authenticate = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
-  const token = authHeader.split(' ')[1];
+  const header = req.headers.authorization
+  if (!header?.startsWith('Bearer ')) return res.status(401).json({ error: 'No token' })
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const result = await query(
-      'SELECT id, email, role, status, first_name, last_name, avatar_url FROM users WHERE id = $1',
-      [decoded.userId]
-    );
-    if (!result.rows[0]) return res.status(401).json({ error: 'User not found' });
-    if (result.rows[0].status === 'banned') return res.status(403).json({ error: 'Account suspended' });
-    req.user = result.rows[0];
-    next();
-  } catch (err) {
-    if (err.name === 'TokenExpiredError') return res.status(401).json({ error: 'Token expired' });
-    return res.status(401).json({ error: 'Invalid token' });
+    const payload = jwt.verify(header.slice(7), process.env.JWT_SECRET)
+    const user = await prisma.user.findUnique({
+      where: { id: payload.id },
+      select: { id:true, email:true, role:true, status:true, firstName:true, lastName:true, avatarUrl:true, isPremium:true, premiumUntil:true },
+    })
+    if (!user || user.status === 'banned') return res.status(401).json({ error: 'Unauthorized' })
+    req.user = user
+    next()
+  } catch {
+    res.status(401).json({ error: 'Invalid token' })
   }
-};
+}
 
-// Optional auth (doesn't fail if no token)
 const optionalAuth = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) return next();
+  const header = req.headers.authorization
+  if (!header?.startsWith('Bearer ')) return next()
   try {
-    const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const result = await query('SELECT id, email, role, status, first_name, last_name FROM users WHERE id = $1', [decoded.userId]);
-    req.user = result.rows[0] || null;
-  } catch { req.user = null; }
-  next();
-};
+    const payload = jwt.verify(header.slice(7), process.env.JWT_SECRET)
+    req.user = await prisma.user.findUnique({
+      where: { id: payload.id },
+      select: { id:true, email:true, role:true, status:true, firstName:true, lastName:true, isPremium:true, premiumUntil:true },
+    })
+  } catch { /* ignore */ }
+  next()
+}
 
-// Role guards
-const requireRole = (...roles) => (req, res, next) => {
-  if (!req.user) return res.status(401).json({ error: 'Authentication required' });
-  if (!roles.includes(req.user.role)) return res.status(403).json({ error: 'Insufficient permissions' });
-  next();
-};
+const isAdmin  = (req, res, next) => req.user?.role === 'admin'  ? next() : res.status(403).json({ error: 'Admins only' })
+const isLeader = (req, res, next) => ['admin','leader'].includes(req.user?.role) ? next() : res.status(403).json({ error: 'Leaders only' })
+const isMember = (req, res, next) => ['admin','leader','member'].includes(req.user?.role) ? next() : res.status(403).json({ error: 'Members only' })
 
-const isAdmin   = requireRole('admin');
-const isLeader  = requireRole('admin', 'leader');
-const isMember  = requireRole('admin', 'leader', 'member');
-
-module.exports = { authenticate, optionalAuth, requireRole, isAdmin, isLeader, isMember };
+module.exports = { authenticate, optionalAuth, isAdmin, isLeader, isMember }

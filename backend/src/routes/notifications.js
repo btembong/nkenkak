@@ -1,16 +1,31 @@
-const router = require('express').Router();
-const { query } = require('../config/database');
-const { authenticate } = require('../middleware/auth');
-router.get('/', authenticate, async (req,res) => {
-  const r = await query('SELECT * FROM notifications WHERE user_id=$1 ORDER BY created_at DESC LIMIT 30',[req.user.id]);
-  res.json(r.rows);
-});
-router.patch('/:id/read', authenticate, async (req,res) => {
-  await query('UPDATE notifications SET is_read=TRUE WHERE id=$1 AND user_id=$2',[req.params.id,req.user.id]);
-  res.json({message:'Marked as read'});
-});
-router.patch('/read-all', authenticate, async (req,res) => {
-  await query('UPDATE notifications SET is_read=TRUE WHERE user_id=$1',[req.user.id]);
-  res.json({message:'All read'});
-});
-module.exports = router;
+const router = require('express').Router()
+const { prisma } = require('../config/database')
+const { authenticate } = require('../middleware/auth')
+
+router.get('/', authenticate, async (req, res) => {
+  const notifs = await prisma.notification.findMany({
+    where: { userId: req.user.id },
+    orderBy: { createdAt: 'desc' },
+    take: 30,
+  })
+  res.json(notifs)
+})
+
+router.patch('/read-all', authenticate, async (req, res) => {
+  await prisma.notification.updateMany({ where: { userId: req.user.id }, data: { isRead: true } })
+  res.json({ message: 'All marked read' })
+})
+
+router.patch('/:id/read', authenticate, async (req, res) => {
+  const notif = await prisma.notification.update({
+    where: { id: req.params.id }, data: { isRead: true },
+  })
+  res.json(notif)
+})
+
+router.delete('/:id', authenticate, async (req, res) => {
+  await prisma.notification.delete({ where: { id: req.params.id } })
+  res.json({ message: 'Deleted' })
+})
+
+module.exports = router

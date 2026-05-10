@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm audit:*)",
+      "Bash(taskkill /PID 54180 /F)",
+      "Bash(cmd /c \"taskkill /PID 54180 /F\")",
+      "Bash(echo \"exit: $?\")"
+    ]
+  }
+}

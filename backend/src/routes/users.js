@@ -1,25 +1,74 @@
-const router = require('express').Router();
-const { query } = require('../config/database');
-const bcrypt = require('bcrypt');
-const { authenticate } = require('../middleware/auth');
-router.get('/profile', authenticate, async (req,res) => {
-  const r = await query('SELECT id,email,role,status,first_name,last_name,phone,avatar_url,bio,country,city,village_quarter,is_diaspora,newsletter,email_verified,created_at FROM users WHERE id=$1',[req.user.id]);
-  res.json(r.rows[0]);
-});
-router.patch('/profile', authenticate, async (req,res) => {
-  const { first_name,last_name,phone,bio,country,city,village_quarter,is_diaspora,newsletter } = req.body;
-  const r = await query(
-    'UPDATE users SET first_name=COALESCE($1,first_name),last_name=COALESCE($2,last_name),phone=COALESCE($3,phone),bio=COALESCE($4,bio),country=COALESCE($5,country),city=COALESCE($6,city),village_quarter=COALESCE($7,village_quarter),is_diaspora=COALESCE($8,is_diaspora),newsletter=COALESCE($9,newsletter) WHERE id=$10 RETURNING *',
-    [first_name||null,last_name||null,phone||null,bio||null,country||null,city||null,village_quarter||null,is_diaspora??null,newsletter??null,req.user.id]
-  );
-  res.json(r.rows[0]);
-});
-router.patch('/change-password', authenticate, async (req,res) => {
-  const { current_password, new_password } = req.body;
-  const u = await query('SELECT password_hash FROM users WHERE id=$1',[req.user.id]);
-  if (!(await bcrypt.compare(current_password,u.rows[0].password_hash))) return res.status(400).json({error:'Current password incorrect'});
-  const hash = await bcrypt.hash(new_password,12);
-  await query('UPDATE users SET password_hash=$1 WHERE id=$2',[hash,req.user.id]);
-  res.json({message:'Password updated'});
-});
-module.exports = router;
+const router = require('express').Router()
+const { prisma } = require('../config/database')
+const bcrypt    = require('bcrypt')
+const { authenticate } = require('../middleware/auth')
+
+router.get('/profile', authenticate, async (req, res) => {
+  const user = await prisma.user.findUnique({
+    where: { id: req.user.id },
+    select: { id:true, email:true, role:true, status:true, firstName:true, lastName:true,
+              avatarUrl:true, phone:true, bio:true, country:true, city:true,
+              villageQuarter:true, isDiaspora:true, newsletter:true, createdAt:true },
+  })
+  res.json(user)
+})
+
+router.patch('/profile', authenticate, async (req, res) => {
+  const { first_name, last_name, phone, bio, country, city, village_quarter, is_diaspora, newsletter } = req.body
+  const user = await prisma.user.update({
+    where: { id: req.user.id },
+    data: {
+      ...(first_name       && { firstName: first_name }),
+      ...(last_name        && { lastName:  last_name }),
+      ...(phone            !== undefined && { phone }),
+      ...(bio              !== undefined && { bio }),
+      ...(country          && { country }),
+      ...(city             !== undefined && { city }),
+      ...(village_quarter  !== undefined && { villageQuarter: village_quarter }),
+      ...(is_diaspora      !== undefined && { isDiaspora: !!is_diaspora }),
+      ...(newsletter       !== undefined && { newsletter: !!newsletter }),
+    },
+    select: { id:true, email:true, firstName:true, lastName:true, role:true },
+  })
+  res.json(user)
+})
+
+// GET /api/users/directory — public member directory
+router.get('/directory', async (req, res) => {
+  const { search, country, is_diaspora, page = 1, limit = 24 } = req.query
+  const where = {
+    status: { in: ['active', 'pending'] },
+    ...(search && { OR: [
+      { firstName: { contains: search, mode: 'insensitive' } },
+      { lastName:  { contains: search, mode: 'insensitive' } },
+      { city:      { contains: search, mode: 'insensitive' } },
+    ]}),
+    ...(country     && { country }),
+    ...(is_diaspora !== undefined && { isDiaspora: is_diaspora === 'true' }),
+  }
+  const [members, total] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      select: { id:true, firstName:true, lastName:true, avatarUrl:true,
+                bio:true, city:true, country:true, villageQuarter:true, isDiaspora:true, createdAt:true },
+      orderBy: { firstName: 'asc' },
+      skip: (page - 1) * +limit,
+      take: +limit,
+    }),
+    prisma.user.count({ where }),
+  ])
+  res.json({ members, total, pages: Math.ceil(total / +limit) })
+})
+
+router.patch('/change-password', authenticate, async (req, res) => {
+  const { current_password, new_password } = req.body
+  if (!current_password || !new_password) return res.status(400).json({ error: 'Both passwords required' })
+  const user = await prisma.user.findUnique({ where: { id: req.user.id } })
+  const ok = await bcrypt.compare(current_password, user.passwordHash)
+  if (!ok) return res.status(400).json({ error: 'Current password incorrect' })
+  const hash = await bcrypt.hash(new_password, 12)
+  await prisma.user.update({ where: { id: req.user.id }, data: { passwordHash: hash } })
+  res.json({ message: 'Password updated' })
+})
+
+module.exports = router

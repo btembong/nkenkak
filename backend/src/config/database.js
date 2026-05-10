@@ -1,27 +1,22 @@
-const { Pool } = require('pg');
+const { PrismaClient } = require('@prisma/client')
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
+const prisma = new PrismaClient({
+  log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
+  errorFormat: 'minimal',
+})
 
-pool.on('error', (err) => {
-  console.error('Unexpected DB pool error:', err);
-});
+process.on('beforeExit', async () => { await prisma.$disconnect() })
+process.on('SIGINT',     async () => { await prisma.$disconnect(); process.exit(0) })
+process.on('SIGTERM',    async () => { await prisma.$disconnect(); process.exit(0) })
 
-const query = async (text, params) => {
-  const start = Date.now();
-  const res = await pool.query(text, params);
-  const duration = Date.now() - start;
-  if (process.env.NODE_ENV === 'development') {
-    console.log('query', { text: text.slice(0, 80), duration, rows: res.rowCount });
+const ping = async () => {
+  try {
+    await prisma.$queryRaw`SELECT 1`
+    console.log('✅ Database connected via Prisma')
+  } catch (err) {
+    console.warn('⚠️  Database ping failed (Neon may be waking up):', err.message)
+    console.warn('   Server will start anyway — DB connects on first request')
   }
-  return res;
-};
+}
 
-const getClient = () => pool.connect();
-
-module.exports = { query, getClient, pool };
+module.exports = { prisma, ping }

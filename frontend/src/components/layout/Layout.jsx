@@ -1,28 +1,63 @@
 import { Outlet } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import Navbar from '../common/Navbar'
 import Footer from '../common/Footer'
 import DonationModal from '../common/DonationModal'
-import { useState } from 'react'
 
 export default function Layout() {
-  const [donateOpen, setDonateOpen] = useState(false)
+  const [donateProjectId, setDonateProjectId] = useState(null)
+  const [showTop, setShowTop] = useState(false)
+
+  const openDonate = (projectId = null) => setDonateProjectId(projectId || '__open__')
+  const closeDonate = () => setDonateProjectId(null)
+
+  useEffect(() => {
+    const fn = () => setShowTop(window.scrollY > 500)
+    window.addEventListener('scroll', fn, { passive: true })
+    return () => window.removeEventListener('scroll', fn)
+  }, [])
+
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar onDonate={() => setDonateOpen(true)}/>
+      <Navbar onDonate={openDonate}/>
       <main className="flex-1">
-        <Outlet context={{ openDonate: () => setDonateOpen(true) }}/>
+        <Outlet context={{ openDonate }}/>
       </main>
-      <Footer onDonate={() => setDonateOpen(true)}/>
-      {donateOpen && <DonationModal onClose={() => setDonateOpen(false)}/>}
-      {/* Floating donate */}
-      <button onClick={() => setDonateOpen(true)}
-        className="fixed bottom-8 left-8 z-40 group flex items-center overflow-hidden rounded-full shadow-xl transition-all duration-300">
-        <span className="w-12 h-12 bg-gradient-to-br from-forest to-forest-light flex items-center justify-center text-cream text-lg flex-shrink-0">
+      <Footer onDonate={openDonate}/>
+
+      {donateProjectId && (
+        <DonationModal
+          onClose={closeDonate}
+          defaultProject={donateProjectId === '__open__' ? '' : donateProjectId}
+        />
+      )}
+
+      {/* Floating donate button */}
+      <button onClick={() => openDonate()}
+        className="fixed bottom-8 left-8 z-40 group flex items-center overflow-hidden rounded-full shadow-xl transition-all duration-300 animate-pulse-gold"
+        style={{boxShadow:'0 4px 24px rgba(91,45,142,0.35)'}}>
+        <span className="w-12 h-12 flex items-center justify-center flex-shrink-0 text-lg text-white"
+          style={{background:'linear-gradient(135deg,#5B2D8E,#7B4DB8)'}}>
           <i className="fas fa-hand-holding-heart"/>
         </span>
-        <span className="max-w-0 group-hover:max-w-[100px] overflow-hidden bg-forest-light text-cream text-xs font-bold tracking-widest uppercase whitespace-nowrap h-12 flex items-center transition-all duration-500 group-hover:pr-4">
+        <span className="max-w-0 group-hover:max-w-[100px] overflow-hidden whitespace-nowrap h-12 flex items-center transition-all duration-500 group-hover:pr-4 text-xs font-bold tracking-widest uppercase"
+          style={{background:'#5B2D8E', color:'#F0A500'}}>
           Donate
         </span>
+      </button>
+
+      {/* Back to top */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full flex items-center justify-center text-white shadow-xl transition-all duration-300"
+        style={{
+          background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)',
+          opacity: showTop ? 1 : 0,
+          pointerEvents: showTop ? 'auto' : 'none',
+          transform: showTop ? 'translateY(0)' : 'translateY(16px)',
+          boxShadow: '0 4px 20px rgba(91,45,142,0.4)',
+        }}>
+        <i className="fas fa-arrow-up text-sm"/>
       </button>
     </div>
   )
