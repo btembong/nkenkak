@@ -311,7 +311,7 @@ async function main() {
   let docCount = 0
   for (const d of documents) {
     const exists = await prisma.document.findFirst({ where:{ title:d.title } })
-    if (!exists) { await prisma.document.create({ data:d }); docCount++ }
+    if (!exists) { const { isPublished, ...docData } = d; await prisma.document.create({ data:docData }); docCount++ }
   }
   console.log(`✅ Documents seeded (${docCount} new)`)
 
