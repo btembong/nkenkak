@@ -1,11 +1,40 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
-import { format } from 'date-fns'
+import { format, formatDistanceToNow } from 'date-fns'
 import toast from 'react-hot-toast'
 import api from '../../services/api'
 import NewsCard from '../common/NewsCard'
 import { useAuth } from '../../context/AuthContext'
+
+/* ── Reading progress bar ── */
+function ReadingProgressBar() {
+  const [progress, setProgress] = useState(0)
+  useEffect(() => {
+    const update = () => {
+      const el = document.documentElement
+      const total = el.scrollHeight - el.clientHeight
+      setProgress(total > 0 ? Math.min(100, (el.scrollTop / total) * 100) : 0)
+    }
+    window.addEventListener('scroll', update, { passive: true })
+    return () => window.removeEventListener('scroll', update)
+  }, [])
+  return (
+    <div className="fixed top-0 left-0 right-0 z-[60] h-1" style={{ background: 'rgba(0,0,0,0.08)' }}>
+      <div style={{ width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg,#5B2D8E,#F0A500)', transition: 'width 0.1s linear' }} />
+    </div>
+  )
+}
+
+/* ── Parse headings from HTML for TOC ── */
+function parseTOC(html = '') {
+  const matches = [...html.matchAll(/<h([23])[^>]*>(.*?)<\/h[23]>/gi)]
+  return matches.map((m, i) => ({
+    level: parseInt(m[1]),
+    text: m[2].replace(/<[^>]+>/g, ''),
+    id: `heading-${i}`,
+  }))
+}
 
 /* ── Share helpers ── */
 function shareUrl() { return typeof window !== 'undefined' ? window.location.href : '' }
@@ -48,8 +77,8 @@ function SubscribeBox() {
     <form onSubmit={submit} className="space-y-3">
       <input value={email} onChange={e => setEmail(e.target.value)} type="email" required
         placeholder="your@email.com"
-        className="w-full px-4 py-2.5 rounded-xl text-sm outline-none"
-        style={{background:'rgba(91,45,142,0.04)',border:'1px solid rgba(91,45,142,0.12)',color:'#1A0A35',fontFamily:'Poppins,sans-serif'}}/>
+        className="w-full px-4 py-2.5 rounded-xl text-sm outline-none placeholder-white/40"
+        style={{background:'rgba(255,255,255,0.08)',border:'1px solid rgba(255,255,255,0.12)',color:'#fff',fontFamily:'Poppins,sans-serif'}}/>
       <button type="submit" className="btn-secondary w-full justify-center !py-2.5 !text-sm">
         <i className="fas fa-bell text-xs"/>Get Updates
       </button>
@@ -151,8 +180,9 @@ function CommentsSection({ slug }) {
                     <span className="text-sm font-semibold" style={{color:'#1A0A35',fontFamily:'Sora,sans-serif'}}>
                       {c.user ? `${c.user.firstName} ${c.user.lastName}` : c.name}
                     </span>
-                    <span className="text-[11px]" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>
-                      {format(new Date(c.createdAt), 'MMM d, yyyy')}
+                    <span className="text-[11px]" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}
+                      title={format(new Date(c.createdAt), 'MMM d, yyyy HH:mm')}>
+                      {formatDistanceToNow(new Date(c.createdAt), { addSuffix: true })}
                     </span>
                   </div>
                   <p className="text-sm leading-relaxed" style={{color:'#4B4B6B',fontFamily:'Poppins,sans-serif'}}>{c.content}</p>
@@ -177,6 +207,23 @@ export default function NewsDetail() {
     () => api.get(`/news/${slug}/related`).then(r => r.data),
     { enabled: !!slug })
 
+  const bodyRef = useRef(null)
+  const [activeToc, setActiveToc] = useState(null)
+  const toc = article ? parseTOC(article.content) : []
+
+  // Inject IDs into rendered headings + observe for active heading
+  useEffect(() => {
+    if (!bodyRef.current || !toc.length) return
+    const headings = bodyRef.current.querySelectorAll('h2, h3')
+    headings.forEach((el, i) => { if (toc[i]) el.id = toc[i].id })
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) setActiveToc(e.target.id) })
+    }, { rootMargin: '-20% 0px -70% 0px' })
+    headings.forEach(el => obs.observe(el))
+    return () => obs.disconnect()
+  }, [article?.content])
+
   if (isLoading) return (
     <div className="max-w-4xl mx-auto px-6 py-20 space-y-5">
       <div className="h-72 rounded-3xl animate-pulse" style={{background:'rgba(91,45,142,0.06)'}}/>
@@ -199,12 +246,13 @@ export default function NewsDetail() {
 
   return (
     <div style={{background:'#F9F7FD'}}>
+      <ReadingProgressBar />
 
       {/* ── Full-bleed hero ── */}
       <div className="relative overflow-hidden" style={{background:'linear-gradient(135deg,#1A0A35,#250F47)', minHeight:420}}>
         {article.coverImage && (
           <img src={article.coverImage} alt={article.title}
-            className="absolute inset-0 w-full h-full object-cover opacity-30"/>
+            className="absolute inset-0 w-full h-full object-cover opacity-45"/>
         )}
         <div className="absolute inset-0" style={{background:'linear-gradient(to top, rgba(26,10,53,1) 0%, rgba(26,10,53,0.7) 40%, rgba(26,10,53,0.3) 100%)'}}/>
 
@@ -299,7 +347,7 @@ export default function NewsDetail() {
             )}
 
             {/* Body */}
-            <div className="prose-article mb-10"
+            <div ref={bodyRef} className="prose-article mb-10"
               style={{
                 color:'#404040', fontFamily:'Poppins,sans-serif', lineHeight:'1.95',
                 fontSize:'1.0625rem',
@@ -340,15 +388,17 @@ export default function NewsDetail() {
             {/* Author card */}
             <div className="rounded-3xl p-6 flex gap-5 items-start mb-8"
               style={{background:'linear-gradient(135deg,rgba(91,45,142,0.04),rgba(240,165,0,0.04))',border:'1px solid rgba(91,45,142,0.1)'}}>
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold text-white flex-shrink-0"
+              <div className="w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center text-xl font-bold text-white flex-shrink-0"
                 style={{background:'linear-gradient(135deg,#5B2D8E,#7B4DB8)'}}>
-                {(article.author_name || 'N')[0]}
+                {article.author_avatarUrl
+                  ? <img src={article.author_avatarUrl} alt={article.author_name} className="w-full h-full object-cover"/>
+                  : (article.author_name || 'N')[0]}
               </div>
               <div className="min-w-0">
                 <div className="text-[10px] uppercase tracking-widest font-semibold mb-1" style={{color:'#F0A500',fontFamily:'Sora,sans-serif'}}>Written by</div>
                 <h4 className="font-display font-bold text-lg mb-1" style={{color:'#1A0A35'}}>{article.author_name || 'Nkenkak Team'}</h4>
                 <p className="text-sm" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>
-                  Community contributor for Nkenkak-Ngiesang. Sharing stories and updates that matter to our people at home and abroad.
+                  {article.author_bio || 'Community contributor for Nkenkak-Ngiesang. Sharing stories and updates that matter to our people at home and abroad.'}
                 </p>
               </div>
             </div>
@@ -361,6 +411,29 @@ export default function NewsDetail() {
 
           {/* ── Sidebar ── */}
           <aside className="hidden lg:flex flex-col gap-5 w-72 flex-shrink-0 sticky top-24">
+
+            {/* Table of Contents */}
+            {toc.length > 1 && (
+              <SideCard title="In This Article" icon="fa-list-ul">
+                <nav className="space-y-1">
+                  {toc.map(item => (
+                    <a key={item.id} href={`#${item.id}`}
+                      onClick={e => { e.preventDefault(); document.getElementById(item.id)?.scrollIntoView({ behavior:'smooth', block:'start' }); setActiveToc(item.id) }}
+                      className="flex items-start gap-2 py-1.5 text-xs rounded-lg px-2 transition-all cursor-pointer"
+                      style={{
+                        paddingLeft: item.level === 3 ? '1.25rem' : '0.5rem',
+                        color: activeToc === item.id ? '#5B2D8E' : '#737373',
+                        background: activeToc === item.id ? 'rgba(91,45,142,0.06)' : 'transparent',
+                        fontFamily: 'Poppins,sans-serif',
+                        fontWeight: activeToc === item.id ? 600 : 400,
+                        borderLeft: activeToc === item.id ? '2px solid #5B2D8E' : '2px solid transparent',
+                      }}>
+                      {item.text}
+                    </a>
+                  ))}
+                </nav>
+              </SideCard>
+            )}
 
             {/* Share */}
             <SideCard title="Share Article" icon="fa-share-alt">

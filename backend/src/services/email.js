@@ -668,3 +668,189 @@ exports.sendProjectUpdateNotification = ({ to, donorName, project, update }) =>
     `,
     text: `New update on ${project}: ${update.content}. View at ${CLIENT}/projects`,
   })
+
+/* ═══════════════════════════════════
+   13. SCHOLARSHIP APPLICATION RECEIVED
+═══════════════════════════════════ */
+exports.sendScholarshipApplicationReceived = ({ to, fullName, programTitle, applicationId }) =>
+  exports.sendEmail({
+    to,
+    subject: `Application Received — ${programTitle}`,
+    html: `
+      <h2>Application Received ✅</h2>
+      <p class="subhead">Dear ${fullName}, we have successfully received your application for the scholarship program below.</p>
+
+      <div class="hl hl-purple">
+        <strong>Program</strong>
+        <span>${programTitle}</span>
+      </div>
+
+      <table class="tbl">
+        <tr><td>Applicant</td><td>${fullName}</td></tr>
+        <tr><td>Email</td><td>${to}</td></tr>
+        <tr><td>Reference ID</td><td>${applicationId}</td></tr>
+        <tr><td>Status</td><td><span class="badge badge-gold">Under Review</span></td></tr>
+      </table>
+
+      <p>Our team will carefully review your application. You will be notified by email once a decision has been made. Please keep this email for your records.</p>
+
+      <div class="hl hl-gold">
+        <strong>What happens next?</strong>
+        <span>Our scholarship committee will review all applications and contact you within 2–4 weeks. No action is required from you at this time.</span>
+      </div>
+
+      <div class="btn-wrap">
+        <a href="${CLIENT}/scholarships" class="btn btn-purple">View Scholarship Programs</a>
+      </div>
+
+      <hr class="divider"/>
+      <p class="note">This is an automated confirmation. Please do not reply to this email.</p>
+    `,
+    text: `Dear ${fullName}, your application for "${programTitle}" has been received (Ref: ${applicationId}). We will notify you once a decision is made.`,
+  })
+
+/* ═══════════════════════════════════
+   14. SCHOLARSHIP DECISION (APPROVED / REJECTED)
+═══════════════════════════════════ */
+/* ═══════════════════════════════════
+   15. MENTORSHIP APPLICATION RECEIVED
+═══════════════════════════════════ */
+exports.sendMentorshipApplicationReceived = ({ to, name, mentorName, applicationId }) =>
+  exports.sendEmail({
+    to,
+    subject: mentorName
+      ? `Mentorship Application Received — ${mentorName}`
+      : 'Mentorship Application Received',
+    html: `
+      <h2>Application Received ✅</h2>
+      <p class="subhead">Dear ${name}, we have successfully received your mentorship application.</p>
+
+      ${mentorName ? `
+      <div class="hl hl-purple">
+        <strong>Mentor Requested</strong>
+        <span>${mentorName}</span>
+      </div>` : `
+      <div class="hl hl-purple">
+        <strong>General Mentorship Request</strong>
+        <span>Our team will match you with the most suitable mentor based on your goals and field.</span>
+      </div>`}
+
+      <table class="tbl">
+        <tr><td>Applicant</td><td>${name}</td></tr>
+        <tr><td>Email</td><td>${to}</td></tr>
+        <tr><td>Reference ID</td><td>${applicationId}</td></tr>
+        <tr><td>Status</td><td><span class="badge badge-gold">Under Review</span></td></tr>
+      </table>
+
+      <p>Our team will review your application and match you with a mentor. You will be notified by email once a decision has been made.</p>
+
+      <div class="hl hl-gold">
+        <strong>What happens next?</strong>
+        <span>The mentorship committee will review your goals and background, then connect you with the right mentor within 1–2 weeks.</span>
+      </div>
+
+      <div class="btn-wrap">
+        <a href="${CLIENT}/mentors" class="btn btn-purple">Meet Our Mentors</a>
+      </div>
+
+      <hr class="divider"/>
+      <p class="note">This is an automated confirmation. Please do not reply to this email.</p>
+    `,
+    text: `Dear ${name}, your mentorship application has been received (Ref: ${applicationId}). We will notify you once a decision is made.`,
+  })
+
+/* ═══════════════════════════════════
+   16. MENTORSHIP DECISION (APPROVED / REJECTED)
+═══════════════════════════════════ */
+exports.sendMentorshipDecision = ({ to, name, mentorName, status }) => {
+  const approved = status === 'approved'
+  return exports.sendEmail({
+    to,
+    subject: approved
+      ? `Mentorship Application Approved — Welcome Aboard!`
+      : `Mentorship Application Update`,
+    html: `
+      <h2>${approved ? 'You\'ve Been Accepted! 🎉' : 'Application Update'}</h2>
+      <p class="subhead">Dear ${name}, we have an update regarding your mentorship application.</p>
+
+      <div class="hl ${approved ? 'hl-green' : 'hl-red'}">
+        <strong>Decision</strong>
+        <span style="font-size:16px;font-weight:700;color:${approved ? '#16a34a' : '#dc2626'};">
+          ${approved ? '✅ Approved' : '❌ Not Selected'}
+        </span>
+      </div>
+
+      <table class="tbl">
+        <tr><td>Applicant</td><td>${name}</td></tr>
+        ${mentorName ? `<tr><td>Mentor</td><td>${mentorName}</td></tr>` : ''}
+        <tr><td>Decision</td><td><span class="badge ${approved ? 'badge-green' : ''}" style="${!approved ? 'background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.2);' : ''}">${approved ? 'Approved' : 'Not Selected'}</span></td></tr>
+      </table>
+
+      ${approved ? `
+      <p>Congratulations! You have been matched with a mentor. Our team will reach out shortly with next steps to get your mentorship journey started.</p>
+      <div class="btn-wrap">
+        <a href="${CLIENT}/mentors" class="btn btn-gold">View Mentors</a>
+      </div>
+      ` : `
+      <p>Thank you for your interest in the mentorship programme. We encourage you to apply again in the future as new mentors join the platform regularly.</p>
+      <div class="btn-wrap">
+        <a href="${CLIENT}/mentors" class="btn btn-purple">Explore Other Mentors</a>
+      </div>
+      `}
+
+      <hr class="divider"/>
+      <p class="note">This is an official notification from N-NDC. For queries, contact us at ${process.env.SMTP_USER}.</p>
+    `,
+    text: `Dear ${name}, your mentorship application has been ${status}. Visit ${CLIENT}/mentors for more information.`,
+  })
+}
+
+exports.sendScholarshipDecision = ({ to, fullName, programTitle, status, reviewNote }) => {
+  const approved = status === 'approved'
+  return exports.sendEmail({
+    to,
+    subject: approved
+      ? `Congratulations! Scholarship Application Approved — ${programTitle}`
+      : `Scholarship Application Update — ${programTitle}`,
+    html: `
+      <h2>${approved ? 'Congratulations! 🎉' : 'Application Update'}</h2>
+      <p class="subhead">Dear ${fullName}, we have an update regarding your scholarship application.</p>
+
+      <div class="hl ${approved ? 'hl-green' : 'hl-red'}">
+        <strong>Decision</strong>
+        <span style="font-size:16px;font-weight:700;color:${approved ? '#16a34a' : '#dc2626'};">
+          ${approved ? '✅ Approved' : '❌ Not Selected'}
+        </span>
+      </div>
+
+      <table class="tbl">
+        <tr><td>Applicant</td><td>${fullName}</td></tr>
+        <tr><td>Program</td><td>${programTitle}</td></tr>
+        <tr><td>Decision</td><td><span class="badge ${approved ? 'badge-green' : ''}" style="${!approved ? 'background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.2);' : ''}">${approved ? 'Approved' : 'Not Selected'}</span></td></tr>
+      </table>
+
+      ${reviewNote ? `
+      <div class="hl hl-purple">
+        <strong>Note from the Committee</strong>
+        <span>${reviewNote}</span>
+      </div>` : ''}
+
+      ${approved ? `
+      <p>Our team will be in touch shortly with the next steps, including documentation requirements and disbursement details. Please check your email regularly.</p>
+      <div class="btn-wrap">
+        <a href="${CLIENT}/scholarships" class="btn btn-gold">View Your Program</a>
+      </div>
+      ` : `
+      <p>We appreciate the time you took to apply and encourage you to check back for future scholarship opportunities. We wish you the best in your academic journey.</p>
+      <div class="btn-wrap">
+        <a href="${CLIENT}/scholarships" class="btn btn-purple">View Other Programs</a>
+      </div>
+      `}
+
+      <hr class="divider"/>
+      <p class="note">This is an official notification from N-NDC Scholarship Committee. For queries, contact us at ${process.env.SMTP_USER}.</p>
+    `,
+    text: `Dear ${fullName}, your application for "${programTitle}" has been ${status}. ${reviewNote ? 'Note: ' + reviewNote : ''} Visit ${CLIENT}/scholarships for more information.`,
+  })
+}
+

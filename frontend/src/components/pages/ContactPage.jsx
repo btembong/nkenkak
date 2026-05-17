@@ -51,7 +51,7 @@ export default function ContactPage() {
           {/* Info cards */}
           <div className="space-y-4">
             {[
-              { icon:'fa-map-marker-alt', title:'Our Location',       lines:['Nkenkak-Ngiesang','West Region, Cameroon'] },
+              { icon:'fa-map-marker-alt', title:'Our Location',       lines:['Nkenkak-Ngiesang','South West Region, Cameroon'] },
               { icon:'fa-phone-alt',      title:'Phone & WhatsApp',   lines:['+237 6XX XXX XXX','+237 6XX XXX XXX'] },
               { icon:'fa-envelope',       title:'Email Address',      lines:['contact@nkenkak-ngiesang.cm','admin@nkenkak-ngiesang.cm'] },
               { icon:'fa-clock',          title:'Office Hours',       lines:['Mon–Fri: 9am – 5pm','Weekends: By appointment'] },

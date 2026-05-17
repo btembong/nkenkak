@@ -76,11 +76,11 @@ export default function Navbar({ onDonate }) {
       <nav className={`sticky top-0 z-40 transition-all duration-300 ${scrolled ? 'shadow-lg' : ''}`}
         style={{background:'#fff', borderBottom: scrolled ? '1px solid rgba(91,45,142,0.08)' : '1px solid transparent'}}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-24">
+          <div className="flex items-center justify-between h-16 md:h-24">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 flex-shrink-0">
               <img src="https://res.cloudinary.com/dmxnsttmu/image/upload/v1778254134/nkek-logo_jdaxf8.png" alt="Nkenkak-Ngiesang Development Council"
-                className="w-auto object-contain" style={{ height: '8.5rem' }}
+                className="w-auto object-contain h-14 md:h-28 lg:h-32"
                 onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }}
               />
               {/* Fallback text logo shown if image fails to load */}

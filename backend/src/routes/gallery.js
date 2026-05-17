@@ -3,13 +3,14 @@ const { prisma } = require('../config/database')
 const { authenticate, isLeader } = require('../middleware/auth')
 
 router.get('/', async (req, res) => {
-  const { tag, type, all } = req.query
+  const { tag, type, all, project_id } = req.query
   const items = await prisma.gallery.findMany({
     where: {
       // admin passing ?all=1 gets everything; public gets only showInGallery:true (NULL treated as true for legacy rows)
-      ...(all !== '1' && !tag && { showInGallery: { not: false } }),
-      ...(tag  && { tags:      { has: tag  } }),
-      ...(type && { mediaType: type }),
+      ...(all !== '1' && !tag && !project_id && { showInGallery: { not: false } }),
+      ...(tag        && { tags:      { has: tag  } }),
+      ...(type       && { mediaType: type }),
+      ...(project_id && { projectId: project_id }),
     },
     orderBy: [{ isFeatured: 'desc' }, { sortOrder: 'asc' }, { createdAt: 'desc' }],
     take: 200,

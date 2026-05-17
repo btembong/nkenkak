@@ -98,6 +98,95 @@ function GalleryManager({ projectId, onClose }) {
   )
 }
 
+/* ── Project Updates Manager ── */
+function UpdatesManager({ projectId, projectTitle, onClose }) {
+  const qc = useQueryClient()
+  const [title,   setTitle]   = useState('')
+  const [content, setContent] = useState('')
+  const [imgUrl,  setImgUrl]  = useState('')
+
+  const { data: project } = useQuery(['project-updates-admin', projectId],
+    () => api.get(`/projects/${projectId}`).then(r => r.data))
+
+  const updates = project?.updates || []
+
+  const addMut = useMutation(
+    () => api.post(`/projects/${projectId}/updates`, { title, content, image_url: imgUrl || undefined }),
+    {
+      onSuccess: () => {
+        qc.invalidateQueries(['project-updates-admin', projectId])
+        qc.invalidateQueries('admin-projects')
+        toast.success('Update posted! Donors notified by email.')
+        setTitle(''); setContent(''); setImgUrl('')
+      },
+      onError: () => toast.error('Failed to post update'),
+    }
+  )
+
+  const canPost = title.trim() && content.trim()
+
+  return (
+    <div className="space-y-6">
+      {/* Post new update */}
+      <div className="rounded-2xl p-5 space-y-3" style={{background:'rgba(91,45,142,0.03)',border:'1px solid rgba(91,45,142,0.08)'}}>
+        <p className="text-xs font-bold uppercase tracking-wider" style={{color:'#5B2D8E',fontFamily:'Sora,sans-serif'}}>Post New Update</p>
+        <div>
+          <label className="label">Title *</label>
+          <input value={title} onChange={e=>setTitle(e.target.value)} className="input" placeholder="e.g. Construction Phase 1 Complete"/>
+        </div>
+        <div>
+          <label className="label">Content *</label>
+          <textarea value={content} onChange={e=>setContent(e.target.value)} rows={4} className="input resize-none"
+            placeholder="Describe the progress, milestone, or news for this update…"/>
+        </div>
+        <div>
+          <label className="label">Image URL (optional)</label>
+          <input value={imgUrl} onChange={e=>setImgUrl(e.target.value)} className="input" placeholder="https://res.cloudinary.com/…"/>
+        </div>
+        <button onClick={()=>addMut.mutate()} disabled={!canPost||addMut.isLoading} className="btn-secondary w-full justify-center">
+          {addMut.isLoading
+            ? <><i className="fas fa-spinner animate-spin"/>Posting…</>
+            : <><i className="fas fa-paper-plane text-xs"/>Post Update &amp; Notify Donors</>}
+        </button>
+        <p className="text-[11px] text-center" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>
+          All donors who contributed to this project will receive an email notification.
+        </p>
+      </div>
+
+      {/* Existing updates */}
+      <div>
+        <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{color:'#737373',fontFamily:'Sora,sans-serif'}}>
+          Previous Updates ({updates.length})
+        </p>
+        {updates.length === 0 ? (
+          <div className="text-center py-8 rounded-2xl" style={{background:'rgba(91,45,142,0.02)',border:'1px dashed rgba(91,45,142,0.1)'}}>
+            <i className="fas fa-bell text-3xl mb-2 block" style={{color:'rgba(91,45,142,0.12)'}}/>
+            <p className="text-sm" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>No updates yet.</p>
+          </div>
+        ) : (
+          <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+            {updates.map((u, i) => (
+              <div key={u.id} className="p-4 rounded-2xl" style={{background:'#fff',border:'1px solid rgba(91,45,142,0.08)'}}>
+                <div className="flex items-start justify-between gap-3 mb-1">
+                  <p className="font-semibold text-sm" style={{color:'#1A0A35',fontFamily:'Sora,sans-serif'}}>{u.title}</p>
+                  <span className="text-[10px] flex-shrink-0" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>
+                    {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : ''}
+                  </span>
+                </div>
+                <p className="text-xs leading-relaxed line-clamp-2" style={{color:'#525252',fontFamily:'Poppins,sans-serif'}}>{u.content}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <button onClick={onClose} className="w-full py-2.5 rounded-2xl text-sm font-semibold" style={{background:'rgba(91,45,142,0.05)',color:'#737373',border:'1px solid rgba(91,45,142,0.1)',fontFamily:'Sora,sans-serif'}}>
+        Close
+      </button>
+    </div>
+  )
+}
+
 function StatusBadge({ status }) {
   const map = { active:'#16a34a', completed:'#C87800', upcoming:'#5B2D8E', paused:'#dc2626',
                 published:'#16a34a', draft:'#C87800', archived:'#737373', pending:'#C87800',
@@ -149,6 +238,7 @@ export function AdminProjects() {
   const [view,          setView]          = useState('grid')
   const [filterCat,     setFilterCat]     = useState('all')
   const [galleryProject,setGalleryProject]= useState(null)
+  const [updatesProject,setUpdatesProject]= useState(null) // { id, title }
 
   const { data: projects, isLoading } = useQuery('admin-projects',
     () => api.get('/projects?limit=100').then(r => r.data.projects))
@@ -266,6 +356,9 @@ export function AdminProjects() {
                     <button onClick={()=>setGalleryProject(p.id)} className="flex-1 text-xs font-semibold py-1.5 rounded-xl border transition-all hover:bg-amber-50" style={{color:'#C87800',borderColor:'rgba(200,120,0,0.15)',fontFamily:'Sora,sans-serif'}}>
                       <i className="fas fa-images text-[10px] mr-1"/>Gallery
                     </button>
+                    <button onClick={()=>setUpdatesProject({id:p.id,title:p.title})} className="flex-1 text-xs font-semibold py-1.5 rounded-xl border transition-all hover:bg-green-50" style={{color:'#16a34a',borderColor:'rgba(22,163,74,0.15)',fontFamily:'Sora,sans-serif'}}>
+                      <i className="fas fa-bell text-[10px] mr-1"/>Updates
+                    </button>
                     <button onClick={()=>{if(confirm('Delete?'))deleteMut.mutate(p.id)}}
                       className="w-8 h-8 rounded-xl flex items-center justify-center border hover:bg-red-50 flex-shrink-0"
                       style={{color:'#dc2626',borderColor:'rgba(220,38,38,0.15)'}}>
@@ -308,6 +401,7 @@ export function AdminProjects() {
                     <div className="flex gap-2">
                       <ActionBtn label="Edit" icon="fa-pen" color="#5B2D8E" onClick={()=>openEdit(p)}/>
                       <ActionBtn label="Gallery" icon="fa-images" color="#C87800" onClick={()=>setGalleryProject(p.id)}/>
+                      <ActionBtn label="Updates" icon="fa-bell" color="#16a34a" onClick={()=>setUpdatesProject({id:p.id,title:p.title})}/>
                       <ActionBtn label="Delete" icon="fa-trash" color="#dc2626" onClick={()=>{if(confirm('Delete?'))deleteMut.mutate(p.id)}}/>
                     </div>
                   </td>
@@ -409,6 +503,12 @@ export function AdminProjects() {
       <Modal open={!!galleryProject} onClose={()=>setGalleryProject(null)}
         title="Project Gallery" sub="Upload or paste image URLs for this project's photo gallery" wide>
         {galleryProject && <GalleryManager projectId={galleryProject} onClose={()=>setGalleryProject(null)}/>}
+      </Modal>
+
+      {/* Updates modal */}
+      <Modal open={!!updatesProject} onClose={()=>setUpdatesProject(null)}
+        title="Project Updates" sub={updatesProject ? `Posting update for: ${updatesProject.title}` : ''} wide>
+        {updatesProject && <UpdatesManager projectId={updatesProject.id} projectTitle={updatesProject.title} onClose={()=>setUpdatesProject(null)}/>}
       </Modal>
     </div>
   )

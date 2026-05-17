@@ -28,7 +28,7 @@ export default function ProjectDetail() {
   const { user } = useAuth()
   const qc = useQueryClient()
   const [donateOpen, setDonateOpen] = useState(false)
-  const [lightbox, setLightbox] = useState(null) // image URL or null
+  const [lightbox, setLightbox] = useState(null) // { url, type } or null
   const [activeTab, setActiveTab] = useState('about') // about | updates | gallery
 
   const { data: project, isLoading, error } = useQuery(
@@ -43,6 +43,12 @@ export default function ProjectDetail() {
       r.data.projects?.filter(p => p.id !== project.id).slice(0, 3)
     ),
     { enabled: !!project?.category }
+  )
+
+  const { data: projectVideos = [] } = useQuery(
+    ['project-videos', project?.id],
+    () => api.get(`/gallery?project_id=${project.id}&type=video`).then(r => r.data),
+    { enabled: !!project?.id }
   )
 
   if (isLoading) return <PageSkeleton />
@@ -81,7 +87,7 @@ export default function ProjectDetail() {
                 {[
                   { key: 'about',   label: 'About',   icon: 'fa-info-circle' },
                   { key: 'updates', label: `Updates${project.updates?.length ? ` (${project.updates.length})` : ''}`, icon: 'fa-bell' },
-                  { key: 'gallery', label: `Gallery${allMedia.length ? ` (${allMedia.length})` : ''}`, icon: 'fa-images' },
+                  { key: 'gallery', label: `Gallery${(allMedia.length + projectVideos.length) ? ` (${allMedia.length + projectVideos.length})` : ''}`, icon: 'fa-images' },
                 ].map(t => (
                   <button key={t.key} onClick={() => setActiveTab(t.key)}
                     className="px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2"
@@ -115,7 +121,7 @@ export default function ProjectDetail() {
 
               {/* Tab: Gallery */}
               {activeTab === 'gallery' && (
-                <GallerySection media={allMedia} color={color} onOpen={setLightbox} />
+                <GallerySection media={allMedia} color={color} onOpen={setLightbox} projectId={project.id} videos={projectVideos} />
               )}
             </div>
 
@@ -147,19 +153,30 @@ export default function ProjectDetail() {
       {lightbox && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.92)' }}
+          style={{ background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(10px)' }}
           onClick={() => setLightbox(null)}>
           <button
             className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-white transition-all hover:bg-white/10"
             onClick={() => setLightbox(null)}>
             <i className="fas fa-times text-xl" />
           </button>
-          <img
-            src={lightbox}
-            alt=""
-            className="max-w-full max-h-[90vh] object-contain rounded-2xl"
-            onClick={e => e.stopPropagation()}
-          />
+          {lightbox.type === 'video' ? (
+            <video
+              src={lightbox.url}
+              controls
+              autoPlay
+              className="max-w-full max-h-[90vh] rounded-2xl"
+              style={{ boxShadow: '0 40px 100px rgba(0,0,0,0.7)' }}
+              onClick={e => e.stopPropagation()}
+            />
+          ) : (
+            <img
+              src={lightbox.url}
+              alt=""
+              className="max-w-full max-h-[90vh] object-contain rounded-2xl"
+              onClick={e => e.stopPropagation()}
+            />
+          )}
         </div>
       )}
 
@@ -426,16 +443,21 @@ function LocationSection({ project, color }) {
 /* ════════════════════════════════════
    GALLERY
 ════════════════════════════════════ */
-function GallerySection({ media, color, onOpen }) {
-  const [activeVideo, setActiveVideo] = useState(null)
+/* Auto-generate a thumbnail from a Cloudinary video URL */
+function getVideoThumb(url) {
+  if (!url) return null
+  // Cloudinary video → grab frame at 1s, return as jpg
+  if (url.includes('res.cloudinary.com') && /\.(mp4|mov|webm|mkv)/i.test(url)) {
+    return url
+      .replace('/video/upload/', '/video/upload/so_1/')
+      .replace(/\.(mp4|mov|webm|mkv)$/i, '.jpg')
+  }
+  return null
+}
 
-  /* Placeholder video slots so there are always visual elements */
-  const videoPlaceholders = [
-    { label: 'Project Documentary', duration: '5:32' },
-    { label: 'Field Visit — 2024',  duration: '3:18' },
-  ]
+function GallerySection({ media, color, onOpen, videos: galleryVideos = [] }) {
 
-  if (!media.length && !videoPlaceholders.length) {
+  if (!media.length && !galleryVideos.length) {
     return (
       <div className="card p-12 text-center">
         <i className="fas fa-images text-5xl mb-4 block" style={{ color: 'rgba(91,45,142,0.15)' }} />
@@ -454,7 +476,7 @@ function GallerySection({ media, color, onOpen }) {
           <SectionTitle icon="fa-images" title="Photos" color={color} />
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-5">
             {media.map((m, i) => (
-              <button key={i} onClick={() => onOpen(m.url)}
+              <button key={i} onClick={() => onOpen({ url: m.url, type: 'image' })}
                 className="relative overflow-hidden rounded-2xl group transition-all hover:scale-[1.02]"
                 style={{ aspectRatio: '4/3', background: `${color}15` }}>
                 <img src={m.url} alt="" className="w-full h-full object-cover" />
@@ -466,53 +488,41 @@ function GallerySection({ media, color, onOpen }) {
                 </div>
               </button>
             ))}
-            {/* Placeholder slots if fewer than 3 images */}
-            {media.length < 3 && Array.from({ length: 3 - media.length }).map((_, i) => (
-              <div key={`ph-${i}`}
-                className="relative overflow-hidden rounded-2xl flex items-center justify-center"
-                style={{ aspectRatio: '4/3', background: `linear-gradient(135deg,${color}08,${color}18)`, border: `1px dashed ${color}30` }}>
-                <div className="text-center">
-                  <i className="fas fa-image text-2xl mb-2 block" style={{ color: `${color}50` }} />
-                  <span className="text-[10px] font-semibold" style={{ color: `${color}70`, fontFamily: 'Sora,sans-serif' }}>Photo coming soon</span>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       )}
 
       {/* Videos */}
-      <div className="card p-6">
-        <SectionTitle icon="fa-film" title="Videos" color={color} />
-        <div className="grid sm:grid-cols-2 gap-4 mt-5">
-          {videoPlaceholders.map((v, i) => (
-            <div key={i}
-              className="relative overflow-hidden rounded-2xl cursor-pointer group transition-all hover:scale-[1.02]"
-              style={{ aspectRatio: '16/9', background: `linear-gradient(135deg,#1A0A35,${color})` }}
-              onClick={() => setActiveVideo(i)}>
-              {/* Thumbnail pattern */}
-              <div className="absolute inset-0 wave-pattern opacity-20" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                <div className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center
-                  group-hover:scale-110 transition-transform shadow-xl border border-white/20">
-                  <i className="fas fa-play text-white text-lg ml-0.5" />
-                </div>
-                <div className="text-center px-4">
-                  <div className="text-white font-semibold text-sm" style={{ fontFamily: 'Sora,sans-serif' }}>{v.label}</div>
-                  <div className="text-white/50 text-xs mt-0.5">{v.duration}</div>
+      {galleryVideos.length > 0 && (
+        <div className="card p-6">
+          <SectionTitle icon="fa-film" title="Videos" color={color} />
+          <div className="grid sm:grid-cols-2 gap-4 mt-5">
+            {galleryVideos.map((v) => {
+              const thumb = v.thumbnail || getVideoThumb(v.url)
+              return (
+              <div key={v.id}
+                className="relative overflow-hidden rounded-2xl cursor-pointer group transition-all hover:scale-[1.02]"
+                style={{ aspectRatio: '16/9', background: `linear-gradient(135deg,#1A0A35,${color})` }}
+                onClick={() => onOpen({ url: v.url, type: 'video' })}>
+                {thumb
+                  ? <img src={thumb} alt={v.title || ''} className="absolute inset-0 w-full h-full object-cover" />
+                  : <div className="absolute inset-0 wave-pattern opacity-20" />}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3"
+                  style={{ background: thumb ? 'rgba(0,0,0,0.45)' : 'transparent' }}>
+                  <div className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl border border-white/20">
+                    <i className="fas fa-play text-white text-lg ml-0.5" />
+                  </div>
+                  {v.title && (
+                    <div className="text-white font-semibold text-sm text-center px-4" style={{ fontFamily: 'Sora,sans-serif' }}>
+                      {v.title}
+                    </div>
+                  )}
                 </div>
               </div>
-              <div className="absolute bottom-3 right-3 text-[10px] font-semibold px-2 py-1 rounded-lg"
-                style={{ background: 'rgba(0,0,0,0.5)', color: '#fff' }}>
-                <i className="fas fa-video mr-1" />Video
-              </div>
-            </div>
-          ))}
+            )})}
+          </div>
         </div>
-        <p className="text-xs text-center mt-4" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>
-          <i className="fas fa-info-circle mr-1" />Videos will be available once uploaded by the project team.
-        </p>
-      </div>
+      )}
     </div>
   )
 }

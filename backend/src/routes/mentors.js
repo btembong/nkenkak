@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const { prisma } = require('../config/database')
 const { authenticate, isAdmin } = require('../middleware/auth')
+const { sendMentorshipApplicationReceived, sendMentorshipDecision } = require('../services/email')
 
 router.get('/', async (req, res) => {
   const mentors = await prisma.mentor.findMany({
@@ -42,6 +43,7 @@ router.post('/apply-mentee', async (req, res) => {
   const app = await prisma.mentorApplication.create({
     data: { name, email, phone, age: age ? +age : null, education, goals, message: field || null },
   })
+  sendMentorshipApplicationReceived({ to: email, name, mentorName: null, applicationId: app.id }).catch(console.error)
   res.status(201).json(app)
 })
 
@@ -54,6 +56,7 @@ router.post('/:id/apply', async (req, res) => {
   const app = await prisma.mentorApplication.create({
     data: { mentorId: req.params.id, name, email, phone, age: age ? +age : null, education, goals },
   })
+  sendMentorshipApplicationReceived({ to: email, name, mentorName: mentor.name, applicationId: app.id }).catch(console.error)
   res.status(201).json(app)
 })
 
@@ -67,7 +70,18 @@ router.get('/applications', authenticate, isAdmin, async (req, res) => {
 
 router.patch('/applications/:id', authenticate, isAdmin, async (req, res) => {
   const { status } = req.body
-  const app = await prisma.mentorApplication.update({ where: { id: req.params.id }, data: { status } })
+  const app = await prisma.mentorApplication.update({
+    where: { id: req.params.id },
+    data: { status },
+    include: { mentor: { select: { name: true } } },
+  })
+  if (status === 'approved' || status === 'rejected') {
+    sendMentorshipDecision({
+      to: app.email, name: app.name,
+      mentorName: app.mentor?.name || null,
+      status,
+    }).catch(console.error)
+  }
   res.json(app)
 })
 

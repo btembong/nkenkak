@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import { format } from 'date-fns'
+import { format, differenceInDays } from 'date-fns'
 import { useInView } from 'react-intersection-observer'
 import CountUp from 'react-countup'
 import toast from 'react-hot-toast'
@@ -33,7 +33,7 @@ const CAUSE_CATS = [
 // ──────────────────────────────────────────────────────────────────────────────
 const TESTIS = [
   {
-    photo: 'https://res.cloudinary.com/dmxnsttmu/image/upload/q_auto/f_auto/v1778219204/dsix9mzupqwphekvnxtp.jpg', // ← replace null with photo URL, e.g. 'https://res.cloudinary.com/.../photo.jpg'
+    photo: 'https://res.cloudinary.com/dmxnsttmu/image/upload/v1778928729/WhatsApp_Image_2026-04-30_at_20.57.27_dj89ir.jpg', // ← replace null with photo URL, e.g. 'https://res.cloudinary.com/.../photo.jpg'
     text: 'Thanks to the school renovation project, my children now study in proper classrooms with real furniture and electricity. The community\'s unity has truly changed our village — I am proud to be from Nkenkak-Ngiesang.',
     name: 'Marie Nkemdirim', role: 'Parent & Village Elder', country: '🇨🇲',
     avatar: 'MN', color: '#5B2D8E', colorDark: '#3D1A6B',
@@ -51,7 +51,7 @@ const TESTIS = [
     avatar: 'EF', color: '#16a34a', colorDark: '#14532d',
   },
   {
-    photo: null,
+    photo: 'https://res.cloudinary.com/dmxnsttmu/image/upload/q_auto/f_auto/v1778928806/WhatsApp_Image_2026-04-30_at_20.57.16_aynfja.jpg',
     text: 'I have donated to several organisations over the years, but none gave me the transparency and community feel of Nkenkak-Ngiesang. Every update and milestone report shows exactly where my contribution goes. This is how development should work.',
     name: 'Amina Koueye', role: 'Monthly Donor, Berlin', country: '🇩🇪',
     avatar: 'AK', color: '#0284c7', colorDark: '#01579b',
@@ -122,7 +122,7 @@ function FloatingDonate({ onClick }) {
   }, [])
   return (
     <button onClick={onClick}
-      className="fixed bottom-24 right-8 z-40 flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm shadow-2xl transition-all duration-300"
+      className="hidden sm:flex fixed bottom-24 right-8 z-40 items-center gap-2 px-5 py-3 rounded-full font-bold text-sm shadow-2xl transition-all duration-300"
       style={{
         background:'linear-gradient(135deg,#F0A500,#FFB84D)',
         color:'#fff', fontFamily:'Sora,sans-serif',
@@ -794,17 +794,24 @@ export default function HomePage() {
               style={{ background:'radial-gradient(circle,rgba(91,45,142,0.07),transparent 70%)' }}/>
 
             {/* Main tall card */}
+            {/* ↓ TO CHANGE ABOUT IMAGE: replace the URL below with your new Cloudinary (or any) image URL */}
             <div className="absolute left-0 top-0 w-[58%] rounded-3xl overflow-hidden"
-              style={{ height: 420, background:'linear-gradient(160deg,#1A0A35,#5B2D8E)', boxShadow:'0 24px 64px rgba(91,45,142,0.25)' }}>
-              <div className="wave-pattern absolute inset-0 opacity-40"/>
+              style={{ height: 420, boxShadow:'0 24px 64px rgba(91,45,142,0.25)' }}>
+              <img
+                src="https://res.cloudinary.com/dmxnsttmu/image/upload/q_auto/f_auto/v1778262556/WhatsApp_Image_2026-04-30_at_20.57.13_yl6xj3.jpg"
+                alt="Nkenkak-Ngiesang community"
+                className="absolute inset-0 w-full h-full object-cover object-center"
+              />
+              {/* Dark overlay so text stays readable */}
+              <div className="absolute inset-0" style={{ background:'linear-gradient(160deg,rgba(26,10,53,0.75),rgba(91,45,142,0.55))' }}/>
               <div className="relative h-full flex flex-col justify-between p-6">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
                   style={{ background:'rgba(240,165,0,0.15)', border:'1px solid rgba(240,165,0,0.25)' }}>
                   <i className="fas fa-landmark text-xl" style={{ color:'#F0A500' }}/>
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest font-bold mb-1" style={{ color:'rgba(240,165,0,0.7)', fontFamily:'Sora,sans-serif' }}>Est. Village</div>
-                  <div className="font-display font-extrabold text-white leading-none" style={{ fontSize:'3.5rem' }}>1992</div>
+                  <div className="text-[10px] uppercase tracking-widest font-bold mb-1" style={{ color:'rgba(240,165,0,0.7)', fontFamily:'Sora,sans-serif' }}>Est. N-NDC</div>
+                  <div className="font-display font-extrabold text-white leading-none" style={{ fontSize:'3.5rem' }}>2024</div>
                   <div className="text-sm mt-2" style={{ color:'rgba(255,255,255,0.55)', fontFamily:'Poppins,sans-serif' }}>Years of unity, culture & development</div>
                 </div>
               </div>
@@ -816,9 +823,9 @@ export default function HomePage() {
               <div className="h-full flex flex-col items-center justify-center gap-2">
                 <i className="fas fa-users text-3xl text-white opacity-90"/>
                 <div className="font-display font-extrabold text-white text-2xl leading-none">
-                  {stats?.teamCount || '50'}+
+                  {stats?.memberCount || stats?.donorCount || '40'}+
                 </div>
-                <div className="text-xs text-white/70" style={{ fontFamily:'Poppins,sans-serif' }}>Active Members</div>
+                <div className="text-xs text-white/70" style={{ fontFamily:'Poppins,sans-serif' }}>Registered Members</div>
               </div>
             </div>
 
@@ -860,20 +867,22 @@ export default function HomePage() {
 
           {/* ── Right: Text ── */}
           <div>
-            <div className="eyebrow mb-3">About Nkenkak-Ngiesang</div>
+            <div className="eyebrow mb-3">About N-NDC (Nkenkak-Ngiesang Development Council)</div>
             <h2 className="section-title mb-5">
               Rooted in Heritage,<br/>Building for <span>Tomorrow</span>
             </h2>
             <p className="text-sm leading-relaxed mb-7" style={{ color:'#737373', fontFamily:'Poppins,sans-serif' }}>
-              Nkenkak-Ngiesang is more than a village — it is a living community bound by shared history, culture, and purpose. Since 1992, our development council has united residents at home and across the diaspora to fund schools, health centres, clean water systems, and cultural preservation. Every franc raised stays within the village.
+              Nkenkak-Ngiesang is more than a village — it is a living community bound by shared history, culture, and purpose. N-NDC, created in June 2024, is a nonprofit, non governmental and an apolitical body aimed at promoting development and cultural activities within and without Nkekak-Njiesang community.
+              This initiative brought up by Chief N'fonji-Sang of Njiesang, was supported by most Elites, to this effect, an all Njiesang meeting was called and held on the 15th of June 2024 birthing this organization.
+              An N-NDC executive bureau was created to conceive, initiate and follow up developmental and cultural activities within and without the village.
             </p>
 
             {/* Three pillars */}
             <div className="grid grid-cols-3 gap-3 mb-8">
               {[
                 { icon:'fa-landmark',   color:'#5B2D8E', bg:'rgba(91,45,142,0.08)',   label:'Culture & Heritage' },
-                { icon:'fa-hands',      color:'#C87800', bg:'rgba(240,165,0,0.1)',    label:'Community First'    },
-                { icon:'fa-chart-line', color:'#16a34a', bg:'rgba(22,163,74,0.08)',   label:'Real Impact'        },
+                { icon:'fa-hands',      color:'#5B2D8E', bg:'rgba(91,45,142,0.08)',    label:'Community First'    },
+                { icon:'fa-chart-line', color:'#5B2D8E', bg:'rgba(91,45,142,0.08)',   label:'Real Impact'        },
               ].map(p => (
                 <div key={p.label} className="rounded-2xl p-3.5 text-center" style={{ background:p.bg }}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center mx-auto mb-2" style={{ background:`${p.color}18` }}>
@@ -965,9 +974,9 @@ export default function HomePage() {
       <section className="py-20" style={{ background:'linear-gradient(135deg,#FBF8F2,#F3EEF9)' }}>
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="eyebrow mb-3">Why Choose Us</div>
+            <div className="eyebrow mb-3">Why Belong with us N-NDC </div>
             <h2 className="section-title mb-5">
-              Transparent, Community-Led,<br/><span>Zero Overhead</span>
+               Community-Led,<br/><span>Zero Overhead</span>
             </h2>
             <p className="text-sm leading-relaxed mb-6" style={{ color:'#737373', fontFamily:'Poppins,sans-serif' }}>
               Unlike large NGOs, we are the community. Every project is proposed by a village member, approved by the council, and executed with full financial transparency — you can see exactly where your money goes.
@@ -993,9 +1002,9 @@ export default function HomePage() {
           <div className="space-y-4">
             {[
               { icon:'fa-shield-alt',   color:'#5B2D8E', title:'100% Transparent',      desc:'Full financial reports published after every project milestone. No hidden fees.' },
-              { icon:'fa-users',        color:'#F0A500', title:'Community Governed',     desc:'Projects are voted on by village elders, youth council, and diaspora members.' },
-              { icon:'fa-map-marker-alt',color:'#16a34a',title:'Direct Impact',          desc:'Funds go straight to contractors and suppliers in the village — zero bureaucracy.' },
-              { icon:'fa-globe',        color:'#0284c7', title:'Diaspora Inclusive',     desc:'Whether you\'re in Yaoundé or Paris, you have an equal voice in every decision.' },
+              { icon:'fa-users',        color:'#5B2D8E', title:'Community Governed',     desc:'Projects are voted on by village elders, youth council, and diaspora members.' },
+              { icon:'fa-map-marker-alt',color:'#5B2D8E',title:'Direct Impact',          desc:'Funds go straight to contractors and suppliers in the village — zero bureaucracy.' },
+              { icon:'fa-globe',        color:'#5B2D8E', title:'Diaspora Inclusive',     desc:'Whether you\'re in Yaoundé or Paris, you have an equal voice in every decision.' },
             ].map(f => (
               <div key={f.title} className="flex gap-4 p-4 rounded-2xl" style={{ background:'#fff', border:'1px solid rgba(91,45,142,0.06)', boxShadow:'0 2px 12px rgba(91,45,142,0.04)' }}>
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background:`${f.color}12` }}>
@@ -1033,6 +1042,8 @@ export default function HomePage() {
               {events?.map(e => {
                 const d = new Date(e.startDate)
                 const isPaid = e.ticketPrice && Number(e.ticketPrice) > 0
+                const daysAway = differenceInDays(d, new Date())
+                const countdownLabel = daysAway === 0 ? 'Today!' : daysAway === 1 ? 'Tomorrow' : daysAway > 0 ? `In ${daysAway} days` : null
                 return (
                   <Link key={e.id} to={`/events/${e.slug}`} className="card overflow-hidden group block hover:-translate-y-1 transition-transform">
                     <div className="h-44 flex items-center justify-center relative overflow-hidden"
@@ -1045,6 +1056,12 @@ export default function HomePage() {
                         <div className="text-[9px] uppercase tracking-wider font-semibold" style={{ color:'#5B2D8E', fontFamily:'Sora,sans-serif' }}>{format(d,'MMM')}</div>
                       </div>
                       <div className="absolute top-3 right-3 flex flex-col gap-1 items-end z-10">
+                        {countdownLabel && (
+                          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full"
+                            style={{ background:'rgba(255,255,255,0.15)', color:'#fff', border:'1px solid rgba(255,255,255,0.25)', backdropFilter:'blur(8px)' }}>
+                            <i className="fas fa-clock text-[8px] mr-1"/>{countdownLabel}
+                          </span>
+                        )}
                         {e.category && <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full text-white" style={{ background:'rgba(240,165,0,0.9)' }}>{e.category}</span>}
                         {isPaid
                           ? <span className="text-[10px] font-bold px-2.5 py-1 rounded-full" style={{ background:'rgba(240,165,0,0.9)', color:'#1A0A35' }}>{Number(e.ticketPrice).toLocaleString()} XAF</span>
@@ -1164,27 +1181,62 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ════════════════ TEAM ════════════════ */}
+      {team && team.length > 0 && (
+        <section className="py-20" style={{ background:'linear-gradient(135deg,#FBF8F2,#F3EEF9)' }}>
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex items-end justify-between mb-12">
+              <div>
+                <div className="eyebrow mb-3">Our People</div>
+                <h2 className="section-title">The Team Behind <span>the Mission</span></h2>
+                <p className="text-sm mt-3 max-w-lg" style={{ color:'#737373', fontFamily:'Poppins,sans-serif' }}>
+                  Meet the dedicated leaders and volunteers driving development and culture in Nkenkak-Ngiesang.
+                </p>
+              </div>
+              <Link to="/team" className="btn-outline !py-2 !px-5 !text-xs hidden md:flex">Meet Everyone</Link>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {team.map((m, i) => <TeamCard key={m.id} member={m} index={i}/>)}
+            </div>
+            <div className="text-center mt-8 md:hidden">
+              <Link to="/team" className="btn-outline !py-2.5 !px-6 !text-sm">Meet the Team</Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ════════════════ DIASPORA TEASER ════════════════ */}
       <section className="py-20 relative overflow-hidden" style={{ background:'linear-gradient(135deg,#1A0A35,#250F47)' }}>
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage:'radial-gradient(circle at 30% 50%, #F0A500 0%, transparent 40%), radial-gradient(circle at 70% 30%, #7B4DB8 0%, transparent 40%)' }}/>
         <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-          {/* World map placeholder */}
+          {/* Country grid */}
           <div className="relative hidden lg:block">
-            <div className="rounded-3xl overflow-hidden flex items-center justify-center"
-              style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', height:320 }}>
-              <i className="fas fa-globe-africa text-[140px]" style={{ color:'rgba(240,165,0,0.15)' }}/>
+            <div className="grid grid-cols-2 gap-3">
               {[
-                { top:'25%', left:'52%', label:'🇫🇷' },
-                { top:'22%', left:'65%', label:'🇩🇪' },
-                { top:'20%', left:'47%', label:'🇬🇧' },
-                { top:'28%', left:'35%', label:'🇺🇸' },
-                { top:'55%', left:'54%', label:'🇨🇲' },
-                { top:'48%', left:'59%', label:'🇳🇬' },
-              ].map((p, i) => (
-                <div key={i} className="absolute text-xl animate-bounce" style={{ top:p.top, left:p.left, animationDelay:`${i*0.3}s`, animationDuration:'3s' }}>
-                  {p.label}
+                { flag:'🇨🇲', country:'Cameroon',       label:'Home Village',      accent:'#22c55e' },
+                { flag:'🇫🇷', country:'France',          label:'Largest Diaspora',  accent:'#3b82f6' },
+                { flag:'🇩🇪', country:'Germany',         label:'Active Community',  accent:'#F0A500' },
+                { flag:'🇬🇧', country:'United Kingdom',  label:'Growing Members',   accent:'#8b5cf6' },
+                { flag:'🇺🇸', country:'United States',   label:'Diaspora Members',  accent:'#ef4444' },
+                { flag:'🇨🇦', country:'Canada',          label:'New Members',       accent:'#0284c7' },
+              ].map((c, i) => (
+                <div key={i} className="flex items-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.02]"
+                  style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)' }}>
+                  <span className="text-3xl flex-shrink-0">{c.flag}</span>
+                  <div className="min-w-0">
+                    <div className="font-display font-bold text-sm text-white leading-tight">{c.country}</div>
+                    <div className="text-[10px] mt-0.5" style={{ color: c.accent, fontFamily:'Poppins,sans-serif' }}>{c.label}</div>
+                  </div>
+                  <div className="ml-auto w-1.5 h-8 rounded-full flex-shrink-0" style={{ background: c.accent, opacity: 0.5 }}/>
                 </div>
               ))}
+            </div>
+            <div className="mt-3 px-4 py-3 rounded-2xl flex items-center gap-3"
+              style={{ background:'rgba(240,165,0,0.08)', border:'1px solid rgba(240,165,0,0.15)' }}>
+              <i className="fas fa-globe-africa text-xl" style={{ color:'#F0A500' }}/>
+              <span className="text-xs font-semibold" style={{ color:'rgba(255,255,255,0.6)', fontFamily:'Poppins,sans-serif' }}>
+                Members present in <strong style={{ color:'#F0A500' }}>14+ countries</strong> across the world
+              </span>
             </div>
           </div>
           <div>
@@ -1215,9 +1267,6 @@ export default function HomePage() {
 
       {/* ════════════════ NEWSLETTER ════════════════ */}
       <NewsletterSection/>
-
-      {/* Floating donate */}
-      <FloatingDonate onClick={openDonate}/>
 
       {joinOpen && <JoinTeamModal onClose={() => setJoinOpen(false)}/>}
     </div>

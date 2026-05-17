@@ -155,6 +155,23 @@ router.post('/:id/candidates', authenticate, isAdmin, async (req, res) => {
   res.status(201).json(candidate)
 })
 
+// ── Admin: update candidate ───────────────────────────────────
+router.patch('/:electionId/candidates/:candidateId', authenticate, isAdmin, async (req, res) => {
+  const { name, bio, manifesto, imageUrl, userId } = req.body
+  const candidate = await prisma.candidate.update({
+    where: { id: req.params.candidateId },
+    data: {
+      ...(name      !== undefined && { name }),
+      ...(bio       !== undefined && { bio }),
+      ...(manifesto !== undefined && { manifesto }),
+      ...(imageUrl  !== undefined && { imageUrl }),
+      ...(userId    !== undefined && { userId: userId || null }),
+    },
+    include: { user: { select: { id: true, firstName: true, lastName: true, avatarUrl: true } } },
+  })
+  res.json(candidate)
+})
+
 // ── Admin: remove candidate ───────────────────────────────────
 router.delete('/:electionId/candidates/:candidateId', authenticate, isAdmin, async (req, res) => {
   await prisma.candidate.delete({ where: { id: req.params.candidateId } })

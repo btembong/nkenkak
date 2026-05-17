@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const { prisma } = require('../config/database')
 const { authenticate, isLeader, isAdmin } = require('../middleware/auth')
+const { sendScholarshipApplicationReceived, sendScholarshipDecision } = require('../services/email')
 
 // GET /api/scholarship-programs  — public list
 router.get('/', async (req, res) => {
@@ -88,6 +89,7 @@ router.post('/:id/apply', async (req, res) => {
             school, level: level || program.level, subject, gpa, motivation,
             userId: userId || null },
   })
+  sendScholarshipApplicationReceived({ to: email, fullName, programTitle: program.title, applicationId: app.id }).catch(console.error)
   res.status(201).json(app)
 })
 
@@ -103,6 +105,14 @@ router.patch('/:pid/applications/:id', authenticate, isLeader, async (req, res) 
       reviewedAt: new Date(),
     },
   })
+  if (status === 'approved' || status === 'rejected') {
+    const program = await prisma.scholarshipProgram.findUnique({ where: { id: req.params.pid }, select: { title: true } })
+    sendScholarshipDecision({
+      to: app.email, fullName: app.fullName,
+      programTitle: program?.title || 'Scholarship Program',
+      status, reviewNote: app.reviewNote,
+    }).catch(console.error)
+  }
   res.json(app)
 })
 

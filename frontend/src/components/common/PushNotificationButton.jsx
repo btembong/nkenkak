@@ -26,7 +26,7 @@ async function saveToServer(sub, userId) {
   await api.post('/push/subscribe', { endpoint: sub.endpoint, keys })
 }
 
-export default function PushNotificationButton({ className = '' }) {
+export default function PushNotificationButton({ className = '', dark = false }) {
   const { user } = useAuth()
   const [state, setState]   = useState('unknown')
   const [loading, setLoading] = useState(false)
@@ -97,23 +97,37 @@ export default function PushNotificationButton({ className = '' }) {
     }
   }
 
-  if (!user || state === 'unsupported' || state === 'unknown') return null
+  if (!user) return null
+  if (state === 'unsupported') {
+    if (!dark) return null
+    return (
+      <div className={`flex items-center gap-2 text-sm font-medium px-4 py-3 rounded-2xl opacity-40 ${className}`}
+        style={{ color: 'rgba(255,255,255,0.5)' }}>
+        <i className="fas fa-bell-slash text-xs w-5 text-center"/>
+        Push Not Supported
+      </div>
+    )
+  }
 
   const isOn = state === 'subscribed'
 
   return (
-    <button onClick={toggle} disabled={loading}
+    <button onClick={toggle} disabled={loading || state === 'unknown'}
       title={isOn ? 'Disable push notifications' : 'Enable push notifications'}
       className={`flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-xl transition-all ${className}`}
-      style={{
+      style={dark ? {
+        background: isOn ? 'rgba(240,165,0,0.15)' : 'rgba(255,255,255,0.08)',
+        color:      isOn ? '#F0A500' : 'rgba(255,255,255,0.7)',
+        border:     `1px solid ${isOn ? 'rgba(240,165,0,0.3)' : 'rgba(255,255,255,0.1)'}`,
+      } : {
         background: isOn ? 'rgba(240,165,0,0.12)' : 'rgba(91,45,142,0.08)',
         color:      isOn ? '#C87800' : '#5B2D8E',
         border:     `1px solid ${isOn ? 'rgba(240,165,0,0.2)' : 'rgba(91,45,142,0.15)'}`,
       }}>
-      {loading
-        ? <i className="fas fa-spinner animate-spin text-xs"/>
-        : <i className={`fas ${isOn ? 'fa-bell' : 'fa-bell-slash'} text-xs`}/>}
-      {isOn ? 'Push On' : 'Enable Push'}
+      {loading || state === 'unknown'
+        ? <i className="fas fa-spinner animate-spin text-xs w-5 text-center"/>
+        : <i className={`fas ${isOn ? 'fa-bell' : 'fa-bell-slash'} text-xs w-5 text-center`}/>}
+      {state === 'unknown' ? 'Checking...' : isOn ? 'Push Notifications On' : 'Enable Push Notifications'}
     </button>
   )
 }

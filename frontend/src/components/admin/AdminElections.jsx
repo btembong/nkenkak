@@ -121,12 +121,21 @@ function ElectionForm({ election, onClose }) {
 function CandidatesPanel({ election, onClose }) {
   const qc = useQueryClient()
   const { register, handleSubmit, reset } = useForm()
+  const { register: regEdit, handleSubmit: handleEdit, reset: resetEdit } = useForm()
   const [activeTab, setActiveTab] = useState('list')
+  const [editingCandidate, setEditingCandidate] = useState(null)
 
   const addMut = useMutation(
     d => api.post(`/elections/${election.id}/candidates`, d),
     {
       onSuccess: () => { qc.invalidateQueries('admin-elections'); qc.invalidateQueries(['election-results', election.id]); reset(); toast.success('Candidate added') },
+      onError: e => toast.error(e.response?.data?.error || 'Failed'),
+    }
+  )
+  const editMut = useMutation(
+    ({ cid, data }) => api.patch(`/elections/${election.id}/candidates/${cid}`, data),
+    {
+      onSuccess: () => { qc.invalidateQueries('admin-elections'); setEditingCandidate(null); toast.success('Candidate updated') },
       onError: e => toast.error(e.response?.data?.error || 'Failed'),
     }
   )
@@ -168,24 +177,79 @@ function CandidatesPanel({ election, onClose }) {
           {activeTab === 'list' && (
             <div className="space-y-3">
               {election.candidates?.length === 0 && (
-                <p className="text-center py-10 text-sm" style={{ color: '#A3A3A3' }}>No candidates yet</p>
+                <p className="text-center py-10 text-sm" style={{ color: '#A3A3A3' }}>No candidates yet. Use "Add Candidate" tab.</p>
               )}
               {election.candidates?.map(c => (
-                <div key={c.id} className="flex items-center gap-3 p-3 rounded-2xl"
-                  style={{ background: 'rgba(91,45,142,0.03)', border: '1px solid rgba(91,45,142,0.07)' }}>
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-white text-sm font-bold"
-                    style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' }}>
-                    {c.name[0]}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm" style={{ color: '#1A0A35' }}>{c.name}</div>
-                    {c.bio && <div className="text-xs truncate" style={{ color: '#A3A3A3' }}>{c.bio}</div>}
-                  </div>
-                  <button onClick={() => { if (confirm('Remove candidate?')) removeMut.mutate(c.id) }}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center"
-                    style={{ background: 'rgba(220,38,38,0.08)', color: '#dc2626' }}>
-                    <i className="fas fa-trash text-xs"/>
-                  </button>
+                <div key={c.id}>
+                  {editingCandidate === c.id ? (
+                    /* ── Inline edit form ── */
+                    <form onSubmit={handleEdit(d => editMut.mutate({ cid: c.id, data: d }))}
+                      className="p-4 rounded-2xl space-y-3"
+                      style={{ background: 'rgba(91,45,142,0.04)', border: '2px solid rgba(91,45,142,0.15)' }}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-bold uppercase tracking-wider" style={{ color: '#5B2D8E' }}>Editing: {c.name}</span>
+                        <button type="button" onClick={() => setEditingCandidate(null)}
+                          className="text-xs" style={{ color: '#A3A3A3' }}>Cancel</button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="label">Full Name *</label>
+                          <input {...regEdit('name', { required: true })} defaultValue={c.name} className="input text-sm"/>
+                        </div>
+                        <div>
+                          <label className="label">Photo URL</label>
+                          <input {...regEdit('imageUrl')} defaultValue={c.imageUrl || ''} className="input text-sm" placeholder="https://…"/>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="label">Bio</label>
+                        <textarea {...regEdit('bio')} defaultValue={c.bio || ''} rows={2} className="input resize-none text-sm"/>
+                      </div>
+                      <div>
+                        <label className="label">Manifesto / Statement</label>
+                        <textarea {...regEdit('manifesto')} defaultValue={c.manifesto || ''} rows={2} className="input resize-none text-sm"/>
+                      </div>
+                      <button type="submit" disabled={editMut.isLoading} className="btn-secondary w-full justify-center !py-2 !text-xs">
+                        {editMut.isLoading ? <><i className="fas fa-spinner animate-spin"/>Saving…</> : <><i className="fas fa-save"/>Save Changes</>}
+                      </button>
+                    </form>
+                  ) : (
+                    /* ── Candidate row ── */
+                    <div className="flex items-center gap-3 p-3 rounded-2xl"
+                      style={{ background: 'rgba(91,45,142,0.03)', border: '1px solid rgba(91,45,142,0.07)' }}>
+                      {/* Photo */}
+                      <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0"
+                        style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' }}>
+                        {c.imageUrl || c.user?.avatarUrl
+                          ? <img src={c.imageUrl || c.user?.avatarUrl} alt={c.name} className="w-full h-full object-cover object-top"/>
+                          : <div className="w-full h-full flex items-center justify-center text-white text-sm font-bold">
+                              {c.name[0]}
+                            </div>}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-sm" style={{ color: '#1A0A35' }}>{c.name}</div>
+                        {c.bio && <div className="text-xs truncate" style={{ color: '#A3A3A3' }}>{c.bio}</div>}
+                        {!c.imageUrl && !c.user?.avatarUrl && (
+                          <div className="text-[10px] mt-0.5" style={{ color: '#F0A500' }}>
+                            <i className="fas fa-exclamation-triangle mr-1"/>No photo — click edit to add
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex gap-1 flex-shrink-0">
+                        <button onClick={() => { setEditingCandidate(c.id); resetEdit() }}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center"
+                          style={{ background: 'rgba(91,45,142,0.08)', color: '#5B2D8E' }}
+                          title="Edit candidate">
+                          <i className="fas fa-edit text-xs"/>
+                        </button>
+                        <button onClick={() => { if (confirm('Remove candidate?')) removeMut.mutate(c.id) }}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center"
+                          style={{ background: 'rgba(220,38,38,0.08)', color: '#dc2626' }}>
+                          <i className="fas fa-trash text-xs"/>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

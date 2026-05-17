@@ -11,15 +11,15 @@ import api from '../../services/api'
 /* ─── Shared page header ─── */
 function PageHeader({ title, sub, icon }) {
   return (
-    <div className="mb-8">
+    <div className="mb-5 sm:mb-8">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-2xl flex items-center justify-center"
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
           style={{background:'linear-gradient(135deg,#5B2D8E,#7B4DB8)'}}>
           <i className={`fas ${icon} text-sm text-white`}/>
         </div>
         <div>
-          <h1 className="font-display font-bold text-2xl" style={{color:'#1A0A35'}}>{title}</h1>
-          {sub && <p className="text-sm" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>{sub}</p>}
+          <h1 className="font-display font-bold text-xl sm:text-2xl" style={{color:'#1A0A35'}}>{title}</h1>
+          {sub && <p className="text-xs sm:text-sm" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>{sub}</p>}
         </div>
       </div>
     </div>
@@ -29,12 +29,12 @@ function PageHeader({ title, sub, icon }) {
 /* ─── Stat mini card ─── */
 function MiniStat({ icon, label, value, color='#5B2D8E', bg='rgba(91,45,142,0.08)' }) {
   return (
-    <div className="stat-card">
-      <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-3" style={{background:bg}}>
-        <i className={`fas ${icon} text-lg`} style={{color}}/>
+    <div className="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-6" style={{boxShadow:'0 4px 24px rgba(91,45,142,0.07)',border:'1px solid rgba(91,45,142,0.06)'}}>
+      <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center mb-2 sm:mb-3" style={{background:bg}}>
+        <i className={`fas ${icon} text-sm sm:text-lg`} style={{color}}/>
       </div>
-      <div className="font-display font-bold text-2xl" style={{color:'#1A0A35'}}>{value}</div>
-      <div className="text-xs mt-0.5" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>{label}</div>
+      <div className="font-display font-bold text-lg sm:text-2xl" style={{color:'#1A0A35'}}>{value}</div>
+      <div className="text-[10px] sm:text-xs mt-0.5 leading-tight" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>{label}</div>
     </div>
   )
 }
@@ -55,7 +55,7 @@ export function PortalDashboard() {
   return (
     <div>
       {/* Welcome banner */}
-      <div className="rounded-3xl p-8 mb-8 relative overflow-hidden"
+      <div className="rounded-3xl p-5 sm:p-8 mb-6 sm:mb-8 relative overflow-hidden"
         style={{background:'linear-gradient(135deg,#250F47,#5B2D8E)'}}>
         <div className="wave-pattern absolute inset-0"/>
         <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
@@ -76,7 +76,7 @@ export function PortalDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
         <MiniStat icon="fa-heart"  label="Donations Made"  value={donations?.filter(d=>d.status==='completed').length||0}/>
         <MiniStat icon="fa-coins"  label="XAF Contributed" value={totalGiven.toLocaleString()} color="#F0A500" bg="rgba(240,165,0,0.1)"/>
         <MiniStat icon="fa-bell"   label="Unread Notifs"   value={unread} color="#dc2626" bg="rgba(220,38,38,0.08)"/>
@@ -278,7 +278,7 @@ export function PortalDonations() {
       <PageHeader title="My Donations" sub="Your contribution history" icon="fa-heart"/>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
         <MiniStat icon="fa-check-circle" label="Completed"   value={data?.filter(d=>d.status==='completed').length||0} color="#16a34a" bg="rgba(22,163,74,0.08)"/>
         <MiniStat icon="fa-coins"        label="XAF Total"   value={total.toLocaleString()} color="#F0A500" bg="rgba(240,165,0,0.1)"/>
         <MiniStat icon="fa-clock"        label="Pending"     value={data?.filter(d=>d.status==='pending').length||0}   color="#C87800" bg="rgba(240,165,0,0.08)"/>

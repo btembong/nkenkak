@@ -15,8 +15,8 @@
 }
 
 @layer base {
-  html { scroll-behavior: smooth; }
-  body { font-family: 'Poppins', system-ui, sans-serif; background: #FAFAFA; color: #262626; -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+  body { font-family: 'Poppins', system-ui, sans-serif; background: #FAFAFA; color: #262626; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   h1,h2,h3,h4,h5,h6 { font-family: 'Sora', system-ui, sans-serif; }
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: #f1f1f1; }
@@ -171,6 +171,10 @@
 
   /* ── Tag ── */
   .tag { @apply text-xs font-semibold px-3 py-1 rounded-full; background: #F3EEF9; color: #5B2D8E; border: 1px solid rgba(91,45,142,0.12); }
+
+  /* ── Mobile safe ── */
+  * { box-sizing: border-box; }
+  img, video { max-width: 100%; }
 
   /* ── Page hero ── */
   .page-hero { background: linear-gradient(135deg, #250F47 0%, #5B2D8E 60%, #7B4DB8 100%); position: relative; overflow: hidden; }

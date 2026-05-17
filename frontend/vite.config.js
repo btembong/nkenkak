@@ -6,7 +6,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
-      allowedHosts: 'all',
+      host: true,
+      allowedHosts: true,
       proxy: {
         '/api': {
           target: 'http://localhost:5000',

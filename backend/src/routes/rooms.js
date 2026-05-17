@@ -68,7 +68,7 @@ router.post('/:slug/join', authenticate, async (req, res) => {
           room_name: room.dailyRoomName,
           user_name: `${req.user.firstName} ${req.user.lastName}`,
           user_id: req.user.id,
-          is_owner: room.hostId === req.user.id,
+          is_owner: room.hostId === req.user.id || req.user.role === 'admin' || req.user.role === 'leader',
           exp: Math.floor(Date.now() / 1000) + 60 * 120,
         },
       }),
