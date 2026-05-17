@@ -14,10 +14,21 @@ const server = http.createServer(app)
 
 // ── Security & middleware ─────────────────────────────────────
 app.use(helmet())
+const allowedOrigins = [
+  process.env.CLIENT_URL || 'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:5173',
+]
 app.use(cors({
-  origin:      [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:3000'],
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+      cb(null, true)
+    } else {
+      cb(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
-  methods:     ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
 }))
 app.use(compression())
 app.use(express.json({ limit: '10mb' }))
