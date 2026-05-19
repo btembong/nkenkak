@@ -144,6 +144,16 @@ router.delete('/:id', authenticate, isAdmin, async (req, res) => {
   res.json({ message: 'Deleted' })
 })
 
+// ── Admin: list candidates ────────────────────────────────────
+router.get('/:id/candidates', authenticate, isAdmin, async (req, res) => {
+  const candidates = await prisma.candidate.findMany({
+    where: { electionId: req.params.id },
+    include: { user: { select: { id: true, firstName: true, lastName: true, avatarUrl: true } } },
+    orderBy: { createdAt: 'asc' },
+  })
+  res.json(candidates)
+})
+
 // ── Admin: add candidate ──────────────────────────────────────
 router.post('/:id/candidates', authenticate, isAdmin, async (req, res) => {
   const { name, bio, manifesto, imageUrl, userId } = req.body

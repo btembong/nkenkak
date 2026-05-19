@@ -125,23 +125,28 @@ function CandidatesPanel({ election, onClose }) {
   const [activeTab, setActiveTab] = useState('list')
   const [editingCandidate, setEditingCandidate] = useState(null)
 
+  const { data: candidates = [], isLoading: loadingCands } = useQuery(
+    ['election-candidates', election.id],
+    () => api.get(`/elections/${election.id}/candidates`).then(r => r.data),
+  )
+
   const addMut = useMutation(
     d => api.post(`/elections/${election.id}/candidates`, d),
     {
-      onSuccess: () => { qc.invalidateQueries('admin-elections'); qc.invalidateQueries(['election-results', election.id]); reset(); toast.success('Candidate added') },
+      onSuccess: () => { qc.invalidateQueries('admin-elections'); qc.invalidateQueries(['election-candidates', election.id]); qc.invalidateQueries(['election-results', election.id]); reset(); toast.success('Candidate added') },
       onError: e => toast.error(e.response?.data?.error || 'Failed'),
     }
   )
   const editMut = useMutation(
     ({ cid, data }) => api.patch(`/elections/${election.id}/candidates/${cid}`, data),
     {
-      onSuccess: () => { qc.invalidateQueries('admin-elections'); setEditingCandidate(null); toast.success('Candidate updated') },
+      onSuccess: () => { qc.invalidateQueries('admin-elections'); qc.invalidateQueries(['election-candidates', election.id]); setEditingCandidate(null); toast.success('Candidate updated') },
       onError: e => toast.error(e.response?.data?.error || 'Failed'),
     }
   )
   const removeMut = useMutation(
     cid => api.delete(`/elections/${election.id}/candidates/${cid}`),
-    { onSuccess: () => { qc.invalidateQueries('admin-elections'); toast.success('Removed') } }
+    { onSuccess: () => { qc.invalidateQueries('admin-elections'); qc.invalidateQueries(['election-candidates', election.id]); toast.success('Removed') } }
   )
 
   const { data: results = [] } = useQuery(
@@ -176,10 +181,11 @@ function CandidatesPanel({ election, onClose }) {
         <div className="p-7">
           {activeTab === 'list' && (
             <div className="space-y-3">
-              {election.candidates?.length === 0 && (
+              {loadingCands && <p className="text-center py-10 text-sm" style={{ color: '#A3A3A3' }}>Loading candidates…</p>}
+              {!loadingCands && candidates.length === 0 && (
                 <p className="text-center py-10 text-sm" style={{ color: '#A3A3A3' }}>No candidates yet. Use "Add Candidate" tab.</p>
               )}
-              {election.candidates?.map(c => (
+              {candidates.map(c => (
                 <div key={c.id}>
                   {editingCandidate === c.id ? (
                     /* ── Inline edit form ── */
