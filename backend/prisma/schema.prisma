@@ -408,6 +408,7 @@ model Gallery {
   showInGallery Boolean @default(true) @map("show_in_gallery")
   isFeatured  Boolean  @default(false) @map("is_featured")
   sortOrder   Int      @default(0) @map("sort_order")
+  status      String   @default("approved")
   createdAt   DateTime @default(now()) @map("created_at")
 
   album       GalleryAlbum? @relation(fields:[albumId],   references:[id], onDelete:SetNull)

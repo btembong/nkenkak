@@ -102,6 +102,14 @@ export default function AdminGallery() {
 
   const { data: items, isLoading } = useQuery('admin-gallery', () => api.get('/gallery?all=1').then(r => r.data))
   const { data: projects } = useQuery('projects-mini', () => api.get('/projects?limit=50').then(r => r.data.projects))
+  const { data: pendingItems = [], isLoading: pendingLoading } = useQuery('gallery-pending', () => api.get('/gallery/pending').then(r => r.data))
+
+  const reviewMut = useMutation(({ id, action }) => api.patch(`/gallery/${id}/review`, { action }), {
+    onSuccess: (_, { action }) => {
+      qc.invalidateQueries('gallery-pending')
+      toast.success(action === 'approve' ? 'Approved and published!' : 'Submission rejected')
+    }
+  })
 
   const createMut = useMutation(data => api.post('/gallery', data), {
     onSuccess: () => { qc.invalidateQueries('admin-gallery'); toast.success('Item added!'); setShowForm(false); reset() }
@@ -134,7 +142,10 @@ export default function AdminGallery() {
           </div>
           <div>
             <h2 className="font-display font-bold text-xl" style={{ color: '#1A0A35' }}>Gallery Manager</h2>
-            <p className="text-xs" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>{items?.length || 0} items · {items?.filter(i => i.is_featured).length || 0} featured</p>
+            <p className="text-xs" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>
+              {items?.length || 0} items · {items?.filter(i => i.is_featured).length || 0} featured
+              {pendingItems.length > 0 && <span style={{color:'#dc2626'}}> · {pendingItems.length} pending review</span>}
+            </p>
           </div>
         </div>
         <button onClick={() => setShowForm(true)} className="btn-secondary !py-2 !px-4 !text-xs">
@@ -144,7 +155,7 @@ export default function AdminGallery() {
 
       {/* Main tabs */}
       <div className="flex gap-2 mb-5">
-        {[['items','fa-images','Media Items'],['albums','fa-layer-group','Albums']].map(([val,icon,label]) => (
+        {[['items','fa-images','Media Items'],['pending','fa-clock','Pending Review'],['albums','fa-layer-group','Albums']].map(([val,icon,label]) => (
           <button key={val} onClick={() => setTab(val)}
             className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all"
             style={{
@@ -154,11 +165,109 @@ export default function AdminGallery() {
               fontFamily: 'Sora,sans-serif',
             }}>
             <i className={`fas ${icon} text-[10px]`}/>{label}
+            {val === 'pending' && pendingItems.length > 0 && (
+              <span className="ml-1 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold"
+                style={{ background: '#dc2626', color: '#fff' }}>{pendingItems.length}</span>
+            )}
           </button>
         ))}
       </div>
 
       {tab === 'albums' && <AdminAlbums/>}
+
+      {tab === 'pending' && (
+        <div>
+          {pendingLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[1,2,3,4].map(i => <div key={i} className="h-36 rounded-2xl animate-pulse" style={{background:'rgba(91,45,142,0.05)'}}/>)}
+            </div>
+          ) : pendingItems.length === 0 ? (
+            <div className="text-center py-20 rounded-3xl" style={{background:'rgba(91,45,142,0.02)',border:'1px dashed rgba(91,45,142,0.1)'}}>
+              <i className="fas fa-check-circle text-5xl mb-3 block" style={{color:'rgba(91,45,142,0.15)'}}/>
+              <h4 className="font-display font-semibold mb-1" style={{color:'#737373'}}>All clear!</h4>
+              <p className="text-xs" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>No pending submissions to review</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              {pendingItems.map(item => (
+                <div key={item.id} className="flex gap-4 rounded-2xl overflow-hidden p-4"
+                  style={{background:'#fff',border:'1px solid rgba(91,45,142,0.1)',boxShadow:'0 2px 12px rgba(91,45,142,0.05)'}}>
+                  {/* Thumbnail */}
+                  <div className="flex-shrink-0 w-24 h-24 rounded-xl overflow-hidden"
+                    style={{background:'linear-gradient(135deg,#1A0A35,#5B2D8E)'}}>
+                    {item.url
+                      ? <img src={item.url} alt={item.title||'Submission'} className="w-full h-full object-cover"/>
+                      : <div className="w-full h-full flex items-center justify-center">
+                          <i className={`fas ${item.mediaType==='video'?'fa-video':'fa-image'} text-2xl`} style={{color:'rgba(255,255,255,0.25)'}}/>
+                        </div>}
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <h4 className="font-semibold text-sm truncate" style={{color:'#1A0A35',fontFamily:'Sora,sans-serif'}}>
+                        {item.title || <span style={{color:'#A3A3A3',fontStyle:'italic'}}>Untitled</span>}
+                      </h4>
+                      <span className="flex-shrink-0 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase"
+                        style={{background:'rgba(251,191,36,0.12)',color:'#b45309'}}>
+                        <i className="fas fa-clock mr-1"/>Pending
+                      </span>
+                    </div>
+
+                    {item.description && (
+                      <p className="text-xs line-clamp-1 mb-1.5" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>{item.description}</p>
+                    )}
+
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] mb-3" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>
+                      {item.uploader && (
+                        <span className="flex items-center gap-1">
+                          <i className="fas fa-user text-[9px]"/>
+                          {item.uploader.firstName} {item.uploader.lastName}
+                        </span>
+                      )}
+                      {item.project && (
+                        <span className="flex items-center gap-1">
+                          <i className="fas fa-project-diagram text-[9px]"/>{item.project.title}
+                        </span>
+                      )}
+                      <span className="flex items-center gap-1">
+                        <i className="fas fa-calendar text-[9px]"/>
+                        {new Date(item.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+                      </span>
+                      <span className="flex items-center gap-1 capitalize">
+                        <i className={`fas ${item.mediaType==='video'?'fa-video':'fa-image'} text-[9px]`}/>{item.mediaType}
+                      </span>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button
+                        disabled={reviewMut.isLoading}
+                        onClick={() => reviewMut.mutate({ id: item.id, action: 'approve' })}
+                        className="flex items-center gap-1.5 text-xs font-semibold px-4 py-1.5 rounded-xl transition-all"
+                        style={{background:'linear-gradient(135deg,#16a34a,#22c55e)',color:'#fff',boxShadow:'0 2px 8px rgba(22,163,74,0.25)'}}>
+                        <i className="fas fa-check text-[10px]"/>Approve
+                      </button>
+                      <button
+                        disabled={reviewMut.isLoading}
+                        onClick={() => { if (confirm('Reject this submission?')) reviewMut.mutate({ id: item.id, action: 'reject' }) }}
+                        className="flex items-center gap-1.5 text-xs font-semibold px-4 py-1.5 rounded-xl transition-all"
+                        style={{background:'rgba(220,38,38,0.08)',color:'#dc2626',border:'1px solid rgba(220,38,38,0.15)'}}>
+                        <i className="fas fa-times text-[10px]"/>Reject
+                      </button>
+                      <a href={item.url} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl"
+                        style={{background:'rgba(91,45,142,0.06)',color:'#5B2D8E'}}>
+                        <i className="fas fa-external-link-alt text-[10px]"/>View
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {tab === 'items' && <>
 
       {/* Filter tabs */}

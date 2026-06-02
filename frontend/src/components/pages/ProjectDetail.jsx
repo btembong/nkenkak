@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery, useQueryClient } from 'react-query'
 import { format, formatDistanceToNow } from 'date-fns'
@@ -18,6 +18,7 @@ import {
   Flag, Share2, Copy, CalendarDays, HeartHandshake,
   ChevronDown, ChevronUp, TrendingUp, HelpCircle,
   FileText, Building2, BarChart2, ExternalLink,
+  Upload, Camera, CheckCircle, Lock,
 } from 'lucide-react'
 
 /* ─── constants ─── */
@@ -205,6 +206,8 @@ export default function ProjectDetail() {
                       media={allMedia}
                       onOpen={setLightbox}
                       videos={projectVideos}
+                      user={user}
+                      projectId={project.id}
                     />
                   )}
 
@@ -803,17 +806,17 @@ function getVideoThumb(url) {
   return null
 }
 
-function GallerySection({ media, onOpen, videos: galleryVideos = [] }) {
-  if (!media.length && !galleryVideos.length) {
-    return (
-      <div className="py-16 text-center">
-        <Images className="w-12 h-12 mx-auto mb-4 text-primary-500/20"/>
-        <p className="font-display text-sm text-muted-foreground">No media uploaded yet.</p>
-      </div>
-    )
-  }
+function GallerySection({ media, onOpen, videos: galleryVideos = [], user, projectId }) {
+  const hasMedia = media.length > 0 || galleryVideos.length > 0
   return (
     <div className="space-y-8">
+      {!hasMedia && (
+        <div className="py-12 text-center">
+          <Images className="w-12 h-12 mx-auto mb-4 text-primary-500/20"/>
+          <p className="font-display text-sm text-muted-foreground">No media yet — be the first to contribute!</p>
+        </div>
+      )}
+
       {media.length > 0 && (
         <div>
           <SectionTitle Icon={Images} title="Photos" />
@@ -834,6 +837,7 @@ function GallerySection({ media, onOpen, videos: galleryVideos = [] }) {
           </div>
         </div>
       )}
+
       {galleryVideos.length > 0 && (
         <div>
           <SectionTitle Icon={Film} title="Videos" />
@@ -862,6 +866,224 @@ function GallerySection({ media, onOpen, videos: galleryVideos = [] }) {
           </div>
         </div>
       )}
+
+      {/* ── Contribute section ── */}
+      <div className="pt-6 border-t" style={{ borderColor: 'rgba(91,45,142,0.07)' }}>
+        {user
+          ? <GalleryContributeZone projectId={projectId} user={user} />
+          : <GallerySignInPrompt />
+        }
+      </div>
+    </div>
+  )
+}
+
+/* ── Member upload zone ── */
+function GalleryContributeZone({ projectId }) {
+  const fileRef   = useRef(null)
+  const cameraRef = useRef(null)
+
+  const [file,      setFile]      = useState(null)
+  const [preview,   setPreview]   = useState(null)
+  const [title,     setTitle]     = useState('')
+  const [progress,  setProgress]  = useState(0)
+  const [uploading, setUploading] = useState(false)
+  const [done,      setDone]      = useState(false)
+  const [error,     setError]     = useState('')
+
+  const ACCEPTED = ['image/jpeg','image/png','image/webp','image/gif','video/mp4','video/quicktime','video/webm']
+  const MAX_MB   = 50
+
+  const handleFile = f => {
+    if (!f) return
+    if (!f.type.startsWith('image/') && !f.type.startsWith('video/')) {
+      setError('Only images and videos are supported.')
+      return
+    }
+    if (f.size > MAX_MB * 1024 * 1024) {
+      setError(`File must be under ${MAX_MB} MB.`)
+      return
+    }
+    setError('')
+    setFile(f)
+    setPreview(URL.createObjectURL(f))
+  }
+
+  const reset = () => {
+    setFile(null); setPreview(null); setTitle(''); setProgress(0)
+    setUploading(false); setDone(false); setError('')
+  }
+
+  const submit = async () => {
+    if (!file || uploading) return
+    setUploading(true); setError('')
+    try {
+      /* 1 — upload to Cloudinary */
+      const fd = new FormData()
+      fd.append('file', file)
+      const { data: uploaded } = await api.post('/upload/image', fd, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: e => setProgress(Math.round((e.loaded / e.total) * 80)),
+      })
+      setProgress(90)
+      /* 2 — submit contribution */
+      await api.post('/gallery/contribute', {
+        url:        uploaded.url,
+        media_type: file.type.startsWith('video/') ? 'video' : 'image',
+        title:      title.trim() || null,
+        project_id: projectId,
+      })
+      setProgress(100)
+      setDone(true)
+    } catch (err) {
+      setError(err.response?.data?.error || 'Upload failed. Please try again.')
+      setUploading(false); setProgress(0)
+    }
+  }
+
+  /* Success state */
+  if (done) {
+    return (
+      <div className="rounded-2xl p-8 text-center"
+        style={{ background: 'rgba(91,45,142,0.04)', border: '1px solid rgba(91,45,142,0.1)' }}>
+        <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
+          style={{ background: 'rgba(91,45,142,0.1)' }}>
+          <CheckCircle className="w-7 h-7 text-primary-500"/>
+        </div>
+        <h3 className="font-display font-bold text-base mb-1 text-dark">Submitted for Review</h3>
+        <p className="font-display text-sm text-muted-foreground mb-5">
+          Thank you! Your photo/video will appear in the gallery once an admin approves it.
+        </p>
+        <button onClick={reset}
+          className="font-display text-xs font-semibold px-5 py-2 rounded-xl text-primary-500 transition-all hover:bg-primary-500/8"
+          style={{ border: '1px solid rgba(91,45,142,0.15)' }}>
+          Contribute Another
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div className="flex items-center gap-3 mb-5">
+        <div className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 bg-primary-500/8">
+          <Upload className="w-4 h-4 text-primary-500"/>
+        </div>
+        <div>
+          <h3 className="font-display font-bold text-base text-dark">Contribute a Photo or Video</h3>
+          <p className="font-display text-xs text-muted-foreground mt-0.5">
+            Share your moment from this project. It will be reviewed before publishing.
+          </p>
+        </div>
+      </div>
+
+      {/* Drop zone */}
+      {!file ? (
+        <div className="rounded-2xl border-2 border-dashed p-8 text-center cursor-pointer transition-all hover:border-primary-500/50 hover:bg-primary-500/3"
+          style={{ borderColor: 'rgba(91,45,142,0.2)', background: 'rgba(91,45,142,0.02)' }}
+          onDrop={e => { e.preventDefault(); handleFile(e.dataTransfer.files?.[0]) }}
+          onDragOver={e => e.preventDefault()}
+          onClick={() => fileRef.current?.click()}>
+          <Upload className="w-8 h-8 mx-auto mb-3 text-primary-500/40"/>
+          <p className="font-display text-sm font-semibold text-dark mb-1">
+            Click or drag & drop to upload
+          </p>
+          <p className="font-display text-xs text-muted-foreground mb-4">
+            Images (JPG, PNG, WebP) or Videos (MP4, MOV) · max {MAX_MB} MB
+          </p>
+          <button type="button"
+            className="font-display inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-xl text-white"
+            style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' }}
+            onClick={e => { e.stopPropagation(); cameraRef.current?.click() }}>
+            <Camera className="w-3.5 h-3.5"/>Use Camera
+          </button>
+          <input ref={fileRef}   type="file" className="hidden" accept="image/*,video/*"
+            onChange={e => handleFile(e.target.files?.[0])} />
+          <input ref={cameraRef} type="file" className="hidden" accept="image/*,video/*" capture="environment"
+            onChange={e => handleFile(e.target.files?.[0])} />
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {/* Preview */}
+          <div className="relative rounded-2xl overflow-hidden"
+            style={{ aspectRatio: file.type.startsWith('video/') ? '16/9' : '4/3', background: 'rgba(91,45,142,0.08)' }}>
+            {file.type.startsWith('video/')
+              ? <video src={preview} className="w-full h-full object-cover" muted/>
+              : <img src={preview} alt="preview" className="w-full h-full object-cover"/>
+            }
+            <button onClick={reset}
+              className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+              style={{ background: 'rgba(0,0,0,0.6)' }}>
+              <X className="w-4 h-4"/>
+            </button>
+            <div className="absolute bottom-2 left-2">
+              <span className="font-display text-[10px] font-bold px-2 py-1 rounded-full text-white uppercase"
+                style={{ background: 'rgba(0,0,0,0.6)' }}>
+                {file.type.startsWith('video/') ? 'Video' : 'Photo'}
+              </span>
+            </div>
+          </div>
+
+          {/* Title */}
+          <input value={title} onChange={e => setTitle(e.target.value)}
+            placeholder="Add a caption (optional)"
+            className="font-display w-full px-4 py-3 rounded-xl text-sm outline-none text-dark"
+            style={{ background: '#F8F5FF', border: '1.5px solid rgba(91,45,142,0.12)' }}
+          />
+
+          {/* Progress */}
+          {uploading && (
+            <div>
+              <div className="flex justify-between font-display text-xs mb-1.5 text-muted-foreground">
+                <span>Uploading…</span>
+                <span>{progress}%</span>
+              </div>
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(91,45,142,0.08)' }}>
+                <div className="h-full rounded-full transition-all duration-300"
+                  style={{ width: `${progress}%`, background: 'linear-gradient(90deg,#5B2D8E,#F0A500)' }}/>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <p className="font-display text-xs text-red-500 flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5 flex-shrink-0"/>{error}
+            </p>
+          )}
+
+          <button onClick={submit} disabled={uploading}
+            className="font-display w-full py-3 rounded-2xl font-bold text-sm text-white flex items-center justify-center gap-2 transition-all hover:opacity-90 disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg,#5B2D8E,#F0A500)', boxShadow: '0 4px 16px rgba(91,45,142,0.3)' }}>
+            {uploading
+              ? <><Loader2 className="w-4 h-4 animate-spin"/>Uploading…</>
+              : <><Upload className="w-4 h-4"/>Submit for Review</>
+            }
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ── Guest prompt ── */
+function GallerySignInPrompt() {
+  return (
+    <div className="rounded-2xl p-6 flex items-center gap-4"
+      style={{ background: 'rgba(91,45,142,0.03)', border: '1px dashed rgba(91,45,142,0.15)' }}>
+      <div className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 bg-primary-500/8">
+        <Lock className="w-4 h-4 text-primary-500"/>
+      </div>
+      <div className="flex-1">
+        <p className="font-display font-semibold text-sm text-dark">Want to contribute?</p>
+        <p className="font-display text-xs text-muted-foreground mt-0.5">
+          Sign in to upload your photos and videos from this project.
+        </p>
+      </div>
+      <Link to="/login"
+        className="font-display flex-shrink-0 text-xs font-bold px-4 py-2 rounded-xl text-white transition-all hover:opacity-90"
+        style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' }}>
+        Sign In
+      </Link>
     </div>
   )
 }
