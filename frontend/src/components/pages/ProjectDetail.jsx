@@ -73,6 +73,12 @@ export default function ProjectDetail() {
     { enabled: !!project?.id }
   )
 
+  /* Must be above early returns — Rules of Hooks */
+  const handleDonate = useCallback((amount = null) => {
+    setDonateAmount(amount || null)
+    setDonateOpen(true)
+  }, [])
+
   if (isLoading) return <PageSkeleton />
   if (error || !project) return <NotFound />
 
@@ -86,11 +92,6 @@ export default function ProjectDetail() {
     ...(project.coverImage ? [{ type: 'image', url: project.coverImage }] : []),
     ...(project.galleryUrls?.map(u => ({ type: 'image', url: u })) || []),
   ]
-
-  const handleDonate = useCallback((amount = null) => {
-    setDonateAmount(amount || null)
-    setDonateOpen(true)
-  }, [])
 
   const tabs = [
     { key: 'about',      label: 'About',      Icon: Info        },
