@@ -46,9 +46,23 @@ router.get('/:slug', optionalAuth, async (req, res) => {
     include: {
       organizer:  { select: { firstName: true, lastName: true, avatarUrl: true } },
       _count:     { select: { registrations: true } },
+      agenda:     { orderBy: { sortOrder: 'asc' } },
     },
   })
   if (!event) return res.status(404).json({ error: 'Not found' })
+
+  // Count only confirmed/attended for capacity
+  const confirmedCount = await prisma.eventRegistration.count({
+    where: { eventId: event.id, status: { in: ['confirmed', 'attended'] } },
+  })
+
+  // First 10 confirmed attendee names (for social proof strip)
+  const topAttendees = await prisma.eventRegistration.findMany({
+    where:   { eventId: event.id, status: { in: ['confirmed', 'attended'] } },
+    select:  { name: true },
+    orderBy: { createdAt: 'asc' },
+    take:    10,
+  })
 
   // Check if current user is registered
   let userRegistration = null
@@ -61,7 +75,8 @@ router.get('/:slug', optionalAuth, async (req, res) => {
   res.json({
     ...event,
     organizer_name:     event.organizer ? `${event.organizer.firstName} ${event.organizer.lastName}` : event.organizerName,
-    registration_count: event._count.registrations,
+    registration_count: confirmedCount,
+    registrants:        topAttendees.map(r => ({ name: r.name, initial: r.name[0]?.toUpperCase() })),
     user_registration:  userRegistration,
   })
 })
@@ -74,9 +89,11 @@ router.post('/:id/register', optionalAuth, async (req, res) => {
   const event = await prisma.event.findUnique({ where: { id: req.params.id } })
   if (!event) return res.status(404).json({ error: 'Event not found' })
 
-  // Check capacity
+  // Check capacity (exclude waitlist and cancelled from count)
   if (event.maxAttendees) {
-    const count = await prisma.eventRegistration.count({ where: { eventId: event.id, status: { not: 'cancelled' } } })
+    const count = await prisma.eventRegistration.count({
+      where: { eventId: event.id, status: { in: ['confirmed', 'attended'] } },
+    })
     if (count >= event.maxAttendees) return res.status(400).json({ error: 'Event is fully booked' })
   }
 
@@ -186,6 +203,92 @@ router.patch('/:id', authenticate, isLeader, async (req, res) => {
 
 router.delete('/:id', authenticate, isLeader, async (req, res) => {
   await prisma.event.delete({ where: { id: req.params.id } })
+  res.json({ message: 'Deleted' })
+})
+
+/* ── Waitlist ── */
+router.post('/:id/waitlist', optionalAuth, async (req, res) => {
+  const { name, email, phone } = req.body
+  if (!name || !email) return res.status(400).json({ error: 'Name and email required' })
+
+  const event = await prisma.event.findUnique({ where: { id: req.params.id } })
+  if (!event) return res.status(404).json({ error: 'Event not found' })
+
+  if (req.user) {
+    const existing = await prisma.eventRegistration.findFirst({ where: { eventId: event.id, userId: req.user.id } })
+    if (existing) return res.status(409).json({ error: 'Already registered or on waitlist' })
+  }
+
+  const ticketRef = `WL-${Date.now()}-${Math.random().toString(36).slice(2,5).toUpperCase()}`
+  const reg = await prisma.eventRegistration.create({
+    data: {
+      eventId:  event.id,
+      userId:   req.user?.id || null,
+      name, email,
+      phone:    phone || null,
+      ticketRef,
+      status:   'waitlist',
+      isPaid:   false,
+      amount:   null,
+    },
+  })
+  res.status(201).json({ registration: reg, ticketRef })
+})
+
+/* ── Comments ── */
+router.get('/:id/comments', async (req, res) => {
+  const comments = await prisma.eventComment.findMany({
+    where:   { eventId: req.params.id },
+    orderBy: { createdAt: 'asc' },
+  })
+  res.json(comments)
+})
+
+router.post('/:id/comments', optionalAuth, async (req, res) => {
+  const { name, content } = req.body
+  if (!content?.trim()) return res.status(400).json({ error: 'Content required' })
+
+  const resolvedName = req.user
+    ? `${req.user.firstName || ''} ${req.user.lastName || ''}`.trim() || name || 'Member'
+    : name || 'Guest'
+
+  const comment = await prisma.eventComment.create({
+    data: {
+      eventId: req.params.id,
+      userId:  req.user?.id || null,
+      name:    resolvedName,
+      content: content.trim(),
+    },
+  })
+  res.status(201).json(comment)
+})
+
+/* ── Agenda ── */
+router.get('/:id/agenda', async (req, res) => {
+  const items = await prisma.eventAgenda.findMany({
+    where:   { eventId: req.params.id },
+    orderBy: { sortOrder: 'asc' },
+  })
+  res.json(items)
+})
+
+router.post('/:id/agenda', authenticate, isLeader, async (req, res) => {
+  const { time, title, speaker, description, sort_order } = req.body
+  if (!time || !title) return res.status(400).json({ error: 'Time and title required' })
+  const item = await prisma.eventAgenda.create({
+    data: {
+      eventId:     req.params.id,
+      time, title,
+      speaker:     speaker     || null,
+      description: description || null,
+      sortOrder:   sort_order  ? +sort_order : 0,
+    },
+  })
+  res.status(201).json(item)
+})
+
+router.delete('/:id/agenda/:agendaId', authenticate, isLeader, async (req, res) => {
+  await prisma.eventAgenda.delete({ where: { id: req.params.agendaId } })
   res.json({ message: 'Deleted' })
 })
 

@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Home, ChevronRight, ChevronDown, List, IdCard, HeartHandshake, Sprout,
+  Home, ChevronRight, ChevronDown, List, CreditCard, HeartHandshake, Sprout,
   Globe, Calendar, Info, Search, RotateCcw, Mail, MessageSquare, Phone,
 } from 'lucide-react'
 
 const CATEGORIES = [
   { id: 'all',       label: 'All Questions', Icon: List },
-  { id: 'membership',label: 'Membership',    Icon: IdCard },
+  { id: 'membership',label: 'Membership',    Icon: CreditCard },
   { id: 'donations', label: 'Donations',     Icon: HeartHandshake },
   { id: 'projects',  label: 'Projects',      Icon: Sprout },
   { id: 'diaspora',  label: 'Diaspora',      Icon: Globe },

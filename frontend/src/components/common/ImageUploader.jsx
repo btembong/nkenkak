@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import api from '../../services/api'
-import { Camera, Loader2, CloudUpload, X } from 'lucide-react'
+import { Camera, Loader2, UploadCloud, X } from 'lucide-react'
 
 export default function ImageUploader({ value, onChange, folder = 'nkenkak', aspect, label, hint }) {
   const inputRef = useRef()
@@ -72,7 +72,7 @@ export default function ImageUploader({ value, onChange, folder = 'nkenkak', asp
             ) : (
               <>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(91,45,142,0.08)' }}>
-                  <CloudUpload className="w-5 h-5 text-primary-500"/>
+                  <UploadCloud className="w-5 h-5 text-primary-500"/>
                 </div>
                 <span className="text-xs font-semibold text-primary-500" style={{ fontFamily: 'Sora,sans-serif' }}>
                   Click or drag & drop
