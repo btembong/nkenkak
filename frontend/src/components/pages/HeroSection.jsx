@@ -77,7 +77,7 @@ function ImpactCard({ stats, loading }) {
       <div className="flex items-center gap-2.5 mb-5">
         <div className="w-1.5 h-5 rounded-full flex-shrink-0"
           style={{ background: 'linear-gradient(to bottom,#F0A500,#5B2D8E)' }}/>
-        <span className="text-[10px] font-bold uppercase tracking-widest text-white/55">
+        <span className="font-display text-[10px] font-bold uppercase tracking-widest text-white/55">
           Community Impact
         </span>
       </div>
@@ -97,14 +97,14 @@ function ImpactCard({ stats, loading }) {
                 : '0'
               }
             </div>
-            <div className="text-[10px] mt-1.5 text-white/40 font-medium">{item.label}</div>
+            <div className="font-display text-[10px] mt-1.5 text-white/40 font-medium">{item.label}</div>
           </div>
         ))}
       </div>
 
       {/* CTA */}
       <Link to="/projects"
-        className="flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-bold text-white transition-all hover:opacity-90 hover:-translate-y-0.5"
+        className="font-display flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-bold text-white transition-all hover:opacity-90 hover:-translate-y-0.5"
         style={{ background: 'linear-gradient(135deg,#F0A500,#FFB84D)', boxShadow: '0 4px 20px rgba(240,165,0,0.35)' }}>
         View All Projects <ArrowRight className="w-3.5 h-3.5"/>
       </Link>
@@ -197,14 +197,12 @@ export default function HeroSection() {
             </>
           ) : (
             <div className="absolute inset-0" style={{ background: BG_GRADS[i % BG_GRADS.length] }}>
-              {/* Ambient orbs */}
               <div className="absolute top-0 right-0 w-[650px] h-[650px] rounded-full pointer-events-none"
                 style={{ background: 'radial-gradient(circle, rgba(91,45,142,0.4) 0%, transparent 65%)', transform: 'translate(30%,-30%)' }}/>
               <div className="absolute bottom-0 left-0 w-[450px] h-[450px] rounded-full pointer-events-none"
                 style={{ background: 'radial-gradient(circle, rgba(240,165,0,0.12) 0%, transparent 65%)', transform: 'translate(-30%,30%)' }}/>
               <div className="absolute top-1/2 left-1/2 w-[300px] h-[300px] rounded-full pointer-events-none"
                 style={{ background: 'radial-gradient(circle, rgba(91,45,142,0.15) 0%, transparent 70%)', transform: 'translate(-50%,-50%)' }}/>
-              {/* Subtle dot grid */}
               <div className="absolute inset-0 opacity-30" style={{
                 backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z'/%3E%3C/g%3E%3C/svg%3E\")",
               }}/>
@@ -221,7 +219,7 @@ export default function HeroSection() {
           <div>
             {/* Eyebrow */}
             <div key={`ey-${current}`}
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[3px] px-4 py-2 rounded-full mb-7"
+              className="font-display inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[3px] px-4 py-2 rounded-full mb-7"
               style={{
                 background: 'rgba(240,165,0,0.1)',
                 border: '1px solid rgba(240,165,0,0.22)',
@@ -231,7 +229,7 @@ export default function HeroSection() {
               <MapPin className="w-3 h-3"/> Nkenkak-Ngiesang · West Cameroon
             </div>
 
-            {/* Headline — two lines: white + gold gradient accent */}
+            {/* Headline */}
             <h1 key={`h-${current}`}
               className="font-display font-extrabold mb-5 leading-[1.07]"
               style={{
@@ -260,7 +258,7 @@ export default function HeroSection() {
             {/* Subtitle */}
             {slide.subtitle && (
               <p key={`s-${current}`}
-                className="text-base md:text-lg mb-9 max-w-lg leading-relaxed"
+                className="font-display text-base md:text-lg mb-9 max-w-lg leading-relaxed"
                 style={{ color: 'rgba(255,255,255,0.7)', animation: 'fadeUp 0.6s ease 0.13s both' }}>
                 {slide.subtitle}
               </p>
@@ -273,23 +271,23 @@ export default function HeroSection() {
               {/* Primary */}
               {slide.ctaLink ? (
                 <Link to={slide.ctaLink}
-                  className="inline-flex items-center gap-2 font-bold text-sm rounded-full px-7 py-3.5 text-white transition-all hover:-translate-y-0.5"
+                  className="font-display inline-flex items-center gap-2 font-bold text-sm rounded-full px-7 py-3.5 text-white transition-all hover:-translate-y-0.5"
                   style={{ background: 'linear-gradient(135deg,#F0A500,#FFB84D)', boxShadow: '0 4px 20px rgba(240,165,0,0.42)' }}>
                   <HeartHandshake className="w-4 h-4"/>
                   {slide.ctaText}
                 </Link>
               ) : (
                 <button onClick={openDonate}
-                  className="inline-flex items-center gap-2 font-bold text-sm rounded-full px-7 py-3.5 text-white transition-all hover:-translate-y-0.5"
+                  className="font-display inline-flex items-center gap-2 font-bold text-sm rounded-full px-7 py-3.5 text-white transition-all hover:-translate-y-0.5"
                   style={{ background: 'linear-gradient(135deg,#F0A500,#FFB84D)', boxShadow: '0 4px 20px rgba(240,165,0,0.42)' }}>
                   <HeartHandshake className="w-4 h-4"/>
                   {slide.ctaText || 'Donate Now'}
                 </button>
               )}
 
-              {/* Secondary — always Explore Projects */}
+              {/* Secondary */}
               <Link to="/projects"
-                className="inline-flex items-center gap-2 font-bold text-sm rounded-full px-7 py-3.5 text-white transition-all hover:bg-white/15"
+                className="font-display inline-flex items-center gap-2 font-bold text-sm rounded-full px-7 py-3.5 text-white transition-all hover:bg-white/15"
                 style={{ border: '2px solid rgba(255,255,255,0.5)' }}>
                 <Sprout className="w-4 h-4"/>
                 Explore Projects
@@ -306,7 +304,7 @@ export default function HeroSection() {
               ].map(item => (
                 <div key={item.label}>
                   <div className="font-display font-bold text-white text-xl leading-none">{item.val}</div>
-                  <div className="text-[10px] mt-1 text-white/40 uppercase tracking-wider">{item.label}</div>
+                  <div className="font-display text-[10px] mt-1 text-white/40 uppercase tracking-wider">{item.label}</div>
                 </div>
               ))}
             </div>
@@ -363,7 +361,7 @@ export default function HeroSection() {
 
         {/* Slide counter — right, desktop only */}
         {total > 1 && (
-          <div className="hidden md:flex items-center gap-0.5 text-xs font-semibold flex-shrink-0"
+          <div className="font-display hidden md:flex items-center gap-0.5 text-xs font-semibold flex-shrink-0"
             style={{ color: 'rgba(255,255,255,0.35)', minWidth: 36 }}>
             <span style={{ color: 'rgba(255,255,255,0.75)' }}>{String(current + 1).padStart(2, '0')}</span>
             <span className="mx-0.5">/</span>
