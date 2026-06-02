@@ -10,6 +10,10 @@ import { Button } from '../ui/button'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { Separator } from '../ui/separator'
 import { Badge } from '../ui/badge'
+import {
+  Mail, MapPin, ChevronDown, Search, Bell, HeartHandshake, X,
+  Globe, LogOut, Settings, LayoutDashboard, User, LogIn,
+} from 'lucide-react'
 
 export default function Navbar({ onDonate }) {
   const { user, logout, isAdmin } = useAuth()
@@ -105,11 +109,11 @@ export default function Navbar({ onDonate }) {
         <div className="flex items-center gap-6">
           <a href="mailto:contact@nkenkak-ngiesang.cm"
             className="flex items-center gap-1.5 hover:text-white transition-colors">
-            <i className="fas fa-envelope text-gold text-[10px]"/>
+            <Mail className="w-3 h-3 text-gold"/>
             contact@nkenkak-ngiesang.cm
           </a>
           <span className="flex items-center gap-1.5">
-            <i className="fas fa-map-marker-alt text-gold text-[10px]"/>
+            <MapPin className="w-3 h-3 text-gold"/>
             Nkenkak-Ngiesang, South West Region, Cameroon
           </span>
         </div>
@@ -122,7 +126,7 @@ export default function Navbar({ onDonate }) {
           ))}
           <button onClick={toggleLang}
             className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-gold border border-gold/30 hover:bg-white/10 transition-all">
-            <i className="fas fa-globe text-[9px]"/>
+            <Globe className="w-3 h-3"/>
             {lang === 'en' ? 'FR' : 'EN'}
           </button>
         </div>
@@ -146,7 +150,7 @@ export default function Navbar({ onDonate }) {
               />
               <div style={{ display: 'none' }} className="items-center gap-3">
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary-500 to-primary-light">
-                  <i className="fas fa-mountain-city text-base text-gold"/>
+                  <HeartHandshake className="w-5 h-5 text-gold"/>
                 </div>
                 <div>
                   <div className="font-bold text-base leading-tight text-dark">Nkenkak-Ngiesang</div>
@@ -162,7 +166,7 @@ export default function Navbar({ onDonate }) {
                   {item.sub ? (
                     <button className="nav-item flex items-center gap-1 px-3 py-2 rounded-xl hover:bg-primary-50">
                       {item.label}
-                      <i className="fas fa-chevron-down text-[8px] text-primary-500 transition-transform group-hover:rotate-180"/>
+                      <ChevronDown className="w-3 h-3 text-primary-500 transition-transform group-hover:rotate-180"/>
                     </button>
                   ) : (
                     <NavLink to={item.href}
@@ -197,20 +201,20 @@ export default function Navbar({ onDonate }) {
               {/* Search */}
               <button onClick={() => setSearchOpen(true)}
                 className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-muted-foreground hover:bg-primary-50 border border-border transition-colors">
-                <i className="fas fa-search text-xs text-primary-500"/>
+                <Search className="w-3 h-3 text-primary-500"/>
                 <span className="text-xs text-muted-foreground">{t('search')}</span>
                 <kbd className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-mono bg-muted text-muted-foreground hidden lg:inline">⌘K</kbd>
               </button>
               <button onClick={() => setSearchOpen(true)}
                 className="md:hidden w-10 h-10 rounded-full flex items-center justify-center hover:bg-primary-50 transition-colors">
-                <i className="fas fa-search text-sm text-primary-500"/>
+                <Search className="w-4 h-4 text-primary-500"/>
               </button>
 
               {user ? (
                 <div className="flex items-center gap-2" ref={userRef}>
                   <Link to="/portal/notifications"
                     className="relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-primary-50 transition-colors">
-                    <i className="fas fa-bell text-sm text-primary-500"/>
+                    <Bell className="w-4 h-4 text-primary-500"/>
                     {notifCount > 0 && (
                       <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full text-[9px] font-bold text-white flex items-center justify-center bg-gold">
                         {notifCount}
@@ -225,7 +229,7 @@ export default function Navbar({ onDonate }) {
                       </AvatarFallback>
                     </Avatar>
                     <span className="hidden md:block text-sm font-medium text-dark">{user.firstName}</span>
-                    <i className="fas fa-chevron-down text-[8px] text-primary-500"/>
+                    <ChevronDown className="w-3 h-3 text-primary-500"/>
                   </button>
                   {userMenu && (
                     <div className="absolute top-20 right-6 bg-white rounded-2xl w-52 py-2 shadow-card-lg z-50 animate-slide-up border border-border">
@@ -234,24 +238,24 @@ export default function Navbar({ onDonate }) {
                         <div className="text-xs text-primary-500 capitalize">{user.role}</div>
                       </div>
                       {[
-                        { to: '/portal',             l: 'My Dashboard', ic: 'fa-tachometer-alt' },
-                        { to: '/portal/profile',     l: 'Profile',      ic: 'fa-user'           },
-                        { to: '/portal/donations',   l: 'My Donations', ic: 'fa-heart'          },
-                      ].map(i => (
-                        <Link key={i.to} to={i.to} onClick={() => setUserMenu(false)}
+                        { to: '/portal',           l: 'My Dashboard', Icon: LayoutDashboard },
+                        { to: '/portal/profile',   l: 'Profile',      Icon: User           },
+                        { to: '/portal/donations', l: 'My Donations', Icon: HeartHandshake  },
+                      ].map(item => (
+                        <Link key={item.to} to={item.to} onClick={() => setUserMenu(false)}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                          <i className={`fas ${i.ic} w-4 text-primary-500`}/>{i.l}
+                          <item.Icon className="w-4 h-4 text-primary-500"/>{item.l}
                         </Link>
                       ))}
                       {isAdmin && (
                         <Link to="/admin" onClick={() => setUserMenu(false)}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-gold hover:bg-gold-50 transition-colors border-t border-border mt-1">
-                          <i className="fas fa-cog w-4"/>Admin Panel
+                          <Settings className="w-4 h-4"/>Admin Panel
                         </Link>
                       )}
                       <button onClick={handleLogout}
                         className="flex items-center gap-3 px-4 py-2.5 text-sm w-full text-red-600 hover:bg-red-50 transition-colors border-t border-border mt-1">
-                        <i className="fas fa-sign-out-alt w-4"/>Logout
+                        <LogOut className="w-4 h-4"/>Logout
                       </button>
                     </div>
                   )}
@@ -264,7 +268,7 @@ export default function Navbar({ onDonate }) {
               )}
 
               <Button variant="gold" size="sm" rounded="full" onClick={onDonate} className="hidden sm:flex gap-2">
-                <i className="fas fa-heart text-xs"/>
+                <HeartHandshake className="w-4 h-4"/>
                 {t('donateNow')}
               </Button>
 
@@ -289,13 +293,13 @@ export default function Navbar({ onDonate }) {
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary-500 to-primary-light">
-                  <i className="fas fa-mountain-city text-gold"/>
+                  <HeartHandshake className="w-5 h-5 text-gold"/>
                 </div>
                 <span className="font-bold text-white">Nkenkak-Ngiesang</span>
               </div>
               <button onClick={() => setMobileOpen(false)}
                 className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white/70">
-                <i className="fas fa-times text-lg"/>
+                <X className="w-5 h-5"/>
               </button>
             </div>
 
@@ -343,11 +347,11 @@ export default function Navbar({ onDonate }) {
                   </>
                 )}
                 <button onClick={() => { onDonate(); setMobileOpen(false) }} className="btn-gold w-full justify-center">
-                  <i className="fas fa-heart"/>{t('donateNow')}
+                  <HeartHandshake className="w-4 h-4"/>{t('donateNow')}
                 </button>
                 <button onClick={toggleLang}
                   className="flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-semibold text-gold border border-gold/30">
-                  <i className="fas fa-globe text-xs"/>
+                  <Globe className="w-4 h-4"/>
                   {lang === 'en' ? 'Passer en Français' : 'Switch to English'}
                 </button>
               </div>

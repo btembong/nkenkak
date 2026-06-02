@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import api from '../../services/api'
+import { MapPin, Sprout, HeartHandshake, Users, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const DEFAULT_SLIDES = [
   {
@@ -127,7 +128,7 @@ export default function HeroSection() {
             className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[4px] px-4 py-2 rounded-full mb-6"
             style={{ background: 'rgba(240,165,0,0.12)', border: '1px solid rgba(240,165,0,0.25)', color: '#F0A500',
                      animation: 'fadeUp 0.5s ease both' }}>
-            <i className="fas fa-map-marker-alt text-[10px]"/> Cameroon, West Region
+            <MapPin className="w-3 h-3"/> Cameroon, West Region
           </div>
 
           <h1 key={`h-${current}`}
@@ -152,14 +153,14 @@ export default function HeroSection() {
               <Link to={slide.ctaLink}
                 className="inline-flex items-center gap-2 font-semibold text-sm rounded-full px-7 py-3.5 transition-all hover:-translate-y-0.5"
                 style={{ background: 'linear-gradient(135deg,#F0A500,#FFB84D)', color: '#fff', boxShadow: '0 4px 20px rgba(240,165,0,0.45)', fontFamily: 'Sora,sans-serif' }}>
-                <i className="fas fa-seedling text-xs"/>
+                <Sprout className="w-3.5 h-3.5"/>
                 {slide.ctaText || 'Explore'}
               </Link>
             ) : (
               <button onClick={openDonate}
                 className="inline-flex items-center gap-2 font-semibold text-sm rounded-full px-7 py-3.5 transition-all hover:-translate-y-0.5"
                 style={{ background: 'linear-gradient(135deg,#F0A500,#FFB84D)', color: '#fff', boxShadow: '0 4px 20px rgba(240,165,0,0.45)', fontFamily: 'Sora,sans-serif' }}>
-                <i className="fas fa-heart text-xs"/>
+                <HeartHandshake className="w-3.5 h-3.5"/>
                 {slide.ctaText || 'Donate Now'}
               </button>
             )}
@@ -168,7 +169,7 @@ export default function HeroSection() {
               style={{ border: '2px solid rgba(255,255,255,0.65)', color: '#fff', fontFamily: 'Sora,sans-serif' }}
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-              <i className="fas fa-hands-helping text-xs"/>Support the Village
+              <Users className="w-3.5 h-3.5"/>Support the Village
             </button>
           </div>
 
@@ -195,12 +196,12 @@ export default function HeroSection() {
           <button onClick={prev} aria-label="Previous slide"
             className="absolute top-1/2 -translate-y-1/2 left-4 md:left-6 z-20 w-11 h-11 rounded-full flex items-center justify-center transition-all hover:scale-110"
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(8px)' }}>
-            <i className="fas fa-chevron-left text-sm"/>
+            <ChevronLeft className="w-4 h-4"/>
           </button>
           <button onClick={next} aria-label="Next slide"
             className="absolute top-1/2 -translate-y-1/2 right-4 md:right-6 z-20 w-11 h-11 rounded-full flex items-center justify-center transition-all hover:scale-110"
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(8px)' }}>
-            <i className="fas fa-chevron-right text-sm"/>
+            <ChevronRight className="w-4 h-4"/>
           </button>
         </>
       )}

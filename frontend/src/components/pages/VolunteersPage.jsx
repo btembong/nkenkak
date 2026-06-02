@@ -4,11 +4,19 @@ import { useQuery } from 'react-query'
 import api from '../../services/api'
 import TeamCard from '../common/TeamCard'
 import JoinTeamModal from '../common/JoinTeamModal'
+import { Home, ChevronRight, Users, HeartHandshake, Sprout, Package, Minus, Plus, UserPlus } from 'lucide-react'
 
 const WHY_US_FAQS = [
   { q:'How Can I Donation Peoples?', a:'Click "Donate Now" from any page. Choose your project, amount and payment method (MTN MoMo, Orange Money, PayPal or card).' },
   { q:'It Service For Business Network?', a:'We Help Companies Develop Powerful Corporate Social Responsibility, Grantmaking, And Employee Engagement Strategies.' },
   { q:'Is This Non Profitable Organization?', a:'Yes. We are a community-driven non-profit. 100% of donations go directly to village development projects.' },
+]
+
+const IMG_PLACEHOLDERS = [
+  {Icon:HeartHandshake, grad:'linear-gradient(135deg,#250F47,#5B2D8E)', h:'h-48', label:null},
+  {Icon:Users,          grad:'linear-gradient(135deg,#3D1A6B,#7B4DB8)', h:'h-48 mt-6', label:null},
+  {Icon:Sprout,         grad:'linear-gradient(135deg,#5B2D8E,#9B6FD8)', h:'h-48', label:null},
+  {Icon:Package,        grad:'linear-gradient(135deg,#1A0A35,#3D1A6B)', h:'h-48 mt-6', label:'Donation Box'},
 ]
 
 export default function VolunteersPage() {
@@ -21,10 +29,10 @@ export default function VolunteersPage() {
       {/* Hero */}
       <div className="page-hero py-20 px-6 text-center">
         <h1 className="font-display font-bold text-4xl text-white mb-3">Our Volunteer's</h1>
-        <div className="flex items-center justify-center gap-2 text-sm" style={{color:'rgba(255,255,255,0.6)',fontFamily:'Poppins,sans-serif'}}>
-          <Link to="/" className="hover:text-white transition-colors flex items-center gap-1"><i className="fas fa-home text-xs"/>Home</Link>
-          <i className="fas fa-chevron-right text-xs" style={{color:'#F0A500'}}/>
-          <span style={{color:'#F0A500'}}>Our Volunteer's</span>
+        <div className="flex items-center justify-center gap-2 text-sm text-white/60">
+          <Link to="/" className="hover:text-white transition-colors flex items-center gap-1"><Home className="w-3 h-3"/>Home</Link>
+          <ChevronRight className="w-3 h-3 text-gold"/>
+          <span className="text-gold">Our Volunteer's</span>
         </div>
       </div>
 
@@ -40,8 +48,8 @@ export default function VolunteersPage() {
               {team?.map((m,i) => <TeamCard key={m.id} member={m} index={i}/>)}
               {!team?.length && (
                 <div className="col-span-3 text-center py-16">
-                  <i className="fas fa-users text-5xl mb-4 block" style={{color:'rgba(91,45,142,0.2)'}}/>
-                  <p className="text-sm" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>No team members yet.</p>
+                  <Users className="w-12 h-12 mx-auto mb-4" style={{color:'rgba(91,45,142,0.2)'}}/>
+                  <p className="text-sm text-muted-foreground">No team members yet.</p>
                 </div>
               )}
             </div>
@@ -54,19 +62,14 @@ export default function VolunteersPage() {
         <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-start">
           {/* Images */}
           <div className="grid grid-cols-2 gap-4">
-            {[
-              {icon:'fa-hands-helping', grad:'linear-gradient(135deg,#250F47,#5B2D8E)', h:'h-48'},
-              {icon:'fa-user-friends',  grad:'linear-gradient(135deg,#3D1A6B,#7B4DB8)', h:'h-48 mt-6'},
-              {icon:'fa-seedling',      grad:'linear-gradient(135deg,#5B2D8E,#9B6FD8)', h:'h-48'},
-              {icon:'fa-box-open',      grad:'linear-gradient(135deg,#1A0A35,#3D1A6B)', h:'h-48 mt-6'},
-            ].map((img,i)=>(
-              <div key={i} className={`rounded-3xl overflow-hidden ${img.h} flex items-center justify-center relative`}
-                style={{background:img.grad}}>
+            {IMG_PLACEHOLDERS.map(({Icon,grad,h,label},i)=>(
+              <div key={i} className={`rounded-3xl overflow-hidden ${h} flex items-center justify-center relative`}
+                style={{background:grad}}>
                 <div className="wave-pattern absolute inset-0"/>
-                <i className={`fas ${img.icon} text-3xl relative z-10`} style={{color:'rgba(240,165,0,0.4)'}}/>
-                {img.icon==='fa-box-open' && (
-                  <div className="absolute bottom-3 left-3 bg-white rounded-xl px-3 py-1.5 shadow-card">
-                    <div className="text-xs font-bold" style={{color:'#5B2D8E',fontFamily:'Sora,sans-serif'}}>Donation Box</div>
+                <Icon className="w-8 h-8 relative z-10" style={{color:'rgba(240,165,0,0.4)'}}/>
+                {label && (
+                  <div className="absolute bottom-3 left-3 bg-white rounded-xl px-3 py-1.5 shadow-card z-10">
+                    <div className="text-xs font-bold text-primary-500" style={{fontFamily:'Sora,sans-serif'}}>{label}</div>
                   </div>
                 )}
               </div>
@@ -77,7 +80,7 @@ export default function VolunteersPage() {
           <div>
             <div className="eyebrow mb-3">Why Choose Us</div>
             <h2 className="section-title mb-4">We Popular To Provide<br/><span>Best Projects</span></h2>
-            <p className="text-sm leading-relaxed mb-6" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>
+            <p className="text-sm leading-relaxed mb-6 text-muted-foreground">
               We Help Companies Develop Powerful Corporate Social Responsibility, Grantmaking, And Employee Engagement Strategies. Our transparent approach sets us apart.
             </p>
             <div className="space-y-3">
@@ -89,12 +92,14 @@ export default function VolunteersPage() {
                     <span className="font-display font-semibold text-sm pr-3" style={{color:openFaq===i?'#5B2D8E':'#1A0A35'}}>{f.q}</span>
                     <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
                       style={{background:openFaq===i?'#5B2D8E':'rgba(91,45,142,0.08)'}}>
-                      <i className={`fas fa-${openFaq===i?'minus':'plus'} text-[9px]`} style={{color:openFaq===i?'#fff':'#5B2D8E'}}/>
+                      {openFaq===i
+                        ? <Minus className="w-2.5 h-2.5" style={{color:'#fff'}}/>
+                        : <Plus className="w-2.5 h-2.5" style={{color:'#5B2D8E'}}/>}
                     </div>
                   </button>
                   {openFaq===i && (
                     <div className="px-4 pb-4 animate-fade-in">
-                      <p className="text-sm leading-relaxed" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>{f.a}</p>
+                      <p className="text-sm leading-relaxed text-muted-foreground">{f.a}</p>
                     </div>
                   )}
                 </div>
@@ -114,7 +119,7 @@ export default function VolunteersPage() {
           <h3 className="font-display font-bold text-2xl text-white mb-3">Become a Volunteer</h3>
           <p className="text-sm mb-6" style={{color:'rgba(255,255,255,0.7)',fontFamily:'Poppins,sans-serif'}}>Your skills and time can change lives in Nkenkak-Ngiesang. Apply today.</p>
           <button onClick={()=>setJoinOpen(true)} className="btn-gold">
-            <i className="fas fa-user-plus"/>Apply Now
+            <UserPlus className="w-4 h-4"/>Apply Now
           </button>
         </div>
       </section>

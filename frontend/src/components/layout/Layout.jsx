@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Navbar from '../common/Navbar'
 import Footer from '../common/Footer'
 import DonationModal from '../common/DonationModal'
+import { ArrowUp, HeartHandshake } from 'lucide-react'
 
 export default function Layout() {
   const [donateProjectId, setDonateProjectId] = useState(null)
@@ -32,13 +33,13 @@ export default function Layout() {
         />
       )}
 
-      {/* Floating donate button — hidden on mobile (available in mobile menu) */}
+      {/* Floating donate button */}
       <button onClick={() => openDonate()}
         className="hidden sm:flex fixed bottom-8 left-8 z-40 group items-center overflow-hidden rounded-full shadow-xl transition-all duration-300 animate-pulse-gold"
         style={{boxShadow:'0 4px 24px rgba(91,45,142,0.35)'}}>
         <span className="w-12 h-12 flex items-center justify-center flex-shrink-0 text-lg text-white"
           style={{background:'linear-gradient(135deg,#5B2D8E,#7B4DB8)'}}>
-          <i className="fas fa-hand-holding-heart"/>
+          <HeartHandshake className="w-5 h-5"/>
         </span>
         <span className="max-w-0 group-hover:max-w-[100px] overflow-hidden whitespace-nowrap h-12 flex items-center transition-all duration-500 group-hover:pr-4 text-xs font-bold tracking-widest uppercase"
           style={{background:'#5B2D8E', color:'#F0A500'}}>
@@ -57,7 +58,7 @@ export default function Layout() {
           transform: showTop ? 'translateY(0)' : 'translateY(16px)',
           boxShadow: '0 4px 20px rgba(91,45,142,0.4)',
         }}>
-        <i className="fas fa-arrow-up text-sm"/>
+        <ArrowUp className="w-4 h-4"/>
       </button>
     </div>
   )

@@ -2,6 +2,11 @@ import { Link } from 'react-router-dom'
 import { differenceInDays } from 'date-fns'
 import { Card } from '../ui/card'
 import { cn } from '../../lib/utils'
+import {
+  GraduationCap, HeartPulse, Route, Leaf, Music, Sprout,
+  ArrowRight, Heart, TrendingUp, CheckCircle2, AlertCircle, Check,
+  Users, MapPin, Clock,
+} from 'lucide-react'
 
 const GRADS = {
   education:      'linear-gradient(135deg,#250F47,#5B2D8E)',
@@ -13,16 +18,16 @@ const GRADS = {
 }
 
 const CAT_META = {
-  education:      { icon:'fa-graduation-cap', color:'#7C3AED', bg:'rgba(124,58,237,0.9)'  },
-  health:         { icon:'fa-heartbeat',      color:'#dc2626', bg:'rgba(220,38,38,0.9)'   },
-  infrastructure: { icon:'fa-road',           color:'#b45309', bg:'rgba(180,83,9,0.9)'    },
-  environment:    { icon:'fa-leaf',           color:'#16a34a', bg:'rgba(22,163,74,0.9)'   },
-  culture:        { icon:'fa-music',          color:'#7c3aed', bg:'rgba(124,58,237,0.9)'  },
-  agriculture:    { icon:'fa-seedling',       color:'#ca8a04', bg:'rgba(202,138,4,0.9)'   },
+  education:      { Icon: GraduationCap },
+  health:         { Icon: HeartPulse },
+  infrastructure: { Icon: Route },
+  environment:    { Icon: Leaf },
+  culture:        { Icon: Music },
+  agriculture:    { Icon: Sprout },
 }
 
 function getProgressMeta(pct) {
-  if (pct >= 100) return { grad:'linear-gradient(90deg,#16a34a,#4ade80)', label:'Goal reached!',  color:'text-green-600'   }
+  if (pct >= 100) return { grad:'linear-gradient(90deg,#F0A500,#FFB84D)', label:'Goal reached!',  color:'text-gold'        }
   if (pct >= 60)  return { grad:'linear-gradient(90deg,#5B2D8E,#F0A500)', label:'Almost there!',  color:'text-primary-500' }
   return                  { grad:'linear-gradient(90deg,#5B2D8E,#7B4DB8)', label:'In progress',    color:'text-primary-500' }
 }
@@ -35,15 +40,13 @@ export default function ProjectCard({ project: p, onDonate }) {
   const grad        = GRADS[p.category]     || GRADS.education
   const isCompleted = p.status === 'completed'
   const progress    = getProgressMeta(pct)
+  const CatIcon     = cat.Icon
 
-  /* Deadline pill */
   let daysLeft = null
-  let deadlineCls = ''
+  let isLastDay = false
   if (p.endDate && !isCompleted) {
     daysLeft = differenceInDays(new Date(p.endDate), new Date())
-    if (daysLeft >= 0) {
-      deadlineCls = daysLeft === 0 ? 'bg-red-600 text-white' : 'bg-gold/90 text-dark'
-    }
+    isLastDay = daysLeft === 0
   }
 
   const fmt = (n) => n >= 1_000_000
@@ -62,36 +65,41 @@ export default function ProjectCard({ project: p, onDonate }) {
           ? <img src={p.coverImage} alt={p.title}
               className={cn('absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105', isCompleted && 'grayscale-[20%]')}/>
           : <div className="absolute inset-0 flex items-center justify-center">
-              <i className={`fas ${cat.icon} text-7xl`} style={{ color:'rgba(240,165,0,0.18)' }}/>
+              <CatIcon className="w-16 h-16" style={{ color:'rgba(240,165,0,0.18)' }}/>
             </div>}
 
         <div className="absolute inset-0"
           style={{ background:'linear-gradient(to top,rgba(6,2,16,0.88) 0%,rgba(6,2,16,0.25) 55%,transparent 100%)' }}/>
 
-        {/* Top-left: category */}
-        <div className="absolute top-3 left-3 z-10">
-          <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full text-white capitalize"
-            style={{ background: cat.bg, backdropFilter:'blur(6px)' }}>
-            <i className={`fas ${cat.icon} text-[8px]`}/>{p.category}
-          </span>
-        </div>
-
-        {/* Top-right: status badges */}
-        <div className="absolute top-3 right-3 z-10 flex flex-col items-end gap-1">
-          {p.isUrgent && (
+        {/* Urgent — critical signal, keeps filled red */}
+        {p.isUrgent && (
+          <div className="absolute top-3 left-3 z-10">
             <span className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full text-white bg-red-600 animate-pulse">
-              <i className="fas fa-exclamation-circle text-[8px]"/>Urgent
+              <AlertCircle className="w-2.5 h-2.5"/>Urgent
             </span>
-          )}
+          </div>
+        )}
+
+        {/* Status row — top-right, minimal */}
+        <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
           {isCompleted && (
-            <span className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full text-white bg-green-600/90 backdrop-blur-sm">
-              <i className="fas fa-check text-[8px]"/>Completed
+            <span className="text-[9px] font-bold uppercase tracking-[0.08em] text-gold/90 flex items-center gap-1"
+              style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+              <Check className="w-2.5 h-2.5"/>Completed
             </span>
           )}
-          {daysLeft !== null && daysLeft >= 0 && (
-            <span className={cn('text-[10px] font-bold px-2.5 py-1 rounded-full', deadlineCls)}>
-              <i className="fas fa-clock text-[8px] mr-1"/>
-              {daysLeft === 0 ? 'Last day!' : daysLeft === 1 ? '1 day left' : `${daysLeft} days left`}
+          {/* Last day — keep red, it's critical */}
+          {isLastDay && (
+            <span className="text-[9px] font-bold px-2 py-0.5 rounded text-white bg-red-600">
+              Last day!
+            </span>
+          )}
+          {/* Regular deadline — plain text, no fill */}
+          {daysLeft !== null && daysLeft > 0 && (
+            <span className="text-[9px] font-medium text-white/60 flex items-center gap-1"
+              style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>
+              <Clock className="w-2.5 h-2.5"/>
+              {daysLeft === 1 ? '1 day left' : `${daysLeft}d left`}
             </span>
           )}
         </div>
@@ -100,6 +108,16 @@ export default function ProjectCard({ project: p, onDonate }) {
       {/* ── Body ── */}
       <div className="flex flex-col flex-1 p-5">
 
+        {/* Category — hairline label */}
+        {p.category && (
+          <div className="flex items-center gap-1.5 mb-2">
+            <span className="w-[2px] h-3 rounded-full bg-primary-500/35 flex-shrink-0"/>
+            <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-primary-500/65 flex items-center gap-1">
+              <CatIcon className="w-2.5 h-2.5"/>{p.category}
+            </span>
+          </div>
+        )}
+
         <h3 className="font-display font-bold text-[15px] leading-snug mb-1.5 line-clamp-2 text-dark">
           {p.title}
         </h3>
@@ -107,7 +125,7 @@ export default function ProjectCard({ project: p, onDonate }) {
           {p.summary}
         </p>
 
-        {/* ── Color-coded progress ── */}
+        {/* ── Progress ── */}
         <div className="mb-4">
           <div className="flex items-center justify-between text-[11px] mb-1.5">
             <span className={cn('font-semibold', progress.color)}>{progress.label}</span>
@@ -118,8 +136,8 @@ export default function ProjectCard({ project: p, onDonate }) {
               style={{ width:`${pct}%`, background: progress.grad }}/>
           </div>
           {isCompleted ? (
-            <div className="text-[11px] text-center font-semibold text-green-600 mt-1.5">
-              <i className="fas fa-check-circle mr-1"/>Goal of {fmt(goal)} XAF reached!
+            <div className="text-[11px] text-center font-semibold text-gold mt-1.5 flex items-center justify-center gap-1">
+              <CheckCircle2 className="w-3 h-3"/>Goal of {fmt(goal)} XAF reached!
             </div>
           ) : (
             <div className="flex justify-between text-[11px] mt-1.5">
@@ -132,25 +150,25 @@ export default function ProjectCard({ project: p, onDonate }) {
           )}
         </div>
 
-        {/* ── Stats strip — always rendered for consistent height ── */}
+        {/* ── Stats strip ── */}
         <div className="flex items-center gap-3 flex-wrap py-2.5 mb-4 border-t border-b border-primary-500/6 text-[11px] text-muted-foreground min-h-[34px]">
           {p.donorCount > 0 ? (
             <span className="flex items-center gap-1">
-              <i className="fas fa-users text-[9px] text-primary-500"/>{p.donorCount} donors
+              <Users className="w-2.5 h-2.5 text-primary-500/60"/>{p.donorCount} donors
             </span>
           ) : (
             <span className="flex items-center gap-1 opacity-40">
-              <i className="fas fa-users text-[9px] text-primary-500"/>Be first to donate
+              <Users className="w-2.5 h-2.5 text-primary-500/60"/>Be first to donate
             </span>
           )}
           {p.beneficiaries > 0 && (
             <span className="flex items-center gap-1">
-              <i className="fas fa-hand-holding-heart text-[9px] text-gold"/>{p.beneficiaries.toLocaleString()} beneficiaries
+              <Heart className="w-2.5 h-2.5 text-gold/70"/>{p.beneficiaries.toLocaleString()} beneficiaries
             </span>
           )}
           {p.location && (
             <span className="flex items-center gap-1 ml-auto">
-              <i className="fas fa-map-marker-alt text-[9px] text-green-600"/>{p.location}
+              <MapPin className="w-2.5 h-2.5 text-primary-500/60"/>{p.location}
             </span>
           )}
         </div>
@@ -159,19 +177,20 @@ export default function ProjectCard({ project: p, onDonate }) {
         <div className="flex gap-2 mt-auto">
           <Link to={`/projects/${p.slug}`}
             className="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold py-2.5 rounded-2xl transition-all duration-200 hover:bg-purple-50 border border-primary-500/20 text-primary-500">
-            <i className="fas fa-arrow-right text-[9px]"/>View Project
+            <ArrowRight className="w-3 h-3"/>View Project
           </Link>
           {isCompleted ? (
             <Link to={`/projects/${p.slug}`}
-              className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 rounded-2xl text-white transition-all duration-200 hover:opacity-90 bg-gradient-to-br from-green-500 to-emerald-400">
-              <i className="fas fa-chart-bar text-[9px]"/>See Impact
+              className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 rounded-2xl text-white transition-all duration-200 hover:opacity-90"
+              style={{ background:'linear-gradient(135deg,#F0A500,#FFB84D)', boxShadow:'0 4px 14px rgba(240,165,0,0.3)' }}>
+              <TrendingUp className="w-3 h-3"/>See Impact
             </Link>
           ) : (
             <button
               onClick={() => onDonate && onDonate(p.id)}
               className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 rounded-2xl text-white transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 bg-gradient-to-br from-gold to-[#FFB84D]"
               style={{ boxShadow:'0 4px 14px rgba(240,165,0,0.3)' }}>
-              <i className="fas fa-heart text-[9px]"/>Donate
+              <Heart className="w-3 h-3"/>Donate
             </button>
           )}
         </div>

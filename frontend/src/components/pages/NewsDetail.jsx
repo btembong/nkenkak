@@ -6,6 +6,12 @@ import toast from 'react-hot-toast'
 import api from '../../services/api'
 import NewsCard from '../common/NewsCard'
 import { useAuth } from '../../context/AuthContext'
+import {
+  Home, ChevronRight, Star, Calendar, Clock, Eye,
+  MessageSquare, Loader2, Send, MessageSquareOff,
+  Newspaper, List, Share2, Info, Tags, Mail,
+  ArrowRight, ArrowLeft, Link2, CheckCircle2, Bell,
+} from 'lucide-react'
 
 /* ── Reading progress bar ── */
 function ReadingProgressBar() {
@@ -68,8 +74,8 @@ function SubscribeBox() {
 
   if (done) return (
     <div className="text-center py-4">
-      <i className="fas fa-check-circle text-2xl mb-2 block" style={{color:'#16a34a'}}/>
-      <p className="text-sm font-semibold" style={{color:'#1A0A35',fontFamily:'Sora,sans-serif'}}>You're subscribed!</p>
+      <CheckCircle2 className="w-6 h-6 mx-auto mb-2 text-gold"/>
+      <p className="text-sm font-semibold text-white">You're subscribed!</p>
     </div>
   )
 
@@ -78,21 +84,21 @@ function SubscribeBox() {
       <input value={email} onChange={e => setEmail(e.target.value)} type="email" required
         placeholder="your@email.com"
         className="w-full px-4 py-2.5 rounded-xl text-sm outline-none placeholder-white/40"
-        style={{background:'rgba(255,255,255,0.08)',border:'1px solid rgba(255,255,255,0.12)',color:'#fff',fontFamily:'Poppins,sans-serif'}}/>
+        style={{background:'rgba(255,255,255,0.08)',border:'1px solid rgba(255,255,255,0.12)',color:'#fff'}}/>
       <button type="submit" className="btn-secondary w-full justify-center !py-2.5 !text-sm">
-        <i className="fas fa-bell text-xs"/>Get Updates
+        <Bell className="w-3 h-3"/>Get Updates
       </button>
     </form>
   )
 }
 
 /* ── Sidebar card wrapper ── */
-function SideCard({ title, icon, children }) {
+function SideCard({ title, Icon: IconComp, children }) {
   return (
     <div className="rounded-2xl p-5" style={{background:'#fff',border:'1px solid rgba(91,45,142,0.08)',boxShadow:'0 2px 16px rgba(91,45,142,0.06)'}}>
       <div className="flex items-center gap-2 mb-4">
-        <i className={`fas ${icon} text-sm`} style={{color:'#5B2D8E'}}/>
-        <h4 className="font-display font-bold text-sm" style={{color:'#1A0A35'}}>{title}</h4>
+        {IconComp && <IconComp className="w-4 h-4 text-primary-500"/>}
+        <h4 className="font-display font-bold text-sm text-dark">{title}</h4>
       </div>
       {children}
     </div>
@@ -129,17 +135,17 @@ function CommentsSection({ slug }) {
       <div className="max-w-3xl mx-auto px-6">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-9 h-9 rounded-2xl flex items-center justify-center" style={{background:'linear-gradient(135deg,#5B2D8E,#7B4DB8)'}}>
-            <i className="fas fa-comments text-sm text-white"/>
+            <MessageSquare className="w-4 h-4 text-white"/>
           </div>
           <div>
-            <h3 className="font-display font-bold text-xl" style={{color:'#1A0A35'}}>Discussion</h3>
-            <p className="text-xs" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>{comments.length} comment{comments.length !== 1 ? 's' : ''}</p>
+            <h3 className="font-display font-bold text-xl text-dark">Discussion</h3>
+            <p className="text-xs text-muted-foreground">{comments.length} comment{comments.length !== 1 ? 's' : ''}</p>
           </div>
         </div>
 
         {/* Comment form */}
         <div className="rounded-2xl p-6 mb-8" style={{background:'#fff',border:'1px solid rgba(91,45,142,0.08)'}}>
-          <h4 className="font-semibold text-sm mb-4" style={{color:'#1A0A35',fontFamily:'Sora,sans-serif'}}>Leave a comment</h4>
+          <h4 className="font-semibold text-sm mb-4 text-dark">Leave a comment</h4>
           {!user && (
             <input value={name} onChange={e => setName(e.target.value)}
               placeholder="Your name (optional)"
@@ -153,7 +159,9 @@ function CommentsSection({ slug }) {
           <button onClick={() => content.trim() && postMut.mutate()}
             disabled={!content.trim() || postMut.isLoading}
             className="btn-secondary !py-2 !px-5 !text-sm">
-            {postMut.isLoading ? <><i className="fas fa-spinner animate-spin"/>Posting…</> : <><i className="fas fa-paper-plane"/>Post Comment</>}
+            {postMut.isLoading
+              ? <><Loader2 className="w-4 h-4 animate-spin"/>Posting…</>
+              : <><Send className="w-4 h-4"/>Post Comment</>}
           </button>
         </div>
 
@@ -163,8 +171,8 @@ function CommentsSection({ slug }) {
             {[1,2].map(i => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{background:'rgba(91,45,142,0.04)'}}/>)}
           </div>
         ) : comments.length === 0 ? (
-          <div className="text-center py-10" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>
-            <i className="fas fa-comment-slash text-3xl mb-3 block" style={{color:'rgba(91,45,142,0.12)'}}/>
+          <div className="text-center py-10 text-muted-foreground">
+            <MessageSquareOff className="w-8 h-8 mx-auto mb-3" style={{color:'rgba(91,45,142,0.12)'}}/>
             <p className="text-sm">No comments yet — be the first!</p>
           </div>
         ) : (
@@ -177,15 +185,15 @@ function CommentsSection({ slug }) {
                 </div>
                 <div className="flex-1 rounded-2xl p-4" style={{background:'#fff',border:'1px solid rgba(91,45,142,0.07)'}}>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm font-semibold" style={{color:'#1A0A35',fontFamily:'Sora,sans-serif'}}>
+                    <span className="text-sm font-semibold text-dark">
                       {c.user ? `${c.user.firstName} ${c.user.lastName}` : c.name}
                     </span>
-                    <span className="text-[11px]" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}
+                    <span className="text-[11px] text-muted-foreground"
                       title={format(new Date(c.createdAt), 'MMM d, yyyy HH:mm')}>
                       {formatDistanceToNow(new Date(c.createdAt), { addSuffix: true })}
                     </span>
                   </div>
-                  <p className="text-sm leading-relaxed" style={{color:'#4B4B6B',fontFamily:'Poppins,sans-serif'}}>{c.content}</p>
+                  <p className="text-sm leading-relaxed text-[#4B4B6B]">{c.content}</p>
                 </div>
               </div>
             ))}
@@ -233,11 +241,11 @@ export default function NewsDetail() {
 
   if (!article) return (
     <div className="text-center py-36">
-      <i className="fas fa-newspaper text-5xl mb-4 block" style={{color:'rgba(91,45,142,0.15)'}}/>
-      <h3 className="font-display font-bold text-2xl mb-3" style={{color:'#1A0A35'}}>Article not found</h3>
-      <p className="text-sm mb-6" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>This article may have been removed or the link is incorrect.</p>
+      <Newspaper className="w-12 h-12 mx-auto mb-4" style={{color:'rgba(91,45,142,0.15)'}}/>
+      <h3 className="font-display font-bold text-2xl mb-3 text-dark">Article not found</h3>
+      <p className="text-sm mb-6 text-muted-foreground">This article may have been removed or the link is incorrect.</p>
       <button onClick={() => navigate('/news')} className="btn-secondary !py-2.5 !px-6">
-        <i className="fas fa-arrow-left text-xs"/>Back to News
+        <ArrowLeft className="w-3 h-3"/>Back to News
       </button>
     </div>
   )
@@ -258,26 +266,24 @@ export default function NewsDetail() {
 
         <div className="relative max-w-4xl mx-auto px-6 py-20 flex flex-col justify-end" style={{minHeight:420}}>
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs mb-6" style={{color:'rgba(255,255,255,0.5)',fontFamily:'Poppins,sans-serif'}}>
-            <Link to="/" className="hover:text-white transition-colors"><i className="fas fa-home text-[10px] mr-1"/>Home</Link>
-            <i className="fas fa-chevron-right text-[8px]" style={{color:'#F0A500'}}/>
+          <div className="flex items-center gap-2 text-xs mb-6 text-white/50">
+            <Link to="/" className="hover:text-white transition-colors flex items-center gap-1"><Home className="w-3 h-3 mr-0.5"/>Home</Link>
+            <ChevronRight className="w-3 h-3 text-gold"/>
             <Link to="/news" className="hover:text-white transition-colors">News</Link>
-            <i className="fas fa-chevron-right text-[8px]" style={{color:'#F0A500'}}/>
-            <span className="truncate max-w-[200px]" style={{color:'rgba(255,255,255,0.7)'}}>{article.title}</span>
+            <ChevronRight className="w-3 h-3 text-gold"/>
+            <span className="truncate max-w-[200px] text-white/70">{article.title}</span>
           </div>
 
-          {/* Category + featured badge */}
-          <div className="flex items-center gap-2 mb-4 flex-wrap">
+          {/* Category + featured — hairline labels */}
+          <div className="flex items-center gap-3 mb-4 flex-wrap">
             {article.category && (
-              <span className="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full"
-                style={{background:'rgba(240,165,0,0.2)',color:'#F0A500',border:'1px solid rgba(240,165,0,0.3)'}}>
+              <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-gold/70">
                 {article.category}
               </span>
             )}
             {article.isFeatured && (
-              <span className="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full"
-                style={{background:'rgba(240,165,0,0.1)',color:'#F0A500',border:'1px solid rgba(240,165,0,0.2)'}}>
-                <i className="fas fa-star text-[8px] mr-1"/>Featured
+              <span className="text-[10px] font-semibold text-gold/55 flex items-center gap-1">
+                <Star className="w-2.5 h-2.5"/>Featured
               </span>
             )}
           </div>
@@ -296,27 +302,27 @@ export default function NewsDetail() {
               </div>
               <div>
                 <div className="text-xs font-semibold text-white">{article.author_name || 'Nkenkak Team'}</div>
-                <div className="text-[9px] uppercase tracking-wider" style={{color:'rgba(240,165,0,0.7)'}}>Author</div>
+                <div className="text-[9px] uppercase tracking-wider text-gold/70">Author</div>
               </div>
             </div>
 
-            <div className="w-px h-8" style={{background:'rgba(255,255,255,0.1)'}}/>
+            <div className="w-px h-8 bg-white/10"/>
 
             {article.publishedAt && (
-              <div className="flex items-center gap-1.5 text-xs" style={{color:'rgba(255,255,255,0.65)',fontFamily:'Poppins,sans-serif'}}>
-                <i className="fas fa-calendar text-[10px]" style={{color:'#F0A500'}}/>
+              <div className="flex items-center gap-1.5 text-xs text-white/65">
+                <Calendar className="w-3 h-3 text-gold"/>
                 {format(new Date(article.publishedAt), 'MMMM d, yyyy')}
               </div>
             )}
 
-            <div className="flex items-center gap-1.5 text-xs" style={{color:'rgba(255,255,255,0.65)',fontFamily:'Poppins,sans-serif'}}>
-              <i className="fas fa-clock text-[10px]" style={{color:'#F0A500'}}/>
+            <div className="flex items-center gap-1.5 text-xs text-white/65">
+              <Clock className="w-3 h-3 text-gold"/>
               {article.readTime || 1} min read
             </div>
 
             {article.viewCount > 0 && (
-              <div className="flex items-center gap-1.5 text-xs" style={{color:'rgba(255,255,255,0.65)',fontFamily:'Poppins,sans-serif'}}>
-                <i className="fas fa-eye text-[10px]" style={{color:'#F0A500'}}/>
+              <div className="flex items-center gap-1.5 text-xs text-white/65">
+                <Eye className="w-3 h-3 text-gold"/>
                 {article.viewCount.toLocaleString()} views
               </div>
             )}
@@ -333,8 +339,8 @@ export default function NewsDetail() {
 
             {/* Excerpt / lead */}
             {article.excerpt && (
-              <p className="text-lg leading-relaxed mb-8 font-medium border-l-4 pl-5"
-                style={{color:'#404040',fontFamily:'Poppins,sans-serif',borderColor:'#F0A500'}}>
+              <p className="text-lg leading-relaxed mb-8 font-medium border-l-4 pl-5 text-[#404040]"
+                style={{borderColor:'#F0A500'}}>
                 {article.excerpt}
               </p>
             )}
@@ -349,7 +355,7 @@ export default function NewsDetail() {
             {/* Body */}
             <div ref={bodyRef} className="prose-article mb-10"
               style={{
-                color:'#404040', fontFamily:'Poppins,sans-serif', lineHeight:'1.95',
+                color:'#404040', lineHeight:'1.95',
                 fontSize:'1.0625rem',
               }}
               dangerouslySetInnerHTML={{__html: article.content}}/>
@@ -357,7 +363,7 @@ export default function NewsDetail() {
             {/* Tags */}
             {article.tags?.length > 0 && (
               <div className="flex items-center gap-2 flex-wrap mb-8 pt-6 border-t" style={{borderColor:'rgba(91,45,142,0.08)'}}>
-                <span className="text-xs font-bold uppercase tracking-wider mr-1" style={{color:'#A3A3A3',fontFamily:'Sora,sans-serif'}}>Tags:</span>
+                <span className="text-xs font-bold uppercase tracking-wider mr-1 text-muted-foreground">Tags:</span>
                 {article.tags.map(t => (
                   <Link key={t} to={`/news?search=${encodeURIComponent(t)}`}
                     className="tag hover:bg-primary-100 transition-colors cursor-pointer">#{t}</Link>
@@ -368,7 +374,7 @@ export default function NewsDetail() {
             {/* Share row (mobile / in-article) */}
             <div className="flex items-center justify-between py-5 px-6 rounded-2xl mb-8 flex-wrap gap-3 lg:hidden"
               style={{background:'#fff',border:'1px solid rgba(91,45,142,0.08)',boxShadow:'0 2px 12px rgba(91,45,142,0.05)'}}>
-              <span className="text-sm font-semibold" style={{color:'#1A0A35',fontFamily:'Sora,sans-serif'}}>Share this article</span>
+              <span className="text-sm font-semibold text-dark">Share this article</span>
               <div className="flex gap-2">
                 {SHARE.map(s => (
                   <a key={s.label} href={s.href(url)} target="_blank" rel="noopener noreferrer"
@@ -378,9 +384,8 @@ export default function NewsDetail() {
                   </a>
                 ))}
                 <button onClick={copyLink}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs transition-all hover:-translate-y-0.5 hover:shadow-card"
-                  style={{background:'#5B2D8E'}}>
-                  <i className="fas fa-link text-xs"/>
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs transition-all hover:-translate-y-0.5 hover:shadow-card bg-primary-500">
+                  <Link2 className="w-3.5 h-3.5"/>
                 </button>
               </div>
             </div>
@@ -395,9 +400,9 @@ export default function NewsDetail() {
                   : (article.author_name || 'N')[0]}
               </div>
               <div className="min-w-0">
-                <div className="text-[10px] uppercase tracking-widest font-semibold mb-1" style={{color:'#F0A500',fontFamily:'Sora,sans-serif'}}>Written by</div>
-                <h4 className="font-display font-bold text-lg mb-1" style={{color:'#1A0A35'}}>{article.author_name || 'Nkenkak Team'}</h4>
-                <p className="text-sm" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>
+                <div className="text-[10px] uppercase tracking-widest font-semibold mb-1 text-gold">Written by</div>
+                <h4 className="font-display font-bold text-lg mb-1 text-dark">{article.author_name || 'Nkenkak Team'}</h4>
+                <p className="text-sm text-muted-foreground">
                   {article.author_bio || 'Community contributor for Nkenkak-Ngiesang. Sharing stories and updates that matter to our people at home and abroad.'}
                 </p>
               </div>
@@ -405,7 +410,7 @@ export default function NewsDetail() {
 
             {/* Back link */}
             <Link to="/news" className="btn-outline !text-sm !py-2.5 !px-5 inline-flex items-center gap-2">
-              <i className="fas fa-arrow-left text-xs"/>Back to News
+              <ArrowLeft className="w-3 h-3"/>Back to News
             </Link>
           </article>
 
@@ -414,7 +419,7 @@ export default function NewsDetail() {
 
             {/* Table of Contents */}
             {toc.length > 1 && (
-              <SideCard title="In This Article" icon="fa-list-ul">
+              <SideCard title="In This Article" Icon={List}>
                 <nav className="space-y-1">
                   {toc.map(item => (
                     <a key={item.id} href={`#${item.id}`}
@@ -424,7 +429,6 @@ export default function NewsDetail() {
                         paddingLeft: item.level === 3 ? '1.25rem' : '0.5rem',
                         color: activeToc === item.id ? '#5B2D8E' : '#737373',
                         background: activeToc === item.id ? 'rgba(91,45,142,0.06)' : 'transparent',
-                        fontFamily: 'Poppins,sans-serif',
                         fontWeight: activeToc === item.id ? 600 : 400,
                         borderLeft: activeToc === item.id ? '2px solid #5B2D8E' : '2px solid transparent',
                       }}>
@@ -436,7 +440,7 @@ export default function NewsDetail() {
             )}
 
             {/* Share */}
-            <SideCard title="Share Article" icon="fa-share-alt">
+            <SideCard title="Share Article" Icon={Share2}>
               <div className="grid grid-cols-2 gap-2">
                 {SHARE.map(s => (
                   <a key={s.label} href={s.href(url)} target="_blank" rel="noopener noreferrer"
@@ -447,35 +451,35 @@ export default function NewsDetail() {
                 ))}
               </div>
               <button onClick={copyLink}
-                className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all hover:opacity-80"
-                style={{background:'rgba(91,45,142,0.08)',color:'#5B2D8E',fontFamily:'Sora,sans-serif'}}>
-                <i className="fas fa-link text-[11px]"/>Copy Link
+                className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all hover:opacity-80 text-primary-500"
+                style={{background:'rgba(91,45,142,0.08)'}}>
+                <Link2 className="w-3.5 h-3.5"/>Copy Link
               </button>
             </SideCard>
 
             {/* Article info */}
-            <SideCard title="Article Info" icon="fa-info-circle">
-              <div className="space-y-3 text-xs" style={{fontFamily:'Poppins,sans-serif'}}>
+            <SideCard title="Article Info" Icon={Info}>
+              <div className="space-y-3 text-xs">
                 {article.publishedAt && (
                   <div className="flex justify-between">
-                    <span style={{color:'#A3A3A3'}}>Published</span>
-                    <span className="font-semibold" style={{color:'#1A0A35'}}>{format(new Date(article.publishedAt),'MMM d, yyyy')}</span>
+                    <span className="text-muted-foreground">Published</span>
+                    <span className="font-semibold text-dark">{format(new Date(article.publishedAt),'MMM d, yyyy')}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span style={{color:'#A3A3A3'}}>Read time</span>
-                  <span className="font-semibold" style={{color:'#1A0A35'}}>{article.readTime || 1} min</span>
+                  <span className="text-muted-foreground">Read time</span>
+                  <span className="font-semibold text-dark">{article.readTime || 1} min</span>
                 </div>
                 {article.viewCount > 0 && (
                   <div className="flex justify-between">
-                    <span style={{color:'#A3A3A3'}}>Views</span>
-                    <span className="font-semibold" style={{color:'#1A0A35'}}>{article.viewCount.toLocaleString()}</span>
+                    <span className="text-muted-foreground">Views</span>
+                    <span className="font-semibold text-dark">{article.viewCount.toLocaleString()}</span>
                   </div>
                 )}
                 {article.category && (
                   <div className="flex justify-between">
-                    <span style={{color:'#A3A3A3'}}>Category</span>
-                    <span className="font-semibold capitalize" style={{color:'#5B2D8E'}}>{article.category}</span>
+                    <span className="text-muted-foreground">Category</span>
+                    <span className="font-semibold capitalize text-primary-500">{article.category}</span>
                   </div>
                 )}
               </div>
@@ -483,7 +487,7 @@ export default function NewsDetail() {
 
             {/* Tags */}
             {article.tags?.length > 0 && (
-              <SideCard title="Tags" icon="fa-tags">
+              <SideCard title="Tags" Icon={Tags}>
                 <div className="flex flex-wrap gap-1.5">
                   {article.tags.map(t => (
                     <Link key={t} to={`/news?search=${encodeURIComponent(t)}`}
@@ -495,27 +499,26 @@ export default function NewsDetail() {
 
             {/* Newsletter subscribe */}
             <div className="rounded-2xl p-5" style={{background:'linear-gradient(135deg,#1A0A35,#250F47)'}}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{background:'linear-gradient(135deg,#F0A500,#FFB84D)'}}>
-                <i className="fas fa-envelope text-white text-sm"/>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-gradient-to-br from-gold to-[#FFB84D]">
+                <Mail className="w-5 h-5 text-white"/>
               </div>
               <h4 className="font-display font-bold text-sm text-white mb-1">Stay Updated</h4>
-              <p className="text-xs mb-4" style={{color:'rgba(255,255,255,0.55)',fontFamily:'Poppins,sans-serif'}}>
+              <p className="text-xs mb-4 text-white/55">
                 Get the latest village news delivered to your inbox.
               </p>
               <SubscribeBox/>
             </div>
 
             {/* Browse more */}
-            <SideCard title="Browse News" icon="fa-newspaper">
-              <Link to="/news" className="flex items-center justify-between text-sm font-semibold py-2 transition-colors hover:text-primary-500"
-                style={{color:'#5B2D8E',fontFamily:'Sora,sans-serif'}}>
-                All Articles <i className="fas fa-arrow-right text-xs"/>
+            <SideCard title="Browse News" Icon={Newspaper}>
+              <Link to="/news" className="flex items-center justify-between text-sm font-semibold py-2 transition-colors hover:text-primary-500 text-primary-500">
+                All Articles <ArrowRight className="w-3 h-3"/>
               </Link>
               {['Projects','Education','Health','Community','Culture'].map(c => (
                 <Link key={c} to={`/news?cat=${c}`}
-                  className="flex items-center justify-between text-xs py-2 border-t transition-colors hover:text-primary-500"
-                  style={{color:'#737373',borderColor:'rgba(91,45,142,0.06)',fontFamily:'Poppins,sans-serif'}}>
-                  {c} <i className="fas fa-chevron-right text-[8px]" style={{color:'#A3A3A3'}}/>
+                  className="flex items-center justify-between text-xs py-2 border-t transition-colors hover:text-primary-500 text-muted-foreground"
+                  style={{borderColor:'rgba(91,45,142,0.06)'}}>
+                  {c} <ChevronRight className="w-3 h-3 text-muted-foreground"/>
                 </Link>
               ))}
             </SideCard>
@@ -528,17 +531,17 @@ export default function NewsDetail() {
 
       {/* ── Related articles ── */}
       {related.length > 0 && (
-        <section className="py-16 border-t" style={{borderColor:'rgba(91,45,142,0.06)',background:'#fff'}}>
+        <section className="py-16 border-t bg-white" style={{borderColor:'rgba(91,45,142,0.06)'}}>
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <div className="text-xs uppercase tracking-widest font-semibold mb-1" style={{color:'#F0A500',fontFamily:'Sora,sans-serif'}}>Keep Reading</div>
-                <h3 className="font-display font-bold text-2xl" style={{color:'#1A0A35'}}>
-                  Related <span style={{color:'#5B2D8E'}}>Articles</span>
+                <div className="text-xs uppercase tracking-widest font-semibold mb-1 text-gold">Keep Reading</div>
+                <h3 className="font-display font-bold text-2xl text-dark">
+                  Related <span className="text-primary-500">Articles</span>
                 </h3>
               </div>
-              <Link to="/news" className="hidden md:flex items-center gap-1.5 text-sm font-semibold hover:underline" style={{color:'#5B2D8E',fontFamily:'Sora,sans-serif'}}>
-                All Articles <i className="fas fa-arrow-right text-xs"/>
+              <Link to="/news" className="hidden md:flex items-center gap-1.5 text-sm font-semibold hover:underline text-primary-500">
+                All Articles <ArrowRight className="w-3 h-3"/>
               </Link>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

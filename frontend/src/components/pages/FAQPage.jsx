@@ -1,14 +1,18 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import {
+  Home, ChevronRight, ChevronDown, List, IdCard, HeartHandshake, Sprout,
+  Globe, Calendar, Info, Search, RotateCcw, Mail, MessageSquare, Phone,
+} from 'lucide-react'
 
 const CATEGORIES = [
-  { id: 'all',       label: 'All Questions',    icon: 'fa-list' },
-  { id: 'membership',label: 'Membership',       icon: 'fa-id-card' },
-  { id: 'donations', label: 'Donations',        icon: 'fa-heart' },
-  { id: 'projects',  label: 'Projects',         icon: 'fa-seedling' },
-  { id: 'diaspora',  label: 'Diaspora',         icon: 'fa-globe-africa' },
-  { id: 'events',    label: 'Events',           icon: 'fa-calendar' },
-  { id: 'general',   label: 'General',          icon: 'fa-info-circle' },
+  { id: 'all',       label: 'All Questions', Icon: List },
+  { id: 'membership',label: 'Membership',    Icon: IdCard },
+  { id: 'donations', label: 'Donations',     Icon: HeartHandshake },
+  { id: 'projects',  label: 'Projects',      Icon: Sprout },
+  { id: 'diaspora',  label: 'Diaspora',      Icon: Globe },
+  { id: 'events',    label: 'Events',        Icon: Calendar },
+  { id: 'general',   label: 'General',       Icon: Info },
 ]
 
 const FAQS = [
@@ -81,9 +85,9 @@ const FAQS = [
 
 const CAT_COLORS = {
   membership: { bg: 'rgba(91,45,142,0.1)',  text: '#5B2D8E',  border: '#5B2D8E' },
-  donations:  { bg: 'rgba(220,38,38,0.08)', text: '#dc2626',  border: '#dc2626' },
-  projects:   { bg: 'rgba(22,163,74,0.1)',  text: '#16a34a',  border: '#16a34a' },
-  diaspora:   { bg: 'rgba(2,132,199,0.1)',  text: '#0284c7',  border: '#0284c7' },
+  donations:  { bg: 'rgba(91,45,142,0.08)', text: '#5B2D8E',  border: '#5B2D8E' },
+  projects:   { bg: 'rgba(91,45,142,0.1)',  text: '#5B2D8E',  border: '#5B2D8E' },
+  diaspora:   { bg: 'rgba(240,165,0,0.1)',  text: '#C87800',  border: '#F0A500' },
   events:     { bg: 'rgba(240,165,0,0.12)', text: '#C87800',  border: '#F0A500' },
   general:    { bg: 'rgba(91,45,142,0.08)', text: '#5B2D8E',  border: '#5B2D8E' },
 }
@@ -101,17 +105,23 @@ function FAQItem({ q, a, cat, defaultOpen }) {
         <span className="flex-1 font-display font-semibold text-sm pr-2" style={{ color: open ? col.text : '#1A0A35' }}>{q}</span>
         <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
           style={{ background: open ? col.border : 'rgba(91,45,142,0.06)', transform: open ? 'rotate(180deg)' : 'none' }}>
-          <i className="fas fa-chevron-down text-[10px]" style={{ color: open ? '#fff' : '#5B2D8E' }} />
+          <ChevronDown className="w-3.5 h-3.5" style={{ color: open ? '#fff' : '#5B2D8E' }} />
         </div>
       </button>
       {open && (
         <div className="px-5 pb-5 pt-1">
-          <p className="text-sm leading-relaxed" style={{ color: '#525252', fontFamily: 'Poppins,sans-serif' }}>{a}</p>
+          <p className="text-sm leading-relaxed text-muted-foreground">{a}</p>
         </div>
       )}
     </div>
   )
 }
+
+const CONTACT_CARDS = [
+  { Icon: Mail,         title: 'Email Us',            body: 'contact@nkenkak-ngiesang.cm',                              link: '/contact', label: 'Send a Message' },
+  { Icon: MessageSquare,title: 'Community Forum',     body: 'Ask fellow members and get answers from the community.',   link: '/forum',   label: 'Visit Forum' },
+  { Icon: Phone,        title: 'Village Secretariat', body: 'Reach the village secretariat directly for urgent matters.',link: '/contact', label: 'Get in Touch' },
+]
 
 export default function FAQPage() {
   const [activeCategory, setActiveCategory] = useState('all')
@@ -144,10 +154,10 @@ export default function FAQPage() {
         <p className="text-sm max-w-lg mx-auto mb-4" style={{ color: 'rgba(255,255,255,0.65)', fontFamily: 'Poppins,sans-serif' }}>
           Everything you need to know about membership, donations, projects, and our community.
         </p>
-        <div className="flex items-center justify-center gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'Poppins,sans-serif' }}>
-          <Link to="/" className="hover:text-white transition-colors flex items-center gap-1"><i className="fas fa-home text-xs" />Home</Link>
-          <i className="fas fa-chevron-right text-xs" style={{ color: '#F0A500' }} />
-          <span style={{ color: '#F0A500' }}>FAQ</span>
+        <div className="flex items-center justify-center gap-2 text-sm text-white/60">
+          <Link to="/" className="hover:text-white transition-colors flex items-center gap-1"><Home className="w-3 h-3"/>Home</Link>
+          <ChevronRight className="w-3 h-3 text-gold"/>
+          <span className="text-gold">FAQ</span>
         </div>
       </div>
 
@@ -156,13 +166,14 @@ export default function FAQPage() {
         <div className="max-w-5xl mx-auto px-6 py-6 grid grid-cols-3 md:grid-cols-6 gap-4">
           {CATEGORIES.filter(c => c.id !== 'all').map(cat => {
             const col = CAT_COLORS[cat.id]
+            const active = activeCategory === cat.id
             return (
               <button key={cat.id} onClick={() => { setActiveCategory(cat.id); setSearch('') }}
                 className="text-center p-3 rounded-2xl transition-all"
-                style={{ background: activeCategory === cat.id ? col.bg : 'rgba(255,255,255,0.05)', border: `1px solid ${activeCategory === cat.id ? col.border : 'transparent'}` }}>
-                <i className={`fas ${cat.icon} text-lg mb-1 block`} style={{ color: activeCategory === cat.id ? col.border : 'rgba(255,255,255,0.45)' }} />
-                <div className="text-[10px] font-semibold" style={{ color: activeCategory === cat.id ? col.border : 'rgba(255,255,255,0.5)', fontFamily: 'Sora,sans-serif' }}>{cat.label}</div>
-                <div className="text-lg font-bold mt-0.5" style={{ color: activeCategory === cat.id ? col.border : 'rgba(255,255,255,0.7)', fontFamily: 'Sora,sans-serif' }}>{counts[cat.id]}</div>
+                style={{ background: active ? col.bg : 'rgba(255,255,255,0.05)', border: `1px solid ${active ? col.border : 'transparent'}` }}>
+                <cat.Icon className="w-5 h-5 mx-auto mb-1" style={{ color: active ? col.border : 'rgba(255,255,255,0.45)' }} />
+                <div className="text-[10px] font-semibold" style={{ color: active ? col.border : 'rgba(255,255,255,0.5)', fontFamily: 'Sora,sans-serif' }}>{cat.label}</div>
+                <div className="text-lg font-bold mt-0.5" style={{ color: active ? col.border : 'rgba(255,255,255,0.7)', fontFamily: 'Sora,sans-serif' }}>{counts[cat.id]}</div>
               </button>
             )
           })}
@@ -176,7 +187,7 @@ export default function FAQPage() {
           {/* Search + filter row */}
           <div className="flex flex-col sm:flex-row gap-3 mb-8">
             <div className="relative flex-1">
-              <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-xs" style={{ color: '#A3A3A3' }} />
+              <Search className="w-3.5 h-3.5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search questions…"
@@ -189,7 +200,7 @@ export default function FAQPage() {
               {CATEGORIES.map(cat => (
                 <button key={cat.id}
                   onClick={() => { setActiveCategory(cat.id); setSearch('') }}
-                  className="px-4 py-2 rounded-full text-xs font-semibold transition-all"
+                  className="px-4 py-2 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5"
                   style={{
                     background: activeCategory === cat.id ? 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' : '#fff',
                     color: activeCategory === cat.id ? '#fff' : '#5B2D8E',
@@ -197,7 +208,7 @@ export default function FAQPage() {
                     border: `1.5px solid ${activeCategory === cat.id ? 'transparent' : 'rgba(91,45,142,0.1)'}`,
                     boxShadow: activeCategory === cat.id ? '0 4px 12px rgba(91,45,142,0.25)' : 'none',
                   }}>
-                  <i className={`fas ${cat.icon} mr-1.5 text-[10px]`} />
+                  <cat.Icon className="w-3 h-3" />
                   {cat.label}
                 </button>
               ))}
@@ -206,18 +217,18 @@ export default function FAQPage() {
 
           {filtered.length === 0 ? (
             <div className="text-center py-20 rounded-3xl" style={{ background: 'rgba(91,45,142,0.03)', border: '1px dashed rgba(91,45,142,0.1)' }}>
-              <i className="fas fa-search text-4xl mb-3 block" style={{ color: 'rgba(91,45,142,0.15)' }} />
-              <h3 className="font-display font-bold text-lg mb-2" style={{ color: '#1A0A35' }}>No results found</h3>
-              <p className="text-sm mb-4" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>Try a different keyword or browse all questions.</p>
+              <Search className="w-10 h-10 mx-auto mb-3" style={{ color: 'rgba(91,45,142,0.15)' }} />
+              <h3 className="font-display font-bold text-lg mb-2 text-dark">No results found</h3>
+              <p className="text-sm mb-4 text-muted-foreground">Try a different keyword or browse all questions.</p>
               <button onClick={() => { setSearch(''); setActiveCategory('all') }} className="btn-secondary !text-xs !py-2 !px-5">
-                <i className="fas fa-undo text-[10px]" />Show All
+                <RotateCcw className="w-3 h-3"/>Show All
               </button>
             </div>
           ) : (
             <>
-              <p className="text-xs mb-5" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>
+              <p className="text-xs mb-5 text-muted-foreground">
                 {filtered.length} question{filtered.length !== 1 ? 's' : ''}
-                {search && <> matching "<span style={{ color: '#5B2D8E' }}>{search}</span>"</>}
+                {search && <> matching "<span className="text-primary-500">{search}</span>"</>}
               </p>
               <div className="grid md:grid-cols-2 gap-4">
                 {filtered.map((f, i) => (
@@ -233,17 +244,13 @@ export default function FAQPage() {
       <section className="py-16 relative overflow-hidden" style={{ background: 'linear-gradient(135deg,#1A0A35,#250F47)' }}>
         <div className="wave-pattern absolute inset-0 pointer-events-none" />
         <div className="relative max-w-5xl mx-auto px-6 grid md:grid-cols-3 gap-6">
-          {[
-            { icon: 'fa-envelope', title: 'Email Us', body: 'contact@nkenkak-ngiesang.cm', link: '/contact', label: 'Send a Message' },
-            { icon: 'fa-comments', title: 'Community Forum', body: 'Ask fellow members and get answers from the community.', link: '/forum', label: 'Visit Forum' },
-            { icon: 'fa-phone', title: 'Village Secretariat', body: 'Reach the village secretariat directly for urgent matters.', link: '/contact', label: 'Get in Touch' },
-          ].map((c, i) => (
+          {CONTACT_CARDS.map((c, i) => (
             <div key={i} className="card-dark rounded-3xl p-6 text-center">
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4"
                 style={{ background: 'rgba(240,165,0,0.12)', border: '1px solid rgba(240,165,0,0.2)' }}>
-                <i className={`fas ${c.icon} text-xl`} style={{ color: '#F0A500' }} />
+                <c.Icon className="w-6 h-6 text-gold"/>
               </div>
-              <h3 className="font-display font-bold text-base mb-1" style={{ color: '#fff' }}>{c.title}</h3>
+              <h3 className="font-display font-bold text-base mb-1 text-white">{c.title}</h3>
               <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.55)', fontFamily: 'Poppins,sans-serif', lineHeight: 1.7 }}>{c.body}</p>
               <Link to={c.link} className="btn-gold !text-xs !py-2 !px-5">{c.label}</Link>
             </div>

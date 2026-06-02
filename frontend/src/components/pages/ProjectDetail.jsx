@@ -7,6 +7,16 @@ import CountUp from 'react-countup'
 import api from '../../services/api'
 import { useAuth } from '../../context/AuthContext'
 import DonationModal from '../common/DonationModal'
+import {
+  Home, ChevronRight, CircleDot, CheckCircle2, PauseCircle,
+  AlertCircle, Star, Users, Heart, Eye, Coins, Target,
+  Info, Bell, Images, Film, Tag, MapPin, CalendarPlus,
+  CalendarCheck, Clock, List, MessageSquare, User,
+  Loader2, Send, Sprout, ArrowLeft, X, Maximize2, Play,
+  Flag, Route, TrendingUp, Trophy, ListChecks, MapPinned,
+  ExternalLink, Share2, Copy, CalendarDays, HeartHandshake,
+  ChevronDown, ChevronUp,
+} from 'lucide-react'
 
 /* ── Category accent colours ── */
 const CAT_COLORS = {
@@ -17,10 +27,10 @@ const CAT_COLORS = {
 
 /* ── Status config ── */
 const STATUS_CFG = {
-  active:    { label: 'Active',    bg: 'rgba(22,163,74,0.12)',    color: '#16a34a',  icon: 'fa-circle-dot' },
-  upcoming:  { label: 'Upcoming',  bg: 'rgba(2,132,199,0.12)',    color: '#0284c7',  icon: 'fa-clock' },
-  completed: { label: 'Completed', bg: 'rgba(91,45,142,0.12)',    color: '#5B2D8E',  icon: 'fa-check-circle' },
-  paused:    { label: 'Paused',    bg: 'rgba(245,158,11,0.12)',   color: '#d97706',  icon: 'fa-pause-circle' },
+  active:    { label: 'Active',    bg: 'rgba(91,45,142,0.12)',  color: '#5B2D8E', Icon: CircleDot },
+  upcoming:  { label: 'Upcoming',  bg: 'rgba(240,165,0,0.12)',  color: '#C87800', Icon: Clock },
+  completed: { label: 'Completed', bg: 'rgba(91,45,142,0.12)',  color: '#5B2D8E', Icon: CheckCircle2 },
+  paused:    { label: 'Paused',    bg: 'rgba(245,158,11,0.12)', color: '#d97706', Icon: PauseCircle },
 }
 
 export default function ProjectDetail() {
@@ -72,7 +82,7 @@ export default function ProjectDetail() {
       <ProjectHero project={project} color={color} statusCfg={statusCfg} />
 
       {/* ── Body ── */}
-      <section className="py-12" style={{ background: '#FAFAFA' }}>
+      <section className="py-12 bg-[#FAFAFA]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-[1fr_340px] gap-10 items-start">
 
@@ -85,9 +95,9 @@ export default function ProjectDetail() {
               {/* Tabs */}
               <div className="flex gap-1 p-1 rounded-2xl w-fit" style={{ background: 'rgba(91,45,142,0.06)' }}>
                 {[
-                  { key: 'about',   label: 'About',   icon: 'fa-info-circle' },
-                  { key: 'updates', label: `Updates${project.updates?.length ? ` (${project.updates.length})` : ''}`, icon: 'fa-bell' },
-                  { key: 'gallery', label: `Gallery${(allMedia.length + projectVideos.length) ? ` (${allMedia.length + projectVideos.length})` : ''}`, icon: 'fa-images' },
+                  { key: 'about',   label: 'About',   Icon: Info },
+                  { key: 'updates', label: `Updates${project.updates?.length ? ` (${project.updates.length})` : ''}`, Icon: Bell },
+                  { key: 'gallery', label: `Gallery${(allMedia.length + projectVideos.length) ? ` (${allMedia.length + projectVideos.length})` : ''}`, Icon: Images },
                 ].map(t => (
                   <button key={t.key} onClick={() => setActiveTab(t.key)}
                     className="px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2"
@@ -95,9 +105,8 @@ export default function ProjectDetail() {
                       background: activeTab === t.key ? '#fff' : 'transparent',
                       color: activeTab === t.key ? '#5B2D8E' : '#A3A3A3',
                       boxShadow: activeTab === t.key ? '0 1px 6px rgba(91,45,142,0.12)' : 'none',
-                      fontFamily: 'Sora,sans-serif',
                     }}>
-                    <i className={`fas ${t.icon} text-xs`} />{t.label}
+                    <t.Icon className="w-3.5 h-3.5"/>{t.label}
                   </button>
                 ))}
               </div>
@@ -147,8 +156,6 @@ export default function ProjectDetail() {
         </div>
       </section>
 
-      {/* Subscribe sidebar card gets injected via FundingCard prop */}
-
       {/* Lightbox */}
       {lightbox && (
         <div
@@ -158,7 +165,7 @@ export default function ProjectDetail() {
           <button
             className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-white transition-all hover:bg-white/10"
             onClick={() => setLightbox(null)}>
-            <i className="fas fa-times text-xl" />
+            <X className="w-5 h-5"/>
           </button>
           {lightbox.type === 'video' ? (
             <video
@@ -213,36 +220,36 @@ function ProjectHero({ project, color, statusCfg }) {
 
       <div className="relative max-w-7xl mx-auto px-6 py-16">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs mb-5" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'Poppins,sans-serif' }}>
-          <Link to="/" className="hover:text-white transition-colors flex items-center gap-1"><i className="fas fa-home text-[10px]" />Home</Link>
-          <i className="fas fa-chevron-right text-[8px]" style={{ color: '#F0A500' }} />
+        <div className="flex items-center gap-2 text-xs mb-5 text-white/50">
+          <Link to="/" className="hover:text-white transition-colors flex items-center gap-1"><Home className="w-3 h-3"/>Home</Link>
+          <ChevronRight className="w-3 h-3 text-gold"/>
           <Link to="/projects" className="hover:text-white transition-colors">Projects</Link>
-          <i className="fas fa-chevron-right text-[8px]" style={{ color: '#F0A500' }} />
-          <span style={{ color: '#F0A500' }} className="truncate max-w-xs">{project.title}</span>
+          <ChevronRight className="w-3 h-3 text-gold"/>
+          <span className="text-gold truncate max-w-xs">{project.title}</span>
         </div>
 
         {/* Badges */}
-        <div className="flex items-center gap-2 mb-4 flex-wrap">
-          <span className="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full flex items-center gap-1.5"
-            style={{ background: statusCfg.bg, color: statusCfg.color, backdropFilter: 'blur(4px)' }}>
-            <i className={`fas ${statusCfg.icon} text-[9px]`} />{statusCfg.label}
+        <div className="flex items-center gap-3 mb-4 flex-wrap">
+          {/* Status — icon + plain text */}
+          <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.08em]"
+            style={{ color: statusCfg.color }}>
+            <statusCfg.Icon className="w-3 h-3"/>{statusCfg.label}
           </span>
           {project.category && (
-            <span className="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full text-white capitalize"
-              style={{ background: `${color}cc`, backdropFilter: 'blur(4px)' }}>
+            <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-white/50 capitalize">
               {project.category}
             </span>
           )}
+          {/* Urgent — critical signal, keep filled red */}
           {project.isUrgent && (
             <span className="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full flex items-center gap-1.5 animate-pulse"
               style={{ background: 'rgba(220,38,38,0.8)', color: '#fff' }}>
-              <i className="fas fa-exclamation-circle text-[9px]" />Urgent
+              <AlertCircle className="w-3 h-3"/>Urgent
             </span>
           )}
           {project.isFeatured && (
-            <span className="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full"
-              style={{ background: 'rgba(240,165,0,0.2)', color: '#F0A500', border: '1px solid rgba(240,165,0,0.3)' }}>
-              <i className="fas fa-star text-[9px] mr-1" />Featured
+            <span className="text-[10px] font-semibold text-gold/65 flex items-center gap-1">
+              <Star className="w-3 h-3"/>Featured
             </span>
           )}
         </div>
@@ -252,28 +259,27 @@ function ProjectHero({ project, color, statusCfg }) {
           {project.title}
         </h1>
 
-        <p className="text-sm leading-relaxed mb-6 max-w-2xl"
-          style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'Poppins,sans-serif' }}>
+        <p className="text-sm leading-relaxed mb-6 max-w-2xl text-white/70">
           {project.summary}
         </p>
 
         {/* Quick hero stats */}
         <div className="flex flex-wrap gap-6">
           {[
-            { icon: 'fa-users', val: project.donorCount || 0, label: 'Donors', fmt: true },
-            { icon: 'fa-heart', val: project.beneficiaries || 0, label: 'Beneficiaries', fmt: true },
-            { icon: 'fa-eye',   val: project.viewCount || 0, label: 'Views', fmt: true },
+            { Icon: Users,  val: project.donorCount || 0,    label: 'Donors' },
+            { Icon: Heart,  val: project.beneficiaries || 0, label: 'Beneficiaries' },
+            { Icon: Eye,    val: project.viewCount || 0,     label: 'Views' },
           ].filter(s => s.val > 0).map(s => (
             <div key={s.label} className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ background: 'rgba(240,165,0,0.15)', border: '1px solid rgba(240,165,0,0.2)' }}>
-                <i className={`fas ${s.icon} text-xs`} style={{ color: '#F0A500' }} />
+                <s.Icon className="w-4 h-4 text-gold"/>
               </div>
               <div>
                 <div className="font-display font-bold text-white text-sm leading-none">
-                  {s.fmt ? Number(s.val).toLocaleString() : s.val}
+                  {Number(s.val).toLocaleString()}
                 </div>
-                <div className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'Poppins,sans-serif' }}>{s.label}</div>
+                <div className="text-[10px] mt-0.5 text-white/45">{s.label}</div>
               </div>
             </div>
           ))}
@@ -288,36 +294,36 @@ function ProjectHero({ project, color, statusCfg }) {
 ════════════════════════════════════ */
 function ImpactBar({ project, pct, color }) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.4 })
+  const stats = [
+    { Icon: Coins,   label: 'Raised',        val: Number(project.raisedAmount || 0), suffix: ' XAF', color },
+    { Icon: Target,  label: 'Goal',          val: Number(project.goalAmount || 0),   suffix: ' XAF', color: '#F0A500' },
+    { Icon: Users,   label: 'Donors',        val: project.donorCount || 0,           suffix: '',     color: '#5B2D8E' },
+    { Icon: Heart,   label: 'Beneficiaries', val: project.beneficiaries || 0,        suffix: '',     color: '#F0A500' },
+  ]
   return (
     <div ref={ref} className="card p-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
-        {[
-          { icon: 'fa-coins',   label: 'Raised',        val: Number(project.raisedAmount || 0), suffix: ' XAF', color: color },
-          { icon: 'fa-bullseye',label: 'Goal',          val: Number(project.goalAmount || 0),   suffix: ' XAF', color: '#F0A500' },
-          { icon: 'fa-users',   label: 'Donors',        val: project.donorCount || 0,           suffix: '',     color: '#0284c7' },
-          { icon: 'fa-heart',   label: 'Beneficiaries', val: project.beneficiaries || 0,        suffix: '',     color: '#dc2626' },
-        ].map(stat => (
+        {stats.map(stat => (
           <div key={stat.label} className="text-center">
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center mx-auto mb-2"
               style={{ background: `${stat.color}12` }}>
-              <i className={`fas ${stat.icon} text-sm`} style={{ color: stat.color }} />
+              <stat.Icon className="w-5 h-5" style={{ color: stat.color }}/>
             </div>
-            <div className="font-display font-bold text-lg" style={{ color: '#1A0A35' }}>
+            <div className="font-display font-bold text-lg text-dark">
               {inView ? (
                 <CountUp end={stat.val} duration={2} separator="," />
               ) : '0'}
-              {stat.suffix && stat.val > 0 && <span className="text-xs font-normal ml-0.5" style={{ color: '#A3A3A3' }}>{stat.suffix}</span>}
+              {stat.suffix && stat.val > 0 && <span className="text-xs font-normal ml-0.5 text-muted-foreground">{stat.suffix}</span>}
             </div>
-            <div className="text-[10px] uppercase tracking-wider font-semibold mt-0.5"
-              style={{ color: '#A3A3A3', fontFamily: 'Sora,sans-serif' }}>{stat.label}</div>
+            <div className="text-[10px] uppercase tracking-wider font-semibold mt-0.5 text-muted-foreground">{stat.label}</div>
           </div>
         ))}
       </div>
 
       {/* Progress bar */}
       <div>
-        <div className="flex justify-between text-xs mb-2" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>
-          <span><strong style={{ color: '#1A0A35' }}>{Number(project.raisedAmount || 0).toLocaleString()} XAF</strong> raised</span>
+        <div className="flex justify-between text-xs mb-2 text-muted-foreground">
+          <span><strong className="text-dark">{Number(project.raisedAmount || 0).toLocaleString()} XAF</strong> raised</span>
           <span style={{ color, fontWeight: 700 }}>{pct}% funded</span>
         </div>
         <div className="h-3 rounded-full overflow-hidden" style={{ background: 'rgba(91,45,142,0.08)' }}>
@@ -328,7 +334,7 @@ function ImpactBar({ project, pct, color }) {
               boxShadow: `0 0 12px ${color}50`,
             }} />
         </div>
-        <div className="flex justify-between text-[10px] mt-1.5" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>
+        <div className="flex justify-between text-[10px] mt-1.5 text-muted-foreground">
           <span>XAF 0</span>
           <span>Goal: {Number(project.goalAmount || 0).toLocaleString()} XAF</span>
         </div>
@@ -349,16 +355,15 @@ function AboutSection({ project, color }) {
 
   return (
     <div className="card p-8">
-      <SectionTitle icon="fa-info-circle" title="About This Project" color={color} />
-      <div className="text-sm leading-relaxed whitespace-pre-line mt-5"
-        style={{ color: '#525252', fontFamily: 'Poppins,sans-serif' }}>
+      <SectionTitle Icon={Info} title="About This Project" color={color} />
+      <div className="text-sm leading-relaxed whitespace-pre-line mt-5 text-[#525252]">
         {shown}
       </div>
       {isLong && (
         <button onClick={() => setExpanded(e => !e)}
           className="mt-4 text-xs font-semibold flex items-center gap-1.5 transition-colors"
-          style={{ color, fontFamily: 'Sora,sans-serif' }}>
-          <i className={`fas fa-chevron-${expanded ? 'up' : 'down'} text-[10px]`} />
+          style={{ color }}>
+          {expanded ? <ChevronUp className="w-3 h-3"/> : <ChevronDown className="w-3 h-3"/>}
           {expanded ? 'Show less' : 'Read more'}
         </button>
       )}
@@ -371,34 +376,33 @@ function AboutSection({ project, color }) {
 ════════════════════════════════════ */
 function DetailsGrid({ project, color }) {
   const items = [
-    project.category    && { icon: 'fa-tag',           label: 'Category',     value: project.category,   capitalize: true },
-    project.status      && { icon: 'fa-circle-dot',    label: 'Status',       value: project.status,     capitalize: true },
-    project.location    && { icon: 'fa-map-marker-alt',label: 'Location',     value: project.location },
-    project.startDate   && { icon: 'fa-calendar-plus', label: 'Start Date',   value: format(new Date(project.startDate), 'MMMM d, yyyy') },
-    project.endDate     && { icon: 'fa-calendar-check',label: 'Target Date',  value: format(new Date(project.endDate), 'MMMM d, yyyy') },
-    project.createdAt   && { icon: 'fa-clock',         label: 'Launched',     value: formatDistanceToNow(new Date(project.createdAt), { addSuffix: true }) },
-    project.currency    && { icon: 'fa-coins',         label: 'Currency',     value: project.currency },
-    project.viewCount   && { icon: 'fa-eye',           label: 'Views',        value: Number(project.viewCount).toLocaleString() },
+    project.category    && { Icon: Tag,          label: 'Category',     value: project.category,   capitalize: true },
+    project.status      && { Icon: CircleDot,    label: 'Status',       value: project.status,     capitalize: true },
+    project.location    && { Icon: MapPin,        label: 'Location',     value: project.location },
+    project.startDate   && { Icon: CalendarPlus,  label: 'Start Date',   value: format(new Date(project.startDate), 'MMMM d, yyyy') },
+    project.endDate     && { Icon: CalendarCheck, label: 'Target Date',  value: format(new Date(project.endDate), 'MMMM d, yyyy') },
+    project.createdAt   && { Icon: Clock,         label: 'Launched',     value: formatDistanceToNow(new Date(project.createdAt), { addSuffix: true }) },
+    project.currency    && { Icon: Coins,         label: 'Currency',     value: project.currency },
+    project.viewCount   && { Icon: Eye,           label: 'Views',        value: Number(project.viewCount).toLocaleString() },
   ].filter(Boolean)
 
   if (!items.length) return null
 
   return (
     <div className="card p-8">
-      <SectionTitle icon="fa-list" title="Project Details" color={color} />
+      <SectionTitle Icon={List} title="Project Details" color={color} />
       <div className="grid sm:grid-cols-2 gap-3 mt-5">
         {items.map(item => (
           <div key={item.label} className="flex items-start gap-3 p-3 rounded-2xl transition-colors"
             style={{ background: 'rgba(91,45,142,0.03)', border: '1px solid rgba(91,45,142,0.06)' }}>
             <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: `${color}12` }}>
-              <i className={`fas ${item.icon} text-xs`} style={{ color }} />
+              <item.Icon className="w-4 h-4" style={{ color }}/>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-wider font-semibold"
-                style={{ color: '#A3A3A3', fontFamily: 'Sora,sans-serif' }}>{item.label}</div>
-              <div className="text-sm font-semibold mt-0.5"
-                style={{ color: '#1A0A35', fontFamily: 'Sora,sans-serif', textTransform: item.capitalize ? 'capitalize' : 'none' }}>
+              <div className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">{item.label}</div>
+              <div className="text-sm font-semibold mt-0.5 text-dark"
+                style={{ textTransform: item.capitalize ? 'capitalize' : 'none' }}>
                 {item.value}
               </div>
             </div>
@@ -415,24 +419,23 @@ function DetailsGrid({ project, color }) {
 function LocationSection({ project, color }) {
   return (
     <div className="card p-8">
-      <SectionTitle icon="fa-map-marked-alt" title="Location" color={color} />
+      <SectionTitle Icon={MapPinned} title="Location" color={color} />
       <div className="mt-5 rounded-2xl overflow-hidden relative"
         style={{ height: 200, background: `linear-gradient(135deg,${color}10,${color}20)`, border: `1px solid ${color}18` }}>
-        {/* Map placeholder */}
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
           <div className="w-12 h-12 rounded-full flex items-center justify-center"
             style={{ background: `${color}18` }}>
-            <i className="fas fa-map-marker-alt text-xl" style={{ color }} />
+            <MapPin className="w-6 h-6" style={{ color }}/>
           </div>
-          <div className="text-sm font-semibold" style={{ color: '#1A0A35', fontFamily: 'Sora,sans-serif' }}>
+          <div className="text-sm font-semibold text-dark">
             {project.location}
           </div>
           <a
             href={`https://maps.google.com/?q=${encodeURIComponent(project.location)}`}
             target="_blank" rel="noreferrer"
-            className="text-xs font-semibold px-4 py-2 rounded-xl transition-all hover:opacity-80 flex items-center gap-1.5"
-            style={{ background: color, color: '#fff' }}>
-            <i className="fas fa-external-link-alt text-[10px]" />View on Google Maps
+            className="text-xs font-semibold px-4 py-2 rounded-xl transition-all hover:opacity-80 flex items-center gap-1.5 text-white"
+            style={{ background: color }}>
+            <ExternalLink className="w-3 h-3"/>View on Google Maps
           </a>
         </div>
       </div>
@@ -443,10 +446,8 @@ function LocationSection({ project, color }) {
 /* ════════════════════════════════════
    GALLERY
 ════════════════════════════════════ */
-/* Auto-generate a thumbnail from a Cloudinary video URL */
 function getVideoThumb(url) {
   if (!url) return null
-  // Cloudinary video → grab frame at 1s, return as jpg
   if (url.includes('res.cloudinary.com') && /\.(mp4|mov|webm|mkv)/i.test(url)) {
     return url
       .replace('/video/upload/', '/video/upload/so_1/')
@@ -456,14 +457,11 @@ function getVideoThumb(url) {
 }
 
 function GallerySection({ media, color, onOpen, videos: galleryVideos = [] }) {
-
   if (!media.length && !galleryVideos.length) {
     return (
       <div className="card p-12 text-center">
-        <i className="fas fa-images text-5xl mb-4 block" style={{ color: 'rgba(91,45,142,0.15)' }} />
-        <p className="text-sm" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>
-          No media uploaded yet.
-        </p>
+        <Images className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(91,45,142,0.15)' }}/>
+        <p className="text-sm text-muted-foreground">No media uploaded yet.</p>
       </div>
     )
   }
@@ -473,7 +471,7 @@ function GallerySection({ media, color, onOpen, videos: galleryVideos = [] }) {
       {/* Images */}
       {media.length > 0 && (
         <div className="card p-6">
-          <SectionTitle icon="fa-images" title="Photos" color={color} />
+          <SectionTitle Icon={Images} title="Photos" color={color} />
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-5">
             {media.map((m, i) => (
               <button key={i} onClick={() => onOpen({ url: m.url, type: 'image' })}
@@ -483,7 +481,7 @@ function GallerySection({ media, color, onOpen, videos: galleryVideos = [] }) {
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   style={{ background: 'rgba(0,0,0,0.35)' }}>
                   <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                    <i className="fas fa-expand text-white text-sm" />
+                    <Maximize2 className="w-4 h-4 text-white"/>
                   </div>
                 </div>
               </button>
@@ -495,7 +493,7 @@ function GallerySection({ media, color, onOpen, videos: galleryVideos = [] }) {
       {/* Videos */}
       {galleryVideos.length > 0 && (
         <div className="card p-6">
-          <SectionTitle icon="fa-film" title="Videos" color={color} />
+          <SectionTitle Icon={Film} title="Videos" color={color} />
           <div className="grid sm:grid-cols-2 gap-4 mt-5">
             {galleryVideos.map((v) => {
               const thumb = v.thumbnail || getVideoThumb(v.url)
@@ -510,12 +508,10 @@ function GallerySection({ media, color, onOpen, videos: galleryVideos = [] }) {
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3"
                   style={{ background: thumb ? 'rgba(0,0,0,0.45)' : 'transparent' }}>
                   <div className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl border border-white/20">
-                    <i className="fas fa-play text-white text-lg ml-0.5" />
+                    <Play className="w-5 h-5 text-white ml-0.5"/>
                   </div>
                   {v.title && (
-                    <div className="text-white font-semibold text-sm text-center px-4" style={{ fontFamily: 'Sora,sans-serif' }}>
-                      {v.title}
-                    </div>
+                    <div className="text-white font-semibold text-sm text-center px-4">{v.title}</div>
                   )}
                 </div>
               </div>
@@ -534,9 +530,9 @@ function UpdatesSection({ project, color }) {
   if (!project.updates?.length) {
     return (
       <div className="card p-12 text-center">
-        <i className="fas fa-bell text-5xl mb-4 block" style={{ color: 'rgba(91,45,142,0.12)' }} />
-        <h3 className="font-display font-semibold text-base mb-2" style={{ color: '#1A0A35' }}>No updates yet</h3>
-        <p className="text-sm" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>
+        <Bell className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(91,45,142,0.12)' }}/>
+        <h3 className="font-display font-semibold text-base mb-2 text-dark">No updates yet</h3>
+        <p className="text-sm text-muted-foreground">
           The project team will post updates here as work progresses.
         </p>
       </div>
@@ -545,7 +541,7 @@ function UpdatesSection({ project, color }) {
 
   return (
     <div className="card p-8">
-      <SectionTitle icon="fa-bell" title="Project Updates" color={color} />
+      <SectionTitle Icon={Bell} title="Project Updates" color={color} />
       <div className="mt-6 space-y-0">
         {project.updates.map((u, i) => (
           <div key={u.id} className="flex gap-5">
@@ -563,26 +559,22 @@ function UpdatesSection({ project, color }) {
             {/* Content */}
             <div className="flex-1 pb-8">
               <div className="flex items-start justify-between gap-4 mb-2">
-                <h4 className="font-display font-semibold text-base" style={{ color: '#1A0A35' }}>{u.title}</h4>
+                <h4 className="font-display font-semibold text-base text-dark">{u.title}</h4>
                 {u.createdAt && (
                   <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full flex-shrink-0"
-                    style={{ background: `${color}0a`, color, fontFamily: 'Sora,sans-serif' }}>
+                    style={{ background: `${color}0a`, color }}>
                     {format(new Date(u.createdAt), 'MMM d, yyyy')}
                   </span>
                 )}
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: '#525252', fontFamily: 'Poppins,sans-serif' }}>
-                {u.content}
-              </p>
+              <p className="text-sm leading-relaxed text-[#525252]">{u.content}</p>
               {u.author_name && (
                 <div className="flex items-center gap-2 mt-3">
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
                     style={{ background: color }}>
                     {u.author_name.charAt(0).toUpperCase()}
                   </div>
-                  <span className="text-xs font-semibold" style={{ color: '#737373', fontFamily: 'Sora,sans-serif' }}>
-                    {u.author_name}
-                  </span>
+                  <span className="text-xs font-semibold text-muted-foreground">{u.author_name}</span>
                 </div>
               )}
             </div>
@@ -602,7 +594,7 @@ function FundingCard({ project, pct, color, statusCfg, onDonate }) {
       {/* Big pct */}
       <div className="text-center mb-5 py-4 rounded-2xl" style={{ background: `${color}06` }}>
         <div className="font-display font-extrabold text-5xl" style={{ color }}>{pct}%</div>
-        <div className="text-xs font-semibold mt-1 uppercase tracking-wider" style={{ color: '#A3A3A3', fontFamily: 'Sora,sans-serif' }}>Funded</div>
+        <div className="text-xs font-semibold mt-1 uppercase tracking-wider text-muted-foreground">Funded</div>
       </div>
 
       {/* Progress */}
@@ -613,31 +605,31 @@ function FundingCard({ project, pct, color, statusCfg, onDonate }) {
       {/* Amounts */}
       <div className="grid grid-cols-2 gap-3 mb-5">
         <div className="text-center p-3 rounded-2xl" style={{ background: 'rgba(91,45,142,0.05)' }}>
-          <div className="font-display font-bold text-sm" style={{ color: '#1A0A35' }}>
+          <div className="font-display font-bold text-sm text-dark">
             {Number(project.raisedAmount || 0).toLocaleString()}
           </div>
-          <div className="text-[10px] mt-0.5" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>XAF raised</div>
+          <div className="text-[10px] mt-0.5 text-muted-foreground">XAF raised</div>
         </div>
         <div className="text-center p-3 rounded-2xl" style={{ background: 'rgba(240,165,0,0.05)' }}>
-          <div className="font-display font-bold text-sm" style={{ color: '#1A0A35' }}>
+          <div className="font-display font-bold text-sm text-dark">
             {Number(project.goalAmount || 0).toLocaleString()}
           </div>
-          <div className="text-[10px] mt-0.5" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>XAF goal</div>
+          <div className="text-[10px] mt-0.5 text-muted-foreground">XAF goal</div>
         </div>
       </div>
 
       {/* Meta */}
       <div className="space-y-2.5 mb-5">
         {project.donorCount > 0 && (
-          <MetaRow icon="fa-users" color="#0284c7"
+          <MetaRow Icon={Users} color={color}
             value={`${Number(project.donorCount).toLocaleString()} donors`} />
         )}
         {project.beneficiaries > 0 && (
-          <MetaRow icon="fa-heart" color="#dc2626"
+          <MetaRow Icon={Heart} color={color}
             value={`${Number(project.beneficiaries).toLocaleString()} beneficiaries`} />
         )}
         {project.location && (
-          <MetaRow icon="fa-map-marker-alt" color={color} value={project.location} />
+          <MetaRow Icon={MapPin} color={color} value={project.location} />
         )}
       </div>
 
@@ -646,30 +638,28 @@ function FundingCard({ project, pct, color, statusCfg, onDonate }) {
         <button onClick={onDonate}
           className="w-full py-4 rounded-2xl font-display font-bold text-sm text-white flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.98]"
           style={{ background: `linear-gradient(135deg,${color},#F0A500)`, boxShadow: `0 8px 24px ${color}40` }}>
-          <i className="fas fa-heart" />Donate Now
+          <HeartHandshake className="w-4 h-4"/>Donate Now
         </button>
       ) : (
-        <div className="w-full py-4 rounded-2xl font-display font-bold text-sm flex items-center justify-center gap-2"
-          style={{ background: 'rgba(22,163,74,0.1)', color: '#16a34a' }}>
-          <i className="fas fa-check-circle" />Project Completed!
+        <div className="w-full py-4 rounded-2xl font-display font-bold text-sm flex items-center justify-center gap-2 bg-primary-500/10 text-primary-500">
+          <CheckCircle2 className="w-4 h-4"/>Project Completed!
         </div>
       )}
 
       {project.isUrgent && project.status !== 'completed' && (
-        <p className="text-center text-xs mt-3 flex items-center justify-center gap-1.5"
-          style={{ color: '#dc2626', fontFamily: 'Poppins,sans-serif' }}>
-          <i className="fas fa-exclamation-circle" />This project needs urgent support
+        <p className="text-center text-xs mt-3 flex items-center justify-center gap-1.5 text-red-500">
+          <AlertCircle className="w-3.5 h-3.5"/>This project needs urgent support
         </p>
       )}
     </div>
   )
 }
 
-function MetaRow({ icon, color, value }) {
+function MetaRow({ Icon, color, value }) {
   return (
-    <div className="flex items-center gap-3 text-xs" style={{ color: '#525252', fontFamily: 'Poppins,sans-serif' }}>
+    <div className="flex items-center gap-3 text-xs text-[#525252]">
       <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${color}12` }}>
-        <i className={`fas ${icon} text-[11px]`} style={{ color }} />
+        <Icon className="w-3.5 h-3.5" style={{ color }}/>
       </div>
       <span>{value}</span>
     </div>
@@ -689,42 +679,37 @@ function TimelineCard({ project, color }) {
 
   return (
     <div className="card p-5">
-      <h3 className="font-display font-semibold text-sm mb-4 flex items-center gap-2" style={{ color: '#1A0A35' }}>
-        <i className="fas fa-calendar-alt text-xs" style={{ color }} />Timeline
+      <h3 className="font-display font-semibold text-sm mb-4 flex items-center gap-2 text-dark">
+        <CalendarDays className="w-4 h-4" style={{ color }}/>Timeline
       </h3>
       <div className="space-y-3">
         {start && (
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: `${color}12` }}>
-              <i className="fas fa-play text-[10px]" style={{ color }} />
+              <Play className="w-3 h-3" style={{ color }}/>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: '#A3A3A3', fontFamily: 'Sora,sans-serif' }}>Start</div>
-              <div className="text-sm font-semibold" style={{ color: '#1A0A35', fontFamily: 'Sora,sans-serif' }}>
-                {format(start, 'MMMM d, yyyy')}
-              </div>
+              <div className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Start</div>
+              <div className="text-sm font-semibold text-dark">{format(start, 'MMMM d, yyyy')}</div>
             </div>
           </div>
         )}
         {end && (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(240,165,0,0.12)' }}>
-              <i className="fas fa-flag text-[10px]" style={{ color: '#F0A500' }} />
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 bg-gold/12">
+              <Flag className="w-3 h-3 text-gold"/>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: '#A3A3A3', fontFamily: 'Sora,sans-serif' }}>Target</div>
-              <div className="text-sm font-semibold" style={{ color: '#1A0A35', fontFamily: 'Sora,sans-serif' }}>
-                {format(end, 'MMMM d, yyyy')}
-              </div>
+              <div className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Target</div>
+              <div className="text-sm font-semibold text-dark">{format(end, 'MMMM d, yyyy')}</div>
             </div>
           </div>
         )}
         {daysLeft !== null && daysLeft > 0 && project.status !== 'completed' && (
           <div className="mt-3 pt-3 border-t text-center" style={{ borderColor: 'rgba(91,45,142,0.08)' }}>
             <span className="text-2xl font-display font-bold" style={{ color }}>{daysLeft}</span>
-            <span className="text-xs ml-1.5" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>days remaining</span>
+            <span className="text-xs ml-1.5 text-muted-foreground">days remaining</span>
           </div>
         )}
       </div>
@@ -753,8 +738,8 @@ function ShareCard({ project }) {
 
   return (
     <div className="card p-5">
-      <h3 className="font-display font-semibold text-sm mb-4 flex items-center gap-2" style={{ color: '#1A0A35' }}>
-        <i className="fas fa-share-alt text-xs" style={{ color: '#5B2D8E' }} />Share this Project
+      <h3 className="font-display font-semibold text-sm mb-4 flex items-center gap-2 text-dark">
+        <Share2 className="w-4 h-4 text-primary-500"/>Share this Project
       </h3>
       <div className="grid grid-cols-4 gap-2 mb-3">
         {links.map(l => (
@@ -767,9 +752,9 @@ function ShareCard({ project }) {
         ))}
       </div>
       <button onClick={handleCopy}
-        className="w-full py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-80"
-        style={{ background: 'rgba(91,45,142,0.06)', color: '#5B2D8E', border: '1px solid rgba(91,45,142,0.1)', fontFamily: 'Sora,sans-serif' }}>
-        <i className="fas fa-copy text-[11px]" />Copy Link
+        className="w-full py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-80 text-primary-500"
+        style={{ background: 'rgba(91,45,142,0.06)', border: '1px solid rgba(91,45,142,0.1)' }}>
+        <Copy className="w-3.5 h-3.5"/>Copy Link
       </button>
     </div>
   )
@@ -783,7 +768,7 @@ function RelatedProjects({ projects, color }) {
     <div className="mt-16">
       <div className="flex items-center gap-3 mb-6">
         <span className="w-1 h-7 rounded-full" style={{ background: `linear-gradient(to bottom,${color},#F0A500)` }} />
-        <h2 className="font-display font-bold text-xl" style={{ color: '#1A0A35' }}>Related Projects</h2>
+        <h2 className="font-display font-bold text-xl text-dark">Related Projects</h2>
       </div>
       <div className="grid md:grid-cols-3 gap-6">
         {projects.map(p => {
@@ -798,21 +783,23 @@ function RelatedProjects({ projects, color }) {
                 {p.coverImage
                   ? <img src={p.coverImage} alt="" className="w-full h-full object-cover" />
                   : <div className="w-full h-full flex items-center justify-center">
-                      <i className="fas fa-seedling text-4xl" style={{ color: 'rgba(240,165,0,0.3)' }} />
+                      <Sprout className="w-10 h-10" style={{ color: 'rgba(240,165,0,0.3)' }}/>
                     </div>
                 }
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(to top,rgba(0,0,0,0.5),transparent)' }} />
-                <span className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full text-white capitalize"
-                  style={{ background: CAT_COLORS[p.category] || '#5B2D8E' }}>
-                  {p.category}
-                </span>
+                {p.category && (
+                  <span className="absolute top-3 left-3 text-[9px] font-bold uppercase tracking-[0.1em] text-white/65 capitalize"
+                    style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+                    {p.category}
+                  </span>
+                )}
               </div>
               <div className="p-4">
-                <h4 className="font-display font-semibold text-sm mb-2 line-clamp-2" style={{ color: '#1A0A35' }}>{p.title}</h4>
+                <h4 className="font-display font-semibold text-sm mb-2 line-clamp-2 text-dark">{p.title}</h4>
                 <div className="h-1.5 rounded-full overflow-hidden mb-1.5" style={{ background: 'rgba(91,45,142,0.08)' }}>
                   <div className="h-full rounded-full" style={{ width: `${pct2}%`, background: `linear-gradient(90deg,${CAT_COLORS[p.category] || '#5B2D8E'},#F0A500)` }} />
                 </div>
-                <div className="flex justify-between text-[10px]" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>
+                <div className="flex justify-between text-[10px] text-muted-foreground">
                   <span>{Number(p.raisedAmount || 0).toLocaleString()} XAF</span>
                   <span style={{ color: CAT_COLORS[p.category] || '#5B2D8E', fontWeight: 700 }}>{pct2}%</span>
                 </div>
@@ -830,14 +817,14 @@ function RelatedProjects({ projects, color }) {
 ════════════════════════════════════ */
 function MilestonesSection({ pct, color, project }) {
   const milestones = [
-    { pct: 25, label: 'Project Launched',      icon: 'fa-flag',         done: pct >= 25 },
-    { pct: 50, label: 'Halfway There',          icon: 'fa-road',         done: pct >= 50 },
-    { pct: 75, label: '75% Funded',             icon: 'fa-chart-line',   done: pct >= 75 },
-    { pct: 100, label: 'Goal Reached',          icon: 'fa-trophy',       done: pct >= 100 },
+    { pct: 25,  label: 'Project Launched', Icon: Flag,       done: pct >= 25 },
+    { pct: 50,  label: 'Halfway There',    Icon: Route,      done: pct >= 50 },
+    { pct: 75,  label: '75% Funded',       Icon: TrendingUp, done: pct >= 75 },
+    { pct: 100, label: 'Goal Reached',     Icon: Trophy,     done: pct >= 100 },
   ]
   return (
     <div className="card p-8">
-      <SectionTitle icon="fa-tasks" title="Funding Milestones" color={color} />
+      <SectionTitle Icon={ListChecks} title="Funding Milestones" color={color} />
       <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
         {milestones.map((m, i) => (
           <div key={i} className="text-center p-4 rounded-2xl transition-all"
@@ -847,11 +834,11 @@ function MilestonesSection({ pct, color, project }) {
             }}>
             <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"
               style={{ background: m.done ? `linear-gradient(135deg,${color},#F0A500)` : 'rgba(0,0,0,0.06)' }}>
-              <i className={`fas ${m.icon} text-sm`} style={{ color: m.done ? '#fff' : '#A3A3A3' }} />
+              <m.Icon className="w-5 h-5" style={{ color: m.done ? '#fff' : '#A3A3A3' }}/>
             </div>
             <div className="font-display font-bold text-lg" style={{ color: m.done ? color : '#D4D4D4' }}>{m.pct}%</div>
-            <div className="text-xs mt-1" style={{ color: m.done ? '#525252' : '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>{m.label}</div>
-            {m.done && <div className="mt-2 text-[9px] font-bold uppercase tracking-wider" style={{ color: '#16a34a' }}>✓ Reached</div>}
+            <div className="text-xs mt-1" style={{ color: m.done ? '#525252' : '#A3A3A3' }}>{m.label}</div>
+            {m.done && <div className="mt-2 text-[9px] font-bold uppercase tracking-wider text-primary-500">✓ Reached</div>}
           </div>
         ))}
       </div>
@@ -872,8 +859,8 @@ function DonorWall({ projectId, color }) {
 
   return (
     <div className="card p-8">
-      <SectionTitle icon="fa-users" title="Recent Donors" color={color} />
-      <p className="text-xs mt-1 mb-5" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>
+      <SectionTitle Icon={Users} title="Recent Donors" color={color} />
+      <p className="text-xs mt-1 mb-5 text-muted-foreground">
         Thank you to everyone who has contributed to this project.
       </p>
       {isLoading ? (
@@ -886,17 +873,17 @@ function DonorWall({ projectId, color }) {
             <div key={d.id} className="flex items-center gap-4 p-3 rounded-2xl transition-colors hover:bg-neutral-50">
               <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
                 style={{ background: `linear-gradient(135deg,${color},#F0A500)` }}>
-                {d.donorName === 'Anonymous' ? <i className="fas fa-user-secret text-xs" /> : d.donorName.charAt(0).toUpperCase()}
+                {d.donorName === 'Anonymous' ? <Eye className="w-4 h-4 opacity-50"/> : d.donorName.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-sm" style={{ color: '#1A0A35', fontFamily: 'Sora,sans-serif' }}>{d.donorName}</div>
-                {d.message && <div className="text-xs truncate italic" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>"{d.message}"</div>}
+                <div className="font-semibold text-sm text-dark">{d.donorName}</div>
+                {d.message && <div className="text-xs truncate italic text-muted-foreground">"{d.message}"</div>}
               </div>
               <div className="text-right flex-shrink-0">
                 <div className="font-display font-bold text-sm" style={{ color }}>
-                  {Number(d.amount).toLocaleString()} <span className="text-[10px] font-normal" style={{ color: '#A3A3A3' }}>XAF</span>
+                  {Number(d.amount).toLocaleString()} <span className="text-[10px] font-normal text-muted-foreground">XAF</span>
                 </div>
-                <div className="text-[10px]" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>
+                <div className="text-[10px] text-muted-foreground">
                   {formatDistanceToNow(new Date(d.createdAt), { addSuffix: true })}
                 </div>
               </div>
@@ -940,7 +927,7 @@ function CommentsSection({ projectId, color, user }) {
 
   return (
     <div className="card p-8">
-      <SectionTitle icon="fa-comments" title={`Discussion (${comments.length})`} color={color} />
+      <SectionTitle Icon={MessageSquare} title={`Discussion (${comments.length})`} color={color} />
 
       {/* Post form */}
       <form onSubmit={submit} className="mt-5 mb-6">
@@ -949,14 +936,14 @@ function CommentsSection({ projectId, color, user }) {
             value={guestName}
             onChange={e => setGuestName(e.target.value)}
             placeholder="Your name (optional)"
-            className="w-full px-4 py-3 rounded-xl text-sm outline-none mb-3"
-            style={{ background: '#F8F5FF', border: '1.5px solid rgba(91,45,142,0.12)', color: '#1A0A35', fontFamily: 'Poppins,sans-serif' }}
+            className="w-full px-4 py-3 rounded-xl text-sm outline-none mb-3 text-dark"
+            style={{ background: '#F8F5FF', border: '1.5px solid rgba(91,45,142,0.12)' }}
           />
         )}
         <div className="flex gap-3">
           <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1"
             style={{ background: `linear-gradient(135deg,${color},#7B4DB8)` }}>
-            {user ? (user.firstName?.[0] || '?') : <i className="fas fa-user text-xs" />}
+            {user ? (user.firstName?.[0] || '?') : <User className="w-4 h-4"/>}
           </div>
           <div className="flex-1">
             <textarea
@@ -964,16 +951,16 @@ function CommentsSection({ projectId, color, user }) {
               onChange={e => setText(e.target.value)}
               rows={3}
               placeholder="Share your thoughts on this project…"
-              className="w-full px-4 py-3 rounded-2xl text-sm outline-none resize-none"
-              style={{ background: '#F8F5FF', border: '1.5px solid rgba(91,45,142,0.12)', color: '#1A0A35', fontFamily: 'Poppins,sans-serif' }}
+              className="w-full px-4 py-3 rounded-2xl text-sm outline-none resize-none text-dark"
+              style={{ background: '#F8F5FF', border: '1.5px solid rgba(91,45,142,0.12)' }}
               onFocus={e => { e.target.style.borderColor = color; e.target.style.background = '#fff' }}
               onBlur={e => { e.target.style.borderColor = 'rgba(91,45,142,0.12)'; e.target.style.background = '#F8F5FF' }}
             />
             <div className="flex justify-end mt-2">
               <button type="submit" disabled={submitting || !text.trim()}
-                className="px-5 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-40"
-                style={{ background: `linear-gradient(135deg,${color},#7B4DB8)`, fontFamily: 'Sora,sans-serif' }}>
-                {submitting ? <><i className="fas fa-spinner animate-spin mr-1.5" />Posting…</> : <><i className="fas fa-paper-plane mr-1.5" />Post Comment</>}
+                className="px-5 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-40 flex items-center gap-2"
+                style={{ background: `linear-gradient(135deg,${color},#7B4DB8)` }}>
+                {submitting ? <><Loader2 className="w-3.5 h-3.5 animate-spin"/>Posting…</> : <><Send className="w-3.5 h-3.5"/>Post Comment</>}
               </button>
             </div>
           </div>
@@ -987,8 +974,8 @@ function CommentsSection({ projectId, color, user }) {
         </div>
       ) : comments.length === 0 ? (
         <div className="text-center py-8">
-          <i className="fas fa-comments text-3xl mb-3 block" style={{ color: 'rgba(91,45,142,0.12)' }} />
-          <p className="text-sm" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>No comments yet — be the first!</p>
+          <MessageSquare className="w-8 h-8 mx-auto mb-3" style={{ color: 'rgba(91,45,142,0.12)' }}/>
+          <p className="text-sm text-muted-foreground">No comments yet — be the first!</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -1000,12 +987,12 @@ function CommentsSection({ projectId, color, user }) {
               </div>
               <div className="flex-1 p-4 rounded-2xl" style={{ background: 'rgba(91,45,142,0.03)', border: '1px solid rgba(91,45,142,0.07)' }}>
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="font-semibold text-sm" style={{ color: '#1A0A35', fontFamily: 'Sora,sans-serif' }}>{c.name}</span>
-                  <span className="text-[10px]" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>
+                  <span className="font-semibold text-sm text-dark">{c.name}</span>
+                  <span className="text-[10px] text-muted-foreground">
                     {formatDistanceToNow(new Date(c.createdAt), { addSuffix: true })}
                   </span>
                 </div>
-                <p className="text-sm leading-relaxed" style={{ color: '#525252', fontFamily: 'Poppins,sans-serif' }}>{c.content}</p>
+                <p className="text-sm leading-relaxed text-[#525252]">{c.content}</p>
               </div>
             </div>
           ))}
@@ -1030,7 +1017,7 @@ function SubscribeCard({ projectId, color }) {
     try {
       await api.post('/newsletter/subscribe', { email })
       setDone(true)
-    } catch { setDone(true) /* treat as success to avoid leaking email errors */ }
+    } catch { setDone(true) }
     finally { setLoading(false) }
   }
 
@@ -1039,17 +1026,16 @@ function SubscribeCard({ projectId, color }) {
       <div className="flex items-center gap-3 mb-3">
         <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{ background: `${color}12` }}>
-          <i className="fas fa-bell text-sm" style={{ color }} />
+          <Bell className="w-4 h-4" style={{ color }}/>
         </div>
-        <h3 className="font-display font-semibold text-sm" style={{ color: '#1A0A35' }}>Get Updates</h3>
+        <h3 className="font-display font-semibold text-sm text-dark">Get Updates</h3>
       </div>
-      <p className="text-xs mb-4" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>
+      <p className="text-xs mb-4 text-muted-foreground">
         Be notified when this project posts new milestones or updates.
       </p>
       {done ? (
-        <div className="text-center py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
-          style={{ background: 'rgba(22,163,74,0.08)', color: '#16a34a' }}>
-          <i className="fas fa-check-circle" />Subscribed!
+        <div className="text-center py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-primary-500/8 text-primary-500">
+          <CheckCircle2 className="w-4 h-4"/>Subscribed!
         </div>
       ) : (
         <form onSubmit={submit} className="flex flex-col gap-2">
@@ -1059,14 +1045,15 @@ function SubscribeCard({ projectId, color }) {
             onChange={e => setEmail(e.target.value)}
             placeholder="your@email.com"
             required
-            className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
-            style={{ background: '#F8F5FF', border: '1.5px solid rgba(91,45,142,0.12)', color: '#1A0A35', fontFamily: 'Poppins,sans-serif' }}
+            className="w-full px-3 py-2.5 rounded-xl text-sm outline-none text-dark"
+            style={{ background: '#F8F5FF', border: '1.5px solid rgba(91,45,142,0.12)' }}
           />
           <button type="submit" disabled={loading}
             className="w-full py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2 transition-all hover:opacity-90"
-            style={{ background: `linear-gradient(135deg,${color},#7B4DB8)`, fontFamily: 'Sora,sans-serif' }}>
-            {loading ? <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-              : <><i className="fas fa-bell text-xs" />Notify Me</>}
+            style={{ background: `linear-gradient(135deg,${color},#7B4DB8)` }}>
+            {loading
+              ? <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+              : <><Bell className="w-3.5 h-3.5"/>Notify Me</>}
           </button>
         </form>
       )}
@@ -1077,14 +1064,14 @@ function SubscribeCard({ projectId, color }) {
 /* ════════════════════════════════════
    HELPERS
 ════════════════════════════════════ */
-function SectionTitle({ icon, title, color }) {
+function SectionTitle({ Icon, title, color }) {
   return (
     <div className="flex items-center gap-3">
       <div className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0"
         style={{ background: `${color}12` }}>
-        <i className={`fas ${icon} text-sm`} style={{ color }} />
+        <Icon className="w-4 h-4" style={{ color }}/>
       </div>
-      <h2 className="font-display font-bold text-lg" style={{ color: '#1A0A35' }}>{title}</h2>
+      <h2 className="font-display font-bold text-lg text-dark">{title}</h2>
     </div>
   )
 }
@@ -1112,13 +1099,13 @@ function PageSkeleton() {
 function NotFound() {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 px-6 text-center">
-      <i className="fas fa-seedling text-6xl" style={{ color: 'rgba(91,45,142,0.15)' }} />
-      <h2 className="font-display font-bold text-2xl" style={{ color: '#1A0A35' }}>Project Not Found</h2>
-      <p className="text-sm" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>
+      <Sprout className="w-16 h-16" style={{ color: 'rgba(91,45,142,0.15)' }}/>
+      <h2 className="font-display font-bold text-2xl text-dark">Project Not Found</h2>
+      <p className="text-sm text-muted-foreground">
         This project may have been removed or the link is incorrect.
       </p>
       <Link to="/projects" className="btn-secondary mt-2">
-        <i className="fas fa-arrow-left text-xs" />Browse All Projects
+        <ArrowLeft className="w-3 h-3"/>Browse All Projects
       </Link>
     </div>
   )

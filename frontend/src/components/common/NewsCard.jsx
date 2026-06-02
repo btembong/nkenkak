@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom'
 import { format, differenceInDays } from 'date-fns'
 import { Card } from '../ui/card'
+import {
+  Sprout, GraduationCap, HeartPulse, Users, Drum,
+  Star, Landmark, Newspaper, Flame, Eye, ArrowRight, Clock,
+} from 'lucide-react'
 
 function readTime(content = '') {
   const words = content.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length
@@ -8,15 +12,15 @@ function readTime(content = '') {
 }
 
 const CAT_STYLES = {
-  projects:  { bg: 'rgba(91,45,142,0.12)',  color: '#5B2D8E', grad: 'linear-gradient(135deg,#250F47,#5B2D8E)', icon: 'fa-seedling' },
-  education: { bg: 'rgba(2,132,199,0.12)',  color: '#0284c7', grad: 'linear-gradient(135deg,#0c4a6e,#0284c7)', icon: 'fa-graduation-cap' },
-  health:    { bg: 'rgba(22,163,74,0.12)',  color: '#16a34a', grad: 'linear-gradient(135deg,#14532d,#16a34a)', icon: 'fa-heartbeat' },
-  community: { bg: 'rgba(240,165,0,0.15)',  color: '#C87800', grad: 'linear-gradient(135deg,#78350f,#C87800)', icon: 'fa-users' },
-  culture:   { bg: 'rgba(220,38,38,0.10)',  color: '#dc2626', grad: 'linear-gradient(135deg,#7f1d1d,#dc2626)', icon: 'fa-drum' },
-  success:   { bg: 'rgba(16,185,129,0.12)', color: '#059669', grad: 'linear-gradient(135deg,#064e3b,#059669)', icon: 'fa-star' },
-  governance:{ bg: 'rgba(2,132,199,0.12)',  color: '#0369a1', grad: 'linear-gradient(135deg,#0c4a6e,#0369a1)', icon: 'fa-landmark' },
+  projects:  { grad: 'linear-gradient(135deg,#250F47,#5B2D8E)', Icon: Sprout },
+  education: { grad: 'linear-gradient(135deg,#3D1A6B,#5B2D8E)', Icon: GraduationCap },
+  health:    { grad: 'linear-gradient(135deg,#78350f,#C87800)',  Icon: HeartPulse },
+  community: { grad: 'linear-gradient(135deg,#250F47,#5B2D8E)', Icon: Users },
+  culture:   { grad: 'linear-gradient(135deg,#78350f,#C87800)',  Icon: Drum },
+  success:   { grad: 'linear-gradient(135deg,#78350f,#C87800)',  Icon: Star },
+  governance:{ grad: 'linear-gradient(135deg,#250F47,#5B2D8E)', Icon: Landmark },
 }
-const DEFAULT_STYLE = { bg: 'rgba(91,45,142,0.1)', color: '#5B2D8E', grad: 'linear-gradient(135deg,#250F47,#5B2D8E)', icon: 'fa-newspaper' }
+const DEFAULT_STYLE = { grad: 'linear-gradient(135deg,#250F47,#5B2D8E)', Icon: Newspaper }
 
 function isNew(dateStr) {
   if (!dateStr) return false
@@ -56,23 +60,28 @@ export default function NewsCard({ article: a, featured, horizontal }) {
           {a.coverImage
             ? <img src={a.coverImage} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             : <div className="w-full h-full flex items-center justify-center">
-                <i className={`fas ${catStyle.icon} text-lg`} style={{ color: 'rgba(255,255,255,0.3)' }} />
+                <catStyle.Icon className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.3)' }} />
               </div>}
           {_new && (
-            <span className="absolute top-1 left-1 w-2 h-2 rounded-full bg-green-500" style={{ boxShadow: '0 0 6px #22c55e' }} />
+            <span className="absolute top-1.5 left-1.5 w-2 h-2 rounded-full bg-primary-400 animate-pulse"
+              style={{ boxShadow: '0 0 6px rgba(91,45,142,0.8)' }} />
           )}
         </div>
         <div className="min-w-0 flex-1">
           {a.category && (
-            <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full inline-block mb-1"
-              style={{ background: catStyle.bg, color: catStyle.color }}>{a.category}</span>
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="w-[2px] h-3 rounded-full bg-primary-500/40 flex-shrink-0"/>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-primary-500/70">
+                {a.category}
+              </span>
+            </div>
           )}
           <h4 className="font-display font-semibold text-xs line-clamp-2 leading-snug mb-1 group-hover:text-primary-500 transition-colors text-dark">{a.title}</h4>
           <div className="flex items-center gap-1.5 text-[9px] text-muted-foreground">
             {a.publishedAt && <span>{format(new Date(a.publishedAt), 'MMM d')}</span>}
             <span>·</span>
             <span>{mins}m read</span>
-            {trending && <><span>·</span><span className="text-gold"><i className="fas fa-fire text-[8px]" /> Hot</span></>}
+            {trending && <><span>·</span><span className="text-gold flex items-center gap-0.5"><Flame className="w-2.5 h-2.5"/> Hot</span></>}
           </div>
         </div>
       </Link>
@@ -91,18 +100,20 @@ export default function NewsCard({ article: a, featured, horizontal }) {
         )}
         <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(26,10,53,0.97) 0%, rgba(26,10,53,0.5) 55%, transparent 100%)' }} />
         <div className="relative flex flex-col justify-end h-full p-6 md:p-8" style={{ minHeight: 400 }}>
-          <div className="flex items-center gap-2 mb-3 flex-wrap">
+          <div className="flex items-center gap-3 mb-3 flex-wrap">
             {a.category && (
-              <span className="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-gold/20 text-gold border border-gold/30">
+              <span className="text-[9px] font-bold uppercase tracking-[0.1em] px-2 py-0.5 rounded-sm text-gold/90"
+                style={{ border: '1px solid rgba(240,165,0,0.3)' }}>
                 {a.category}
               </span>
             )}
-            <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white/70">
-              <i className="fas fa-fire text-[8px] mr-1 text-gold" />Featured
+            <span className="text-[9px] font-semibold text-white/50 flex items-center gap-1">
+              <Flame className="w-3 h-3 text-gold/60"/>Featured
             </span>
             {_new && (
-              <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 bg-green-500/15 text-green-400 border border-green-500/20">
-                <span className="w-1.5 h-1.5 rounded-full inline-block animate-pulse bg-green-500" />New
+              <span className="flex items-center gap-1.5 text-[9px] font-semibold text-white/60">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse inline-block" />
+                New
               </span>
             )}
           </div>
@@ -117,14 +128,14 @@ export default function NewsCard({ article: a, featured, horizontal }) {
               <AuthorAvatar name={a.author_name || 'A'} avatarUrl={a.author_avatarUrl} size={7} />
               <div>
                 <div className="text-xs font-semibold text-white">{a.author_name || 'Nkenkak Team'}</div>
-                <div className="text-[10px] text-white/50">
+                <div className="text-[10px] text-white/50 flex items-center gap-1">
                   {a.publishedAt && format(new Date(a.publishedAt), 'MMM d, yyyy')} · {mins} min read
-                  {a.viewCount > 0 && <> · <i className="fas fa-eye text-[8px] ml-1" /> {a.viewCount}</>}
+                  {a.viewCount > 0 && <><Eye className="w-2.5 h-2.5 ml-1"/> {a.viewCount}</>}
                 </div>
               </div>
             </div>
             <div className="ml-auto flex items-center gap-1.5 text-sm font-semibold whitespace-nowrap text-gold">
-              Read Article <i className="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform" />
+              Read Article <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
         </div>
@@ -141,49 +152,53 @@ export default function NewsCard({ article: a, featured, horizontal }) {
           {a.coverImage
             ? <img src={a.coverImage} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             : <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-                <i className={`fas ${catStyle.icon} text-5xl`} style={{ color: 'rgba(255,255,255,0.2)' }} />
+                <catStyle.Icon className="w-12 h-12" style={{ color: 'rgba(255,255,255,0.2)' }} />
                 <span className="text-xs font-semibold capitalize text-white/30">{a.category || 'News'}</span>
               </div>}
-          {/* Gradient overlay */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 50%)' }} />
-          {/* Badges row */}
-          <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
-            {a.category && (
-              <span className="text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/92 backdrop-blur-sm"
-                style={{ color: catStyle.color }}>
-                {a.category}
-              </span>
-            )}
-            {_new && (
-              <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-full flex items-center gap-1 bg-green-500/90 text-white">
-                <span className="w-1.5 h-1.5 rounded-full inline-block animate-pulse bg-white" />New
-              </span>
-            )}
-          </div>
-          {/* Read time + trending */}
-          <div className="absolute top-3 right-3 flex items-center gap-1.5">
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 55%)' }} />
+
+          {/* New indicator — dot only, top-left */}
+          {_new && (
+            <span className="absolute top-3 left-3 w-2.5 h-2.5 rounded-full bg-primary-400 animate-pulse z-10"
+              style={{ boxShadow: '0 0 8px rgba(91,45,142,0.9)' }} />
+          )}
+
+          {/* Read time — bottom-right functional label */}
+          <div className="absolute bottom-3 right-3 flex items-center gap-1.5 z-10">
             {trending && (
-              <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-gold/90 text-white backdrop-blur-sm">
-                <i className="fas fa-fire text-[8px] mr-0.5" />Hot
+              <span className="text-[9px] font-semibold text-gold flex items-center gap-0.5"
+                style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
+                <Flame className="w-2.5 h-2.5"/>Hot
               </span>
             )}
-            <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-black/50 text-white/90 backdrop-blur-sm">
-              <i className="fas fa-clock text-[8px] mr-1" />{mins}m
+            <span className="text-[9px] font-medium text-white/75 flex items-center gap-0.5 bg-black/40 backdrop-blur-sm px-1.5 py-0.5 rounded">
+              <Clock className="w-2 h-2"/>{mins}m
             </span>
           </div>
         </div>
 
         {/* Content */}
         <div className="p-5 flex flex-col flex-1">
+          {/* Category label — hairline style */}
+          {a.category && (
+            <div className="flex items-center gap-1.5 mb-2.5">
+              <span className="w-[2px] h-3 rounded-full bg-primary-500/40 flex-shrink-0"/>
+              <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-primary-500/70">
+                {a.category}
+              </span>
+            </div>
+          )}
+
           <div className="flex items-center gap-2 mb-2.5">
             <AuthorAvatar name={a.author_name || 'A'} avatarUrl={a.author_avatarUrl} size={6} />
             <div className="min-w-0">
               <div className="text-xs font-semibold truncate text-[#404040]">
                 {a.author_name || 'Nkenkak Team'}
               </div>
-              <div className="text-[10px] text-muted-foreground">
+              <div className="text-[10px] text-muted-foreground flex items-center gap-1">
                 {a.publishedAt && format(new Date(a.publishedAt), 'MMM d, yyyy')}
-                {a.viewCount > 0 && <span className="ml-1.5"><i className="fas fa-eye text-[8px]" /> {a.viewCount}</span>}
+                {a.viewCount > 0 && <span className="flex items-center gap-0.5 ml-1"><Eye className="w-2 h-2"/> {a.viewCount}</span>}
               </div>
             </div>
           </div>
@@ -197,7 +212,7 @@ export default function NewsCard({ article: a, featured, horizontal }) {
           </p>
 
           <div className="flex items-center gap-1.5 text-sm font-semibold mt-auto pt-3 border-t border-primary-500/8 text-primary-500">
-            Read More <i className="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform" />
+            Read More <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
           </div>
         </div>
       </Card>
