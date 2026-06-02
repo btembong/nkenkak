@@ -3,1022 +3,1021 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>N-NDC Platform — Project Presentation</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<title>N-NDC Digital Platform — Presentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{width:100%;height:100%;overflow:hidden;font-family:'Poppins',sans-serif;background:#0D0520}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#F5F3F0;font-family:'Inter',sans-serif}
 
-  /* ── Slide container ── */
-  .deck{width:100vw;height:100vh;position:relative}
-  .slide{
-    position:absolute;inset:0;display:flex;flex-direction:column;
-    opacity:0;pointer-events:none;
-    transition:opacity .5s ease,transform .5s cubic-bezier(.16,1,.3,1);
-    transform:translateX(60px);
-    padding:60px 80px;
-  }
-  .slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
-  .slide.out{opacity:0;transform:translateX(-60px)}
+/* ── PROGRESS BAR ── */
+#pbar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#5B2D8E,#F0A500);z-index:300;transition:width .4s ease}
 
-  /* ── Backgrounds ── */
-  .bg-dark{background:linear-gradient(135deg,#0D0520 0%,#1A0A35 50%,#250F47 100%)}
-  .bg-purple{background:linear-gradient(135deg,#1A0A35,#5B2D8E)}
-  .bg-gold{background:linear-gradient(135deg,#7A4000,#C87800,#F0A500)}
-  .bg-light{background:linear-gradient(135deg,#F3EEF9,#EDE5F8);color:#1A0A35}
-  .bg-split{background:linear-gradient(135deg,#0D0520 0%,#250F47 100%)}
+/* ── DECK ── */
+.deck{width:100vw;height:100vh;position:relative;overflow:hidden}
+.slide{
+  position:absolute;inset:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .4s ease,transform .4s cubic-bezier(.22,1,.36,1);
+  transform:translateX(60px);
+  display:flex;flex-direction:column;
+  padding:56px 80px 76px;
+  overflow:hidden;
+}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.out{opacity:0;transform:translateX(-60px)}
 
-  /* ── Pattern overlay ── */
-  .pattern::before{
-    content:'';position:absolute;inset:0;pointer-events:none;
-    background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/svg%3E");
-  }
+/* ── BACKGROUNDS ── */
+.bg-white{background:#FFFFFF}
+.bg-off{background:#F7F5F2}
+.bg-purple{background:linear-gradient(135deg,#3D1A6E 0%,#5B2D8E 60%,#7040A8 100%)}
+.bg-light-purple{background:linear-gradient(135deg,#F3EEF9 0%,#EAE1F5 100%)}
+.bg-warm{background:#FAFAF8}
+.bg-ink{background:linear-gradient(135deg,#1A0A35 0%,#250F47 100%)}
 
-  /* ── Typography ── */
-  .eyebrow{font-family:'Sora',sans-serif;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#F0A500;display:flex;align-items:center;gap:8px;margin-bottom:16px}
-  .eyebrow::before{content:'';display:block;width:20px;height:2px;background:#F0A500;border-radius:2px;flex-shrink:0}
-  h1.hero-title{font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(2.4rem,5vw,4rem);color:#fff;line-height:1.08;margin-bottom:20px}
-  h1.hero-title span{color:#F0A500}
-  h2.slide-title{font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(1.8rem,3.5vw,2.8rem);color:#fff;line-height:1.12;margin-bottom:12px}
-  h2.slide-title span{color:#F0A500}
-  h2.slide-title.dark{color:#1A0A35}
-  h2.slide-title.dark span{color:#5B2D8E}
-  .lead{font-size:1.0625rem;line-height:1.85;color:rgba(255,255,255,0.7);max-width:680px;margin-bottom:32px}
-  .lead.dark{color:#525252}
+/* ── SLIDE NUMBER ── */
+.snum{position:absolute;top:24px;right:48px;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;letter-spacing:.18em;color:rgba(0,0,0,0.18);text-transform:uppercase}
+.snum-light{color:rgba(255,255,255,0.35)}
 
-  /* ── Cards ── */
-  .card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:24px;transition:transform .2s}
-  .card.light{background:#fff;border-color:rgba(91,45,142,0.1);box-shadow:0 4px 24px rgba(91,45,142,0.08)}
-  .card-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;flex-shrink:0}
-  .card h4{font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;color:#fff;margin-bottom:6px}
-  .card.light h4{color:#1A0A35}
-  .card p{font-size:.8rem;color:rgba(255,255,255,0.55);line-height:1.7}
-  .card.light p{color:#737373}
+/* ── TOP ACCENT ── */
+.top-bar{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#5B2D8E,#F0A500)}
 
-  /* ── Grid helpers ── */
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+/* ── EYEBROW ── */
+.ey{display:inline-flex;align-items:center;gap:10px;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5B2D8E;margin-bottom:16px}
+.ey::before{content:'';width:24px;height:2px;background:#F0A500;border-radius:2px;flex-shrink:0}
+.ey-light{color:#F0A500}
+.ey-light::before{background:rgba(255,255,255,0.5)}
 
-  /* ── Feature list ── */
-  .feat-list{list-style:none;space-y:10px}
-  .feat-list li{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;font-size:.875rem;color:rgba(255,255,255,0.75)}
-  .feat-list li i{color:#F0A500;margin-top:3px;flex-shrink:0;width:16px}
-  .feat-list.dark li{color:#404040}
-  .feat-list.dark li i{color:#5B2D8E}
+/* ── HEADINGS ── */
+.hero-h{font-family:'Sora',sans-serif;font-weight:900;font-size:clamp(2.8rem,5.2vw,4.6rem);color:#1A0A35;line-height:1.06;margin-bottom:18px}
+.hero-h span{color:#5B2D8E}
+.slide-h{font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(1.9rem,3.5vw,3rem);color:#1A0A35;line-height:1.1;margin-bottom:12px}
+.slide-h span{color:#5B2D8E}
+.slide-h-light{color:#fff}
+.slide-h-light span{color:#F0A500}
 
-  /* ── Pill badge ── */
-  .pill{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;font-weight:700;font-family:'Sora',sans-serif;letter-spacing:.05em;padding:5px 12px;border-radius:100px}
-  .pill-gold{background:rgba(240,165,0,0.15);color:#F0A500;border:1px solid rgba(240,165,0,0.3)}
-  .pill-purple{background:rgba(91,45,142,0.15);color:#9B6FD8;border:1px solid rgba(91,45,142,0.3)}
-  .pill-green{background:rgba(22,163,74,0.15);color:#4ade80;border:1px solid rgba(22,163,74,0.3)}
+/* ── DIVIDER ── */
+.div{width:48px;height:3px;background:linear-gradient(90deg,#5B2D8E,#F0A500);border-radius:3px;margin-bottom:22px}
 
-  /* ── Stat block ── */
-  .stat-block{text-align:center;padding:20px 12px;border-radius:16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)}
-  .stat-block .num{font-family:'Sora',sans-serif;font-size:2.2rem;font-weight:800;color:#F0A500;line-height:1}
-  .stat-block .lbl{font-size:.7rem;color:rgba(255,255,255,0.5);margin-top:4px;font-family:'Poppins',sans-serif}
+/* ── BODY TEXT ── */
+.lead{font-size:1rem;line-height:1.9;color:#525252;max-width:640px;margin-bottom:26px}
+.lead-light{color:rgba(255,255,255,0.65)}
 
-  /* ── Progress bar ── */
-  .prog-track{height:6px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;margin-top:6px}
-  .prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#5B2D8E,#F0A500)}
+/* ── CARDS ── */
+.card{background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:18px;padding:22px;box-shadow:0 2px 16px rgba(0,0,0,0.05)}
+.card-ink{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:18px;padding:22px}
+.card h4{font-family:'Sora',sans-serif;font-weight:700;font-size:.92rem;color:#1A0A35;margin-bottom:6px}
+.card-ink h4{color:#fff}
+.card p{font-size:.78rem;color:#737373;line-height:1.75}
+.card-ink p{color:rgba(255,255,255,0.55)}
 
-  /* ── Navigation ── */
-  #nav{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;z-index:100;background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:10px 20px}
-  #nav button{background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s}
-  #nav button:hover{background:rgba(255,255,255,0.1);color:#fff}
-  #counter{font-family:'Sora',sans-serif;font-size:.75rem;color:rgba(255,255,255,0.5);min-width:60px;text-align:center}
-  .dots{display:flex;gap:6px;align-items:center}
-  .dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:all .25s}
-  .dot.active{width:20px;border-radius:4px;background:#F0A500}
+/* ── CARD ICON ── */
+.cicon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:1rem;flex-shrink:0}
 
-  /* ── Slide number ── */
-  .slide-num{position:absolute;top:28px;right:40px;font-family:'Sora',sans-serif;font-size:.7rem;color:rgba(255,255,255,0.2);letter-spacing:.1em}
+/* ── STAT ── */
+.stat{text-align:center;padding:20px 12px;border-radius:16px;background:#fff;border:1px solid rgba(91,45,142,0.1);box-shadow:0 2px 12px rgba(91,45,142,0.06)}
+.stat .n{font-family:'Sora',sans-serif;font-size:2.4rem;font-weight:900;color:#5B2D8E;line-height:1}
+.stat .l{font-size:.65rem;color:#A3A3A3;margin-top:5px;letter-spacing:.08em;text-transform:uppercase;font-family:'Sora',sans-serif}
 
-  /* ── Decorative orb ── */
-  .orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px)}
+/* ── PILL ── */
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;font-family:'Sora',sans-serif;letter-spacing:.04em;padding:6px 14px;border-radius:100px}
+.pp{background:rgba(91,45,142,0.1);color:#5B2D8E;border:1px solid rgba(91,45,142,0.2)}
+.pg{background:rgba(240,165,0,0.12);color:#B07800;border:1px solid rgba(240,165,0,0.3)}
+.pgreen{background:rgba(22,163,74,0.1);color:#16a34a;border:1px solid rgba(22,163,74,0.2)}
+.pblue{background:rgba(59,130,246,0.1);color:#2563eb;border:1px solid rgba(59,130,246,0.2)}
+.pill-inv{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
 
-  /* ── Tag ── */
-  .tag{display:inline-block;font-size:.65rem;font-weight:700;font-family:'Sora',sans-serif;padding:3px 10px;border-radius:100px;background:rgba(91,45,142,0.12);color:#5B2D8E;border:1px solid rgba(91,45,142,0.15);margin:3px}
+/* ── FEATURE LIST ── */
+.flist{list-style:none}
+.flist li{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;font-size:.88rem;color:#404040;line-height:1.55}
+.flist li i{color:#5B2D8E;margin-top:3px;flex-shrink:0;font-size:.72rem;width:14px}
+.flist-light li{color:rgba(255,255,255,0.75)}
+.flist-light li i{color:#F0A500}
 
-  /* ── Divider ── */
-  .divider{width:48px;height:3px;background:linear-gradient(90deg,#5B2D8E,#F0A500);border-radius:2px;margin-bottom:20px}
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:28px}
+.tl::before{content:'';position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:linear-gradient(180deg,#5B2D8E,rgba(91,45,142,0.1))}
+.tli{position:relative;margin-bottom:20px}
+.tli::before{content:'';position:absolute;left:-24px;top:6px;width:10px;height:10px;border-radius:50%;background:#5B2D8E;box-shadow:0 0 0 3px rgba(91,45,142,0.15)}
+.tli .yr{font-family:'Sora',sans-serif;font-size:.6rem;font-weight:700;color:#F0A500;letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
+.tli h5{font-family:'Sora',sans-serif;font-size:.86rem;font-weight:700;color:#1A0A35;margin-bottom:3px}
+.tli p{font-size:.74rem;color:#737373;line-height:1.65}
 
-  /* ── Tech row ── */
-  .tech-chip{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:12px;font-size:.78rem;font-weight:600;font-family:'Sora',sans-serif;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);margin:4px}
+/* ── TECH CHIP ── */
+.chip{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:10px;font-size:.78rem;font-weight:600;font-family:'Sora',sans-serif;background:#F5F3F0;border:1px solid rgba(0,0,0,0.08);color:#2D2D2D;margin:3px}
+.chip-inv{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.85)}
 
-  /* ── Centered layout ── */
-  .center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;height:100%}
+/* ── PROGRESS ── */
+.prog{height:7px;background:rgba(0,0,0,0.06);border-radius:6px;overflow:hidden;margin-top:8px}
+.prog-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#5B2D8E,#F0A500)}
 
-  /* ── Two-col layout ── */
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;flex:1}
-  .two-col-left{display:grid;grid-template-columns:45% 1fr;gap:60px;align-items:start;flex:1}
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:68px;align-items:center;flex:1}
+.two-col-top{display:grid;grid-template-columns:1fr 1fr;gap:68px;align-items:start;flex:1}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;flex:1;position:relative}
 
-  /* ── Timeline ── */
-  .timeline{position:relative;padding-left:28px}
-  .timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:rgba(240,165,0,0.2)}
-  .tl-item{position:relative;margin-bottom:20px}
-  .tl-item::before{content:'';position:absolute;left:-24px;top:6px;width:10px;height:10px;border-radius:50%;background:#F0A500;box-shadow:0 0 0 3px rgba(240,165,0,0.2)}
-  .tl-item .year{font-family:'Sora',sans-serif;font-size:.65rem;font-weight:700;color:#F0A500;letter-spacing:.1em;margin-bottom:2px}
-  .tl-item h5{font-family:'Sora',sans-serif;font-size:.85rem;font-weight:700;color:#fff;margin-bottom:3px}
-  .tl-item p{font-size:.75rem;color:rgba(255,255,255,0.5);line-height:1.6}
+/* ── MOCKUP ── */
+.mockup{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)}
+.mbar{height:30px;background:#F5F3F0;display:flex;align-items:center;padding:0 12px;gap:6px;border-bottom:1px solid rgba(0,0,0,0.06)}
+.mdot{width:8px;height:8px;border-radius:50%}
+.mbody{padding:16px;font-size:.7rem;color:#737373;font-family:'Inter',sans-serif;line-height:1.7}
 
-  /* ── Screen mockup ── */
-  .mockup{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;overflow:hidden}
-  .mockup-bar{height:32px;background:rgba(255,255,255,0.05);display:flex;align-items:center;padding:0 12px;gap:6px}
-  .mockup-dot{width:8px;height:8px;border-radius:50%}
-  .mockup-body{padding:16px;font-size:.72rem;color:rgba(255,255,255,0.5);font-family:'Poppins',sans-serif;line-height:1.7}
+/* ── CHECK ITEM ── */
+.check{display:flex;align-items:center;gap:11px;padding:10px 14px;border-radius:10px;background:rgba(22,163,74,0.06);border:1px solid rgba(22,163,74,0.15);margin-bottom:8px;font-size:.86rem;color:#1A0A35}
+.check i{color:#16a34a;font-size:.78rem;flex-shrink:0}
 
-  /* ── Scrollable content ── */
-  .scroll-content{flex:1;overflow-y:auto;padding-right:8px}
-  .scroll-content::-webkit-scrollbar{width:3px}
-  .scroll-content::-webkit-scrollbar-thumb{background:#5B2D8E;border-radius:2px}
+/* ── LIVE BADGE ── */
+.live-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.25);font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:#16a34a}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#16a34a;animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(22,163,74,0.2)}50%{box-shadow:0 0 0 7px rgba(22,163,74,0.06)}}
+
+/* ── SECTION LABEL ── */
+.slbl{font-family:'Sora',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#A3A3A3;margin-bottom:6px}
+
+/* ── SCROLL ── */
+.scroll{flex:1;overflow-y:auto;padding-right:6px}
+.scroll::-webkit-scrollbar{width:3px}
+.scroll::-webkit-scrollbar-thumb{background:rgba(91,45,142,0.2);border-radius:2px}
+
+/* ── TECH SECTION HEADER ── */
+.tlbl{font-family:'Sora',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#5B2D8E;margin-bottom:8px;margin-top:16px;display:flex;align-items:center;gap:8px}
+.tlbl::after{content:'';flex:1;height:1px;background:rgba(91,45,142,0.15)}
+
+/* ── NAV ── */
+#nav{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;z-index:200;background:rgba(255,255,255,0.9);backdrop-filter:blur(16px);border:1px solid rgba(0,0,0,0.08);border-radius:100px;padding:8px 18px;box-shadow:0 4px 24px rgba(0,0,0,0.1)}
+#nav button{background:none;border:none;color:#737373;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .18s}
+#nav button:hover{background:rgba(91,45,142,0.08);color:#5B2D8E}
+.dots{display:flex;gap:5px;align-items:center}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,0.15);cursor:pointer;transition:all .22s;border:none}
+.dot.active{width:22px;border-radius:3px;background:#5B2D8E}
+#counter{font-family:'Sora',sans-serif;font-size:.7rem;color:#A3A3A3;min-width:52px;text-align:center}
+
+/* ── LOGO ── */
+.logo-img{height:56px;object-fit:contain}
+.logo-icon-img{height:56px;width:56px;object-fit:contain}
+
+/* ── PURPLE SIDEBAR ── */
+.sidebar-purple{background:linear-gradient(180deg,#5B2D8E,#3D1A6E);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px}
 </style>
 </head>
 <body>
 
+<div id="pbar" style="width:7.14%"></div>
 <div class="deck" id="deck">
 
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 1 — TITLE
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-dark pattern active" id="s1">
-    <div class="orb" style="width:500px;height:500px;top:-100px;right:-100px;background:radial-gradient(circle,rgba(91,45,142,0.35),transparent 70%)"></div>
-    <div class="orb" style="width:300px;height:300px;bottom:0;left:-80px;background:radial-gradient(circle,rgba(240,165,0,0.12),transparent 70%)"></div>
-    <div class="center" style="position:relative">
-      <div style="margin-bottom:24px">
-        <div style="width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#5B2D8E,#7B4DB8);display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
-          <i class="fas fa-heart" style="color:#F0A500;font-size:1.8rem"></i>
-        </div>
-      </div>
-      <div class="eyebrow" style="justify-content:center">N-NDC Digital Platform</div>
-      <h1 class="hero-title" style="text-align:center;max-width:800px">
-        Nkenkak-Ngiesang<br/><span>Development Council</span>
-      </h1>
-      <p style="font-size:1rem;color:rgba(255,255,255,0.55);max-width:560px;text-align:center;line-height:1.8;margin-bottom:40px">
-        A full-featured community platform uniting village residents, diaspora members, donors and leaders — built to drive real development from wherever you are in the world.
-      </p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <span class="pill pill-gold"><i class="fas fa-globe"></i> South West Region, Cameroon</span>
-        <span class="pill pill-purple"><i class="fas fa-calendar"></i> Registered June 2024</span>
-        <span class="pill pill-green"><i class="fas fa-check-circle"></i> Ready for Launch</span>
-      </div>
+<!-- ══════════════════════════════════════════
+     SLIDE 1 — TITLE
+══════════════════════════════════════════ -->
+<div class="slide bg-white active" id="s1">
+  <div class="top-bar"></div>
+  <!-- Large decorative circle top-right -->
+  <div style="position:absolute;top:-120px;right:-120px;width:480px;height:480px;border-radius:50%;background:linear-gradient(135deg,rgba(91,45,142,0.07),rgba(240,165,0,0.04));pointer-events:none"></div>
+  <div style="position:absolute;bottom:-80px;left:-80px;width:320px;height:320px;border-radius:50%;background:rgba(91,45,142,0.04);pointer-events:none"></div>
+
+  <div class="center">
+    <!-- Real Logo -->
+    <div style="margin-bottom:28px">
+      <img src="nkek-logo.png" alt="N-NDC Logo" style="height:90px;object-fit:contain"/>
     </div>
-    <div class="slide-num">01 / 14</div>
+
+    <div class="ey" style="justify-content:center;margin-bottom:18px">N-NDC Digital Platform — 2026</div>
+    <h1 class="hero-h" style="text-align:center;max-width:820px">
+      Nkenkak-Ngiesang<br/><span>Development Council</span>
+    </h1>
+    <p style="font-size:1.05rem;color:#737373;max-width:580px;text-align:center;line-height:1.95;margin-bottom:38px">
+      A complete digital platform uniting village residents, diaspora members, donors and leaders — built to drive real development from anywhere in the world.
+    </p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px">
+      <span class="pill pp"><i class="fas fa-map-marker-alt"></i> South West Region, Cameroon</span>
+      <span class="pill pg"><i class="fas fa-calendar"></i> Registered June 2024</span>
+      <span class="pill pgreen"><i class="fas fa-rocket"></i> Now Live</span>
+    </div>
+    <div class="live-badge"><div class="live-dot"></div> nkenkak-duk6.vercel.app</div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 2 — WHO WE ARE
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-dark pattern" id="s2">
-    <div class="orb" style="width:400px;height:400px;top:-80px;right:0;background:radial-gradient(circle,rgba(240,165,0,0.1),transparent 70%)"></div>
-    <div class="eyebrow">Who We Are</div>
-    <div class="two-col" style="flex:1">
-      <div>
-        <h2 class="slide-title">The <span>Nkenkak-Ngiesang</span> Community</h2>
-        <p class="lead">A proud community of the South West Region of Cameroon, united by heritage, culture and a shared commitment to development — both at home and across the diaspora.</p>
-        <div class="timeline">
-          <div class="tl-item">
-            <div class="year">ORIGIN</div>
-            <h5>Village of Nkenkak-Ngiesang</h5>
-            <p>Located in the South West Region of Cameroon, home to the Ngiemboon-speaking people.</p>
-          </div>
-          <div class="tl-item">
-            <div class="year">JUNE 2024</div>
-            <h5>N-NDC Officially Registered</h5>
-            <p>Initiated by Chief N'fonji-Sang, supported by village elites at an all-Njiesang meeting on 15 June 2024.</p>
-          </div>
-          <div class="tl-item">
-            <div class="year">2025–2026</div>
-            <h5>Platform Built & Launched</h5>
-            <p>Full digital platform developed to connect 40+ registered members across 14+ countries.</p>
-          </div>
-          <div class="tl-item">
-            <div class="year">VISION</div>
-            <h5>Thriving, Self-Sufficient Village</h5>
-            <p>Quality education, clean water, preserved culture — for every generation to come.</p>
-          </div>
-        </div>
-      </div>
-      <div class="grid-2" style="align-content:start">
-        <div class="stat-block"><div class="num">40+</div><div class="lbl">Registered Members</div></div>
-        <div class="stat-block"><div class="num">14+</div><div class="lbl">Countries</div></div>
-        <div class="stat-block"><div class="num">2024</div><div class="lbl">Year Founded</div></div>
-        <div class="stat-block"><div class="num">100%</div><div class="lbl">Transparent Finances</div></div>
-        <div class="card" style="grid-column:span 2;margin-top:4px">
-          <p style="font-size:.8rem;color:rgba(255,255,255,0.6);font-style:italic;line-height:1.7">"N-NDC is a nonprofit, non-governmental and apolitical body aimed at promoting development and cultural activities within and without Nkenkak-Ngiesang community."</p>
-          <p style="font-size:.7rem;color:#F0A500;margin-top:8px;font-weight:600">— N-NDC Mission Statement</p>
-        </div>
-      </div>
-    </div>
-    <div class="slide-num">02 / 14</div>
-  </div>
+  <!-- Bottom strip -->
+  <div style="position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#5B2D8E,#F0A500)"></div>
+  <div class="snum">01 / 14</div>
+</div>
 
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 3 — THE CHALLENGE
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-purple pattern" id="s3">
-    <div class="eyebrow">The Challenge</div>
-    <h2 class="slide-title">Why This Platform <span>Was Needed</span></h2>
-    <p class="lead" style="margin-bottom:24px">The community faced real coordination problems that made collective development difficult, slow and untransparent.</p>
-    <div class="grid-3" style="flex:1;align-content:start">
-      <div class="card">
-        <div class="card-icon" style="background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.2)">
-          <i class="fas fa-unlink" style="color:#f87171;font-size:1.2rem"></i>
-        </div>
-        <h4>Disconnected Diaspora</h4>
-        <p>Members in France, Germany, UK and USA had no reliable way to stay connected to village decisions or contribute meaningfully.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:rgba(240,165,0,0.12);border:1px solid rgba(240,165,0,0.2)">
-          <i class="fas fa-eye-slash" style="color:#F0A500;font-size:1.2rem"></i>
-        </div>
-        <h4>No Financial Transparency</h4>
-        <p>Donations were collected informally with no public tracking, creating distrust among potential donors abroad.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.2)">
-          <i class="fas fa-comments-dollar" style="color:#c084fc;font-size:1.2rem"></i>
-        </div>
-        <h4>No Payment Infrastructure</h4>
-        <p>No secure, structured way to accept donations from abroad — MoMo, PayPal and cards were not integrated.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:rgba(2,132,199,0.12);border:1px solid rgba(2,132,199,0.2)">
-          <i class="fas fa-vote-yea" style="color:#38bdf8;font-size:1.2rem"></i>
-        </div>
-        <h4>No Governance Tools</h4>
-        <p>Elections, petitions and community polls happened informally with no secure, verifiable process.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:rgba(22,163,74,0.12);border:1px solid rgba(22,163,74,0.2)">
-          <i class="fas fa-book-dead" style="color:#4ade80;font-size:1.2rem"></i>
-        </div>
-        <h4>Dying Cultural Heritage</h4>
-        <p>The Ngiemboon language and cultural traditions were undocumented, especially for younger diaspora generations.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)">
-          <i class="fas fa-users-slash" style="color:#f87171;font-size:1.2rem"></i>
-        </div>
-        <h4>Scattered Communication</h4>
-        <p>News, events and updates were shared via WhatsApp groups and word of mouth — inconsistent and unreliable.</p>
-      </div>
-    </div>
-    <div class="slide-num">03 / 14</div>
+<!-- ══════════════════════════════════════════
+     SLIDE 2 — WHO WE ARE
+══════════════════════════════════════════ -->
+<div class="slide bg-off" id="s2">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+    <img src="nkek-logoicon.png" alt="" style="height:32px;opacity:.7"/>
+    <div class="ey" style="margin-bottom:0">Who We Are</div>
   </div>
-
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 4 — THE SOLUTION
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-dark pattern" id="s4">
-    <div class="orb" style="width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(91,45,142,0.2),transparent 70%)"></div>
-    <div class="center" style="position:relative">
-      <div class="eyebrow" style="justify-content:center">Our Solution</div>
-      <h2 class="slide-title" style="text-align:center;max-width:800px">One Platform. <span>Everything Connected.</span></h2>
-      <p style="font-size:.95rem;color:rgba(255,255,255,0.6);max-width:620px;text-align:center;line-height:1.8;margin-bottom:40px">
-        The N-NDC platform is a single, unified web application that handles every aspect of community life — from donating to a school project, to voting in elections, to learning the Ngiemboon language.
-      </p>
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;width:100%;max-width:900px">
-        {[
-          ['fa-hand-holding-heart','Donations','#F0A500'],
-          ['fa-seedling','Projects','#22c55e'],
-          ['fa-users','Governance','#a855f7'],
-          ['fa-language','Culture','#3b82f6'],
-          ['fa-newspaper','News & Events','#F0A500'],
-        ]}
-        <div class="card" style="text-align:center;padding:20px 12px">
-          <i class="fas fa-hand-holding-heart" style="color:#F0A500;font-size:1.5rem;margin-bottom:10px;display:block"></i>
-          <div style="font-family:'Sora',sans-serif;font-size:.78rem;font-weight:700;color:#fff">Donations</div>
+  <div class="two-col-top" style="flex:1">
+    <div>
+      <h2 class="slide-h">The <span>Nkenkak-Ngiesang</span><br/>Community</h2>
+      <div class="div"></div>
+      <p class="lead">A proud community of the South West Region of Cameroon, united by heritage, culture and a shared commitment to development — at home and across the global diaspora.</p>
+      <div class="tl">
+        <div class="tli">
+          <div class="yr">Origin</div>
+          <h5>Village of Nkenkak-Ngiesang</h5>
+          <p>Located in the South West Region of Cameroon, home to the Ngiemboon-speaking people.</p>
         </div>
-        <div class="card" style="text-align:center;padding:20px 12px">
-          <i class="fas fa-seedling" style="color:#22c55e;font-size:1.5rem;margin-bottom:10px;display:block"></i>
-          <div style="font-family:'Sora',sans-serif;font-size:.78rem;font-weight:700;color:#fff">Projects</div>
+        <div class="tli">
+          <div class="yr">June 2024</div>
+          <h5>N-NDC Officially Registered</h5>
+          <p>Initiated by Chief N'fonji-Sang, supported by village elites at the all-Njiesang general meeting on 15 June 2024.</p>
         </div>
-        <div class="card" style="text-align:center;padding:20px 12px">
-          <i class="fas fa-vote-yea" style="color:#a855f7;font-size:1.5rem;margin-bottom:10px;display:block"></i>
-          <div style="font-family:'Sora',sans-serif;font-size:.78rem;font-weight:700;color:#fff">Governance</div>
+        <div class="tli">
+          <div class="yr">2025–2026</div>
+          <h5>Digital Platform Built & Launched</h5>
+          <p>Full platform developed to connect 40+ registered members across 14+ countries worldwide.</p>
         </div>
-        <div class="card" style="text-align:center;padding:20px 12px">
-          <i class="fas fa-language" style="color:#3b82f6;font-size:1.5rem;margin-bottom:10px;display:block"></i>
-          <div style="font-family:'Sora',sans-serif;font-size:.78rem;font-weight:700;color:#fff">Culture</div>
-        </div>
-        <div class="card" style="text-align:center;padding:20px 12px">
-          <i class="fas fa-newspaper" style="color:#F0A500;font-size:1.5rem;margin-bottom:10px;display:block"></i>
-          <div style="font-family:'Sora',sans-serif;font-size:.78rem;font-weight:700;color:#fff">News & Events</div>
-        </div>
-        <div class="card" style="text-align:center;padding:20px 12px">
-          <i class="fas fa-comments" style="color:#f472b6;font-size:1.5rem;margin-bottom:10px;display:block"></i>
-          <div style="font-family:'Sora',sans-serif;font-size:.78rem;font-weight:700;color:#fff">Community Forum</div>
-        </div>
-        <div class="card" style="text-align:center;padding:20px 12px">
-          <i class="fas fa-user-shield" style="color:#F0A500;font-size:1.5rem;margin-bottom:10px;display:block"></i>
-          <div style="font-family:'Sora',sans-serif;font-size:.78rem;font-weight:700;color:#fff">Member Portal</div>
-        </div>
-        <div class="card" style="text-align:center;padding:20px 12px">
-          <i class="fas fa-video" style="color:#22c55e;font-size:1.5rem;margin-bottom:10px;display:block"></i>
-          <div style="font-family:'Sora',sans-serif;font-size:.78rem;font-weight:700;color:#fff">Live Meetings</div>
-        </div>
-        <div class="card" style="text-align:center;padding:20px 12px">
-          <i class="fas fa-graduation-cap" style="color:#f59e0b;font-size:1.5rem;margin-bottom:10px;display:block"></i>
-          <div style="font-family:'Sora',sans-serif;font-size:.78rem;font-weight:700;color:#fff">Scholarships</div>
-        </div>
-        <div class="card" style="text-align:center;padding:20px 12px">
-          <i class="fas fa-hands-helping" style="color:#a855f7;font-size:1.5rem;margin-bottom:10px;display:block"></i>
-          <div style="font-family:'Sora',sans-serif;font-size:.78rem;font-weight:700;color:#fff">Mentorship</div>
+        <div class="tli">
+          <div class="yr">Vision</div>
+          <h5>Thriving, Self-Sufficient Village</h5>
+          <p>Quality education, clean water, preserved culture — for every generation to come.</p>
         </div>
       </div>
     </div>
-    <div class="slide-num">04 / 14</div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 5 — DONATIONS & PROJECTS
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-dark pattern" id="s5">
-    <div class="eyebrow">Core Feature</div>
-    <div class="two-col" style="flex:1">
-      <div>
-        <h2 class="slide-title">Donations &amp; <span>Project Funding</span></h2>
-        <p class="lead">The heart of the platform — community members and diaspora can fund real village projects with full transparency on every franc raised.</p>
-        <ul class="feat-list">
-          <li><i class="fas fa-check-circle"></i> Project pages with goals, progress bars and real-time raised amounts</li>
-          <li><i class="fas fa-check-circle"></i> Multiple payment methods: MTN MoMo, Orange Money, PayPal, bank card</li>
-          <li><i class="fas fa-check-circle"></i> Donation history and receipts in member portal</li>
-          <li><i class="fas fa-check-circle"></i> Project milestones with photo and update reports</li>
-          <li><i class="fas fa-check-circle"></i> Featured projects highlighted on homepage with live funding stats</li>
-          <li><i class="fas fa-check-circle"></i> Admin can mark projects as active, paused or complete</li>
-        </ul>
-        <div style="margin-top:24px;display:flex;gap:8px;flex-wrap:wrap">
-          <span class="pill pill-gold"><i class="fas fa-shield-alt"></i> 100% Transparent</span>
-          <span class="pill pill-green"><i class="fas fa-globe"></i> Accepts International Payments</span>
-        </div>
+    <div>
+      <div class="g2" style="margin-bottom:14px">
+        <div class="stat"><div class="n">40+</div><div class="l">Registered Members</div></div>
+        <div class="stat"><div class="n">14+</div><div class="l">Countries</div></div>
+        <div class="stat"><div class="n">2024</div><div class="l">Year Founded</div></div>
+        <div class="stat"><div class="n">100%</div><div class="l">Transparent Finances</div></div>
       </div>
-      <div>
-        <div class="mockup">
-          <div class="mockup-bar">
-            <div class="mockup-dot" style="background:#ff5f57"></div>
-            <div class="mockup-dot" style="background:#febc2e"></div>
-            <div class="mockup-dot" style="background:#28c840"></div>
-            <span style="font-size:.6rem;color:rgba(255,255,255,0.3);margin-left:8px">nkenkak-ngiesang.com/projects</span>
-          </div>
-          <div class="mockup-body">
-            <div style="background:linear-gradient(135deg,#250F47,#5B2D8E);border-radius:12px;padding:16px;margin-bottom:10px">
-              <div style="font-size:.6rem;color:#F0A500;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Education</div>
-              <div style="font-size:.9rem;font-weight:700;color:#fff;margin-bottom:6px">Primary School Renovation</div>
-              <div style="font-size:.65rem;color:rgba(255,255,255,0.5);margin-bottom:10px">Renovating 6 classrooms for 400+ students with modern learning facilities.</div>
-              <div style="display:flex;justify-content:space-between;font-size:.6rem;color:rgba(255,255,255,0.5);margin-bottom:4px">
-                <span>Raised: <strong style="color:#F0A500">2,100,000 XAF</strong></span><span style="color:#F0A500">42%</span>
-              </div>
-              <div class="prog-track"><div class="prog-fill" style="width:42%"></div></div>
+      <div class="card" style="border-left:4px solid #5B2D8E;border-radius:0 16px 16px 0;padding:22px">
+        <p style="font-size:.88rem;color:#404040;font-style:italic;line-height:1.9;margin-bottom:10px">"N-NDC is a nonprofit, non-governmental and apolitical body aimed at promoting development and cultural activities within and without Nkenkak-Ngiesang community."</p>
+        <div style="font-size:.7rem;color:#5B2D8E;font-weight:700;font-family:'Sora',sans-serif">— N-NDC Mission Statement</div>
+      </div>
+    </div>
+  </div>
+  <div class="snum">02 / 14</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SLIDE 3 — THE CHALLENGE
+══════════════════════════════════════════ -->
+<div class="slide bg-white" id="s3">
+  <div class="ey">The Challenge</div>
+  <h2 class="slide-h">Why This Platform <span>Was Needed</span></h2>
+  <p class="lead" style="margin-bottom:18px">The community faced real coordination problems that made collective development difficult, slow and untransparent.</p>
+  <div class="g3" style="flex:1;align-content:start">
+    <div class="card">
+      <div class="cicon" style="background:#F5F3F0;border:1px solid #E5E0E0"><i class="fas fa-unlink" style="color:#5B2D8E"></i></div>
+      <h4>Disconnected Diaspora</h4>
+      <p>Members abroad had no reliable way to stay connected to village decisions or contribute meaningfully.</p>
+    </div>
+    <div class="card">
+      <div class="cicon" style="background:#F5F3F0;border:1px solid #E5E0E0"><i class="fas fa-eye-slash" style="color:#5B2D8E"></i></div>
+      <h4>No Financial Transparency</h4>
+      <p>Donations collected informally with no public tracking, creating distrust among potential donors abroad.</p>
+    </div>
+    <div class="card">
+      <div class="cicon" style="background:#F5F3F0;border:1px solid #E5E0E0"><i class="fas fa-credit-card" style="color:#5B2D8E"></i></div>
+      <h4>No Payment Infrastructure</h4>
+      <p>No secure way to accept international donations — MoMo, PayPal and cards were not integrated.</p>
+    </div>
+    <div class="card">
+      <div class="cicon" style="background:#F5F3F0;border:1px solid #E5E0E0"><i class="fas fa-vote-yea" style="color:#5B2D8E"></i></div>
+      <h4>No Governance Tools</h4>
+      <p>Elections, petitions and polls happened informally with no secure or verifiable process.</p>
+    </div>
+    <div class="card">
+      <div class="cicon" style="background:#F5F3F0;border:1px solid #E5E0E0"><i class="fas fa-book" style="color:#5B2D8E"></i></div>
+      <h4>Dying Cultural Heritage</h4>
+      <p>The Ngiemboon language and traditions were undocumented — especially for younger diaspora generations.</p>
+    </div>
+    <div class="card">
+      <div class="cicon" style="background:#F5F3F0;border:1px solid #E5E0E0"><i class="fas fa-comment-slash" style="color:#5B2D8E"></i></div>
+      <h4>Scattered Communication</h4>
+      <p>News and updates shared via WhatsApp only — inconsistent, unarchived and unreliable.</p>
+    </div>
+  </div>
+  <div class="snum">03 / 14</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SLIDE 4 — THE SOLUTION
+══════════════════════════════════════════ -->
+<div class="slide bg-purple" id="s4">
+  <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none"></div>
+  <div class="center">
+    <div class="ey ey-light" style="justify-content:center">Our Solution</div>
+    <h2 class="slide-h slide-h-light" style="text-align:center;max-width:760px;font-size:clamp(1.9rem,4vw,3.2rem)">
+      One Platform. <span>Everything Connected.</span>
+    </h2>
+    <div class="div" style="margin:0 auto 22px"></div>
+    <p style="font-size:.96rem;color:rgba(255,255,255,0.62);max-width:600px;text-align:center;line-height:1.9;margin-bottom:34px">
+      The N-NDC platform is a unified web application handling every aspect of community life — from donating to a school project, to voting in elections, to learning the Ngiemboon language.
+    </p>
+    <div class="g5" style="width:100%;max-width:940px">
+      <div class="card-ink" style="text-align:center;padding:20px 10px">
+        <i class="fas fa-hand-holding-heart" style="color:#F0A500;font-size:1.4rem;margin-bottom:10px;display:block"></i>
+        <div style="font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:#fff">Donations</div>
+      </div>
+      <div class="card-ink" style="text-align:center;padding:20px 10px">
+        <i class="fas fa-seedling" style="color:rgba(255,255,255,0.8);font-size:1.4rem;margin-bottom:10px;display:block"></i>
+        <div style="font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:#fff">Projects</div>
+      </div>
+      <div class="card-ink" style="text-align:center;padding:20px 10px">
+        <i class="fas fa-vote-yea" style="color:rgba(255,255,255,0.8);font-size:1.4rem;margin-bottom:10px;display:block"></i>
+        <div style="font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:#fff">Governance</div>
+      </div>
+      <div class="card-ink" style="text-align:center;padding:20px 10px">
+        <i class="fas fa-language" style="color:rgba(255,255,255,0.8);font-size:1.4rem;margin-bottom:10px;display:block"></i>
+        <div style="font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:#fff">Culture</div>
+      </div>
+      <div class="card-ink" style="text-align:center;padding:20px 10px">
+        <i class="fas fa-newspaper" style="color:rgba(255,255,255,0.8);font-size:1.4rem;margin-bottom:10px;display:block"></i>
+        <div style="font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:#fff">News</div>
+      </div>
+      <div class="card-ink" style="text-align:center;padding:20px 10px">
+        <i class="fas fa-comments" style="color:rgba(255,255,255,0.8);font-size:1.4rem;margin-bottom:10px;display:block"></i>
+        <div style="font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:#fff">Forum</div>
+      </div>
+      <div class="card-ink" style="text-align:center;padding:20px 10px">
+        <i class="fas fa-user-circle" style="color:#F0A500;font-size:1.4rem;margin-bottom:10px;display:block"></i>
+        <div style="font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:#fff">Member Portal</div>
+      </div>
+      <div class="card-ink" style="text-align:center;padding:20px 10px">
+        <i class="fas fa-video" style="color:rgba(255,255,255,0.8);font-size:1.4rem;margin-bottom:10px;display:block"></i>
+        <div style="font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:#fff">Live Meetings</div>
+      </div>
+      <div class="card-ink" style="text-align:center;padding:20px 10px">
+        <i class="fas fa-graduation-cap" style="color:rgba(255,255,255,0.8);font-size:1.4rem;margin-bottom:10px;display:block"></i>
+        <div style="font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:#fff">Scholarships</div>
+      </div>
+      <div class="card-ink" style="text-align:center;padding:20px 10px">
+        <i class="fas fa-hands-helping" style="color:rgba(255,255,255,0.8);font-size:1.4rem;margin-bottom:10px;display:block"></i>
+        <div style="font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:#fff">Mentorship</div>
+      </div>
+    </div>
+    <div style="margin-top:22px"><span class="pill-inv pill"><i class="fas fa-layer-group"></i> 30+ Pages & Features</span></div>
+  </div>
+  <div class="snum snum-light">04 / 14</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SLIDE 5 — DONATIONS & PROJECTS
+══════════════════════════════════════════ -->
+<div class="slide bg-off" id="s5">
+  <div class="ey">Core Feature</div>
+  <div class="two-col" style="flex:1;align-items:start">
+    <div>
+      <h2 class="slide-h">Donations &amp;<br/><span>Project Funding</span></h2>
+      <div class="div"></div>
+      <p class="lead">The heart of the platform — members and diaspora fund real village projects with full transparency on every franc raised.</p>
+      <ul class="flist">
+        <li><i class="fas fa-check"></i> Project pages with goals, progress bars and real-time amounts</li>
+        <li><i class="fas fa-check"></i> MTN MoMo, Orange Money, PayPal, bank card via Flutterwave</li>
+        <li><i class="fas fa-check"></i> Donation history and receipts in every member's portal</li>
+        <li><i class="fas fa-check"></i> Project milestones with photo and update reports</li>
+        <li><i class="fas fa-check"></i> Featured projects on homepage with live funding stats</li>
+        <li><i class="fas fa-check"></i> Admin marks projects as active, paused or complete</li>
+      </ul>
+      <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap">
+        <span class="pill pp"><i class="fas fa-shield-alt"></i> 100% Transparent</span>
+        <span class="pill pgreen"><i class="fas fa-globe"></i> International Payments</span>
+      </div>
+    </div>
+    <div>
+      <div class="mockup">
+        <div class="mbar">
+          <div class="mdot" style="background:#FF5F57"></div>
+          <div class="mdot" style="background:#FEBC2E"></div>
+          <div class="mdot" style="background:#28C840"></div>
+          <span style="font-size:.58rem;color:#A3A3A3;margin-left:8px">nkenkak-duk6.vercel.app/projects</span>
+        </div>
+        <div class="mbody">
+          <div style="background:linear-gradient(135deg,#3D1A6E,#5B2D8E);border-radius:14px;padding:18px;margin-bottom:12px">
+            <div style="font-size:.6rem;color:#F0A500;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">Education</div>
+            <div style="font-size:.92rem;font-weight:700;color:#fff;margin-bottom:6px;font-family:'Sora',sans-serif">Primary School Renovation</div>
+            <div style="font-size:.66rem;color:rgba(255,255,255,0.5);margin-bottom:12px">Renovating classrooms for 400+ students with modern learning facilities.</div>
+            <div style="display:flex;justify-content:space-between;font-size:.62rem;color:rgba(255,255,255,0.5);margin-bottom:6px">
+              <span>Raised: <strong style="color:#F0A500">3,600,000 XAF</strong></span><span style="color:#F0A500;font-weight:700">72%</span>
             </div>
-            <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:16px;margin-bottom:10px">
-              <div style="font-size:.6rem;color:#22c55e;font-weight:700;text-transform:uppercase;margin-bottom:4px">Health</div>
-              <div style="font-size:.85rem;font-weight:700;color:#fff;margin-bottom:6px">Community Health Centre</div>
-              <div class="prog-track"><div class="prog-fill" style="width:68%"></div></div>
-              <div style="font-size:.6rem;color:#F0A500;text-align:right;margin-top:4px">68% funded</div>
-            </div>
-            <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:16px">
-              <div style="font-size:.6rem;color:#3b82f6;font-weight:700;text-transform:uppercase;margin-bottom:4px">Water</div>
-              <div style="font-size:.85rem;font-weight:700;color:#fff;margin-bottom:6px">Clean Water Initiative</div>
-              <div class="prog-track"><div class="prog-fill" style="width:30%"></div></div>
-              <div style="font-size:.6rem;color:#F0A500;text-align:right;margin-top:4px">30% funded</div>
-            </div>
+            <div class="prog"><div class="prog-fill" style="width:72%"></div></div>
+          </div>
+          <div style="background:#F7F5F2;border-radius:12px;padding:14px;margin-bottom:10px">
+            <div style="font-size:.6rem;color:#5B2D8E;font-weight:700;text-transform:uppercase;margin-bottom:4px">Health</div>
+            <div style="font-size:.82rem;font-weight:700;color:#1A0A35;margin-bottom:8px;font-family:'Sora',sans-serif">Village Health Clinic</div>
+            <div class="prog"><div class="prog-fill" style="width:30%"></div></div>
+            <div style="font-size:.6rem;color:#737373;text-align:right;margin-top:5px">30% funded</div>
+          </div>
+          <div style="background:#F7F5F2;border-radius:12px;padding:14px">
+            <div style="font-size:.6rem;color:#5B2D8E;font-weight:700;text-transform:uppercase;margin-bottom:4px">Infrastructure</div>
+            <div style="font-size:.82rem;font-weight:700;color:#1A0A35;margin-bottom:8px;font-family:'Sora',sans-serif">Clean Water Pipeline</div>
+            <div class="prog"><div class="prog-fill" style="width:60%"></div></div>
+            <div style="font-size:.6rem;color:#737373;text-align:right;margin-top:5px">60% funded</div>
           </div>
         </div>
       </div>
     </div>
-    <div class="slide-num">05 / 14</div>
   </div>
+  <div class="snum">05 / 14</div>
+</div>
 
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 6 — GOVERNANCE
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-split pattern" id="s6">
-    <div class="eyebrow">Democratic Governance</div>
-    <h2 class="slide-title">Elections, Polls &amp; <span>Petitions</span></h2>
-    <p class="lead" style="margin-bottom:24px">Every registered member has a voice. The platform provides secure, transparent democratic tools for the whole community.</p>
-    <div class="grid-3" style="flex:1;align-content:start">
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#5B2D8E,#7B4DB8)">
-          <i class="fas fa-vote-yea" style="color:#fff;font-size:1.1rem"></i>
+<!-- ══════════════════════════════════════════
+     SLIDE 6 — GOVERNANCE
+══════════════════════════════════════════ -->
+<div class="slide bg-white" id="s6">
+  <div class="ey">Democratic Governance</div>
+  <h2 class="slide-h">Elections, Polls &amp; <span>Petitions</span></h2>
+  <p class="lead" style="margin-bottom:18px">Every registered member has a voice. Secure, transparent democratic tools built directly into the platform.</p>
+  <div class="g3" style="flex:1;align-content:start">
+    <div class="card" style="border-top:3px solid #5B2D8E">
+      <div class="cicon" style="background:#F3EEF9"><i class="fas fa-vote-yea" style="color:#5B2D8E"></i></div>
+      <h4>Online Elections</h4>
+      <p>Candidate profiles with photos, manifestos and bios. Swipeable voting. One vote per member. Results published instantly.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #F0A500">
+      <div class="cicon" style="background:#FEF9EC"><i class="fas fa-poll" style="color:#B07800"></i></div>
+      <h4>Community Polls</h4>
+      <p>Admins create polls on any village decision. Real-time results with percentage breakdowns for all members.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #5B2D8E">
+      <div class="cicon" style="background:#F3EEF9"><i class="fas fa-file-signature" style="color:#5B2D8E"></i></div>
+      <h4>Petitions</h4>
+      <p>Members launch petitions with goals and deadlines. Circular progress rings. Confetti animation on milestones.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #5B2D8E">
+      <div class="cicon" style="background:#F3EEF9"><i class="fas fa-balance-scale" style="color:#5B2D8E"></i></div>
+      <h4>Transparency Reports</h4>
+      <p>Full financial reports and budget breakdowns published publicly. Accessible to all visitors — no login required.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #F0A500">
+      <div class="cicon" style="background:#FEF9EC"><i class="fas fa-gavel" style="color:#B07800"></i></div>
+      <h4>Governance Page</h4>
+      <p>Organisation structure, leadership roles, bylaws and constitutional documents all in one place.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #5B2D8E">
+      <div class="cicon" style="background:#F3EEF9"><i class="fas fa-bell" style="color:#5B2D8E"></i></div>
+      <h4>Urgent Notices</h4>
+      <p>Priority announcements appear as homepage banners. Push notifications sent in real time to all members.</p>
+    </div>
+  </div>
+  <div class="snum">06 / 14</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SLIDE 7 — MEMBER PORTAL
+══════════════════════════════════════════ -->
+<div class="slide bg-off" id="s7">
+  <div class="ey">Member Experience</div>
+  <div class="two-col-top" style="flex:1">
+    <div>
+      <h2 class="slide-h">The Member <span>Portal</span></h2>
+      <div class="div"></div>
+      <p class="lead">Every registered member gets a personal dashboard — a private space to manage their participation in the community.</p>
+      <ul class="flist">
+        <li><i class="fas fa-tachometer-alt"></i> Personal dashboard with stats and recent activity</li>
+        <li><i class="fas fa-heart"></i> Full donation history with downloadable receipts</li>
+        <li><i class="fas fa-calendar-check"></i> Event registrations and upcoming calendar</li>
+        <li><i class="fas fa-hands-helping"></i> Volunteer status and hours tracking</li>
+        <li><i class="fas fa-bell"></i> Notifications centre — never miss an update</li>
+        <li><i class="fas fa-comment-dots"></i> Private messaging between members</li>
+        <li><i class="fas fa-user-circle"></i> Profile management with avatar and bio</li>
+        <li><i class="fas fa-mobile-alt"></i> Full mobile optimisation with bottom tab bar</li>
+      </ul>
+    </div>
+    <div class="scroll">
+      <div class="g2" style="margin-bottom:12px">
+        <div class="card" style="padding:18px">
+          <div class="slbl">My Donations</div>
+          <div style="font-size:1.5rem;font-family:'Sora',sans-serif;font-weight:900;color:#5B2D8E">XAF 45,000</div>
+          <div style="font-size:.65rem;color:#A3A3A3;margin-top:3px">Total contributed</div>
         </div>
-        <h4>Elections</h4>
-        <p>Candidate profiles with photos, manifestos and bios. Swipeable carousel voting with live leaderboard. One vote per registered member, results published instantly.</p>
+        <div class="card" style="padding:18px">
+          <div class="slbl">Events</div>
+          <div style="font-size:1.5rem;font-family:'Sora',sans-serif;font-weight:900;color:#16a34a">3</div>
+          <div style="font-size:.65rem;color:#A3A3A3;margin-top:3px">Upcoming</div>
+        </div>
+        <div class="card" style="padding:18px">
+          <div class="slbl">Volunteer</div>
+          <div style="font-size:1.5rem;font-family:'Sora',sans-serif;font-weight:900;color:#7C3AED">12h</div>
+          <div style="font-size:.65rem;color:#A3A3A3;margin-top:3px">This month</div>
+        </div>
+        <div class="card" style="padding:18px">
+          <div class="slbl">Notifications</div>
+          <div style="font-size:1.5rem;font-family:'Sora',sans-serif;font-weight:900;color:#DC2626">5</div>
+          <div style="font-size:.65rem;color:#A3A3A3;margin-top:3px">Unread</div>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#F0A500,#FFB84D)">
-          <i class="fas fa-poll" style="color:#fff;font-size:1.1rem"></i>
+      <div class="card" style="padding:18px;margin-bottom:12px">
+        <div style="font-size:.72rem;font-weight:700;color:#1A0A35;font-family:'Sora',sans-serif;margin-bottom:12px">Recent Donations</div>
+        <div style="font-size:.72rem;color:#737373;display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F0EEE8">
+          <span>School Renovation</span><span style="color:#5B2D8E;font-weight:700">+5,000 XAF</span>
         </div>
-        <h4>Community Polls</h4>
-        <p>Admins create polls on any village decision. Members vote in their portal. Results shown in real time with percentage breakdowns.</p>
+        <div style="font-size:.72rem;color:#737373;display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F0EEE8">
+          <span>Health Centre</span><span style="color:#5B2D8E;font-weight:700">+10,000 XAF</span>
+        </div>
+        <div style="font-size:.72rem;color:#737373;display:flex;justify-content:space-between;padding:8px 0">
+          <span>Water Initiative</span><span style="color:#5B2D8E;font-weight:700">+30,000 XAF</span>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#7e22ce,#a855f7)">
-          <i class="fas fa-file-signature" style="color:#fff;font-size:1.1rem"></i>
-        </div>
-        <h4>Petitions</h4>
-        <p>Community members launch petitions with goals and deadlines. Circular progress rings show signature progress. Signers celebrated with confetti animation.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#0369a1,#0284c7)">
-          <i class="fas fa-balance-scale" style="color:#fff;font-size:1.1rem"></i>
-        </div>
-        <h4>Transparency Reports</h4>
-        <p>Full financial reports and budget breakdowns published publicly. Dedicated Transparency and Budget pages accessible to all.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#15803d,#22c55e)">
-          <i class="fas fa-gavel" style="color:#fff;font-size:1.1rem"></i>
-        </div>
-        <h4>Governance Page</h4>
-        <p>Organisation structure, leadership roles, bylaws and constitutional documents all accessible in one place.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#7f1d1d,#dc2626)">
-          <i class="fas fa-bell" style="color:#fff;font-size:1.1rem"></i>
-        </div>
-        <h4>Urgent Notices</h4>
-        <p>Priority announcements appear as dismissable banners on the homepage. Members also receive push notifications in real time.</p>
+      <div class="card" style="padding:18px;border-left:4px solid #5B2D8E;border-radius:0 16px 16px 0">
+        <div style="font-size:.72rem;font-weight:700;color:#5B2D8E;font-family:'Sora',sans-serif;margin-bottom:8px"><i class="fas fa-bell" style="margin-right:6px"></i>Push Notifications</div>
+        <p style="font-size:.76rem;color:#737373;line-height:1.75">Members enable push notifications for real-time alerts on project updates, events, elections and urgent notices — even when the browser is closed.</p>
       </div>
     </div>
-    <div class="slide-num">06 / 14</div>
   </div>
+  <div class="snum">07 / 14</div>
+</div>
 
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 7 — MEMBER PORTAL
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-dark pattern" id="s7">
-    <div class="eyebrow">Member Experience</div>
-    <div class="two-col" style="flex:1">
-      <div>
-        <h2 class="slide-title">The Member <span>Portal</span></h2>
-        <p class="lead">Every registered member gets a personal dashboard — a private space to manage their participation in the community.</p>
-        <ul class="feat-list">
-          <li><i class="fas fa-tachometer-alt"></i> Personal dashboard with stats and recent activity</li>
-          <li><i class="fas fa-heart"></i> Full donation history with receipts</li>
-          <li><i class="fas fa-calendar-check"></i> Event registrations and upcoming calendar</li>
-          <li><i class="fas fa-hands-helping"></i> Volunteer status and hours tracking</li>
-          <li><i class="fas fa-bell"></i> Notifications centre — never miss an update</li>
-          <li><i class="fas fa-comment-dots"></i> Private messaging between members</li>
-          <li><i class="fas fa-user-circle"></i> Profile management with avatar and bio</li>
-        </ul>
-        <div style="margin-top:20px">
-          <div class="pill pill-gold" style="margin-bottom:8px;display:inline-flex"><i class="fas fa-mobile-alt"></i> Fully Mobile-Optimised</div>
-          <p style="font-size:.78rem;color:rgba(255,255,255,0.5);margin-top:8px;line-height:1.7">Mobile bottom tab bar with quick access to Home, Donations, Notifications and Profile. Full navigation via slide-in drawer.</p>
-        </div>
-      </div>
-      <div class="scroll-content">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div class="card" style="padding:16px">
-            <div style="font-size:.65rem;color:rgba(255,255,255,0.4);margin-bottom:4px;font-family:'Sora',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.1em">My Donations</div>
-            <div style="font-size:1.4rem;font-family:'Sora',sans-serif;font-weight:800;color:#F0A500">XAF 45,000</div>
-            <div style="font-size:.65rem;color:rgba(255,255,255,0.35)">Total contributed</div>
-          </div>
-          <div class="card" style="padding:16px">
-            <div style="font-size:.65rem;color:rgba(255,255,255,0.4);margin-bottom:4px;font-family:'Sora',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.1em">Events</div>
-            <div style="font-size:1.4rem;font-family:'Sora',sans-serif;font-weight:800;color:#22c55e">3</div>
-            <div style="font-size:.65rem;color:rgba(255,255,255,0.35)">Upcoming events</div>
-          </div>
-          <div class="card" style="padding:16px">
-            <div style="font-size:.65rem;color:rgba(255,255,255,0.4);margin-bottom:4px;font-family:'Sora',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.1em">Volunteer Hours</div>
-            <div style="font-size:1.4rem;font-family:'Sora',sans-serif;font-weight:800;color:#a855f7">12h</div>
-            <div style="font-size:.65rem;color:rgba(255,255,255,0.35)">This month</div>
-          </div>
-          <div class="card" style="padding:16px">
-            <div style="font-size:.65rem;color:rgba(255,255,255,0.4);margin-bottom:4px;font-family:'Sora',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.1em">Notifications</div>
-            <div style="font-size:1.4rem;font-family:'Sora',sans-serif;font-weight:800;color:#f87171">5</div>
-            <div style="font-size:.65rem;color:rgba(255,255,255,0.35)">Unread alerts</div>
-          </div>
-        </div>
-        <div class="card" style="margin-top:10px;padding:16px">
-          <div style="font-size:.7rem;font-weight:700;color:#fff;font-family:'Sora',sans-serif;margin-bottom:10px">Recent Donations</div>
-          <div style="font-size:.65rem;color:rgba(255,255,255,0.5);display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
-            <span>School Renovation</span><span style="color:#F0A500">+5,000 XAF</span>
-          </div>
-          <div style="font-size:.65rem;color:rgba(255,255,255,0.5);display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
-            <span>Health Centre</span><span style="color:#F0A500">+10,000 XAF</span>
-          </div>
-          <div style="font-size:.65rem;color:rgba(255,255,255,0.5);display:flex;justify-content:space-between;padding:6px 0">
-            <span>Water Initiative</span><span style="color:#F0A500">+30,000 XAF</span>
-          </div>
-        </div>
-        <div class="card" style="margin-top:10px;padding:16px">
-          <div style="font-size:.7rem;font-weight:700;color:#fff;font-family:'Sora',sans-serif;margin-bottom:8px">Push Notifications</div>
-          <p style="font-size:.65rem;color:rgba(255,255,255,0.5);line-height:1.7">Members can enable push notifications to receive real-time alerts for project updates, events, elections and urgent notices — even when the app is closed.</p>
-        </div>
-      </div>
+<!-- ══════════════════════════════════════════
+     SLIDE 8 — CULTURE & HERITAGE
+══════════════════════════════════════════ -->
+<div class="slide bg-white" id="s8">
+  <div class="ey">Cultural Preservation</div>
+  <h2 class="slide-h">Heritage, Language &amp; <span>Traditions</span></h2>
+  <p class="lead" style="margin-bottom:18px">The platform preserves what makes Nkenkak-Ngiesang unique — for today's members and future generations.</p>
+  <div class="g4" style="flex:1;align-content:start">
+    <div class="card" style="border-top:3px solid #5B2D8E">
+      <div class="cicon" style="background:#F3EEF9"><i class="fas fa-language" style="color:#5B2D8E"></i></div>
+      <h4>Ngiemboon Language</h4>
+      <p>Flashcards, text-to-speech, proverbs with reveal-meaning. Word of the Day. 7 categories, 100+ words.</p>
     </div>
-    <div class="slide-num">07 / 14</div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 8 — CULTURE & HERITAGE
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-split pattern" id="s8">
-    <div class="eyebrow">Cultural Preservation</div>
-    <h2 class="slide-title">Heritage, Language &amp; <span>Traditions</span></h2>
-    <p class="lead" style="margin-bottom:24px">The platform is as much about preserving what makes Nkenkak-Ngiesang unique as it is about development.</p>
-    <div class="grid-4" style="flex:1;align-content:start">
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#7e22ce,#a855f7)">
-          <i class="fas fa-language" style="color:#fff"></i>
-        </div>
-        <h4>Ngiemboon Language</h4>
-        <p>Interactive flashcards with flip animation and text-to-speech. Proverbs with "reveal meaning" feature. Word of the Day. 7 categories, 100+ words.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#C87800,#F0A500)">
-          <i class="fas fa-calendar-alt" style="color:#fff"></i>
-        </div>
-        <h4>Cultural Calendar</h4>
-        <p>Adinkra-pattern designed calendar of cultural events and traditions. Month/year view with event dots. Timeline and traditions showcase section.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#0369a1,#0284c7)">
-          <i class="fas fa-book-open" style="color:#fff"></i>
-        </div>
-        <h4>Anthropology</h4>
-        <p>Deep-dive into the history, customs and social structure of Nkenkak-Ngiesang. Rich illustrated articles about village traditions.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#15803d,#22c55e)">
-          <i class="fas fa-images" style="color:#fff"></i>
-        </div>
-        <h4>Photo Gallery</h4>
-        <p>Beautiful masonry grid with full-screen lightbox. Keyboard navigation, swipe support on mobile. Shows village life, events and project photos.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#7f1d1d,#dc2626)">
-          <i class="fas fa-map-marked-alt" style="color:#fff"></i>
-        </div>
-        <h4>Village Map</h4>
-        <p>Interactive map of Nkenkak-Ngiesang showing key landmarks, project locations and community facilities.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#1e3a5f,#1d4ed8)">
-          <i class="fas fa-globe-africa" style="color:#fff"></i>
-        </div>
-        <h4>Diaspora Hub</h4>
-        <p>Interactive world map showing where community members live globally. Country-by-country breakdown across 14+ nations.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#064e3b,#059669)">
-          <i class="fas fa-memorial" style="color:#fff"></i>
-        </div>
-        <h4>Memorial Page</h4>
-        <p>A dignified space to honour community members who have passed. Tributes, photos and legacies preserved permanently.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background:linear-gradient(135deg,#78350f,#d97706)">
-          <i class="fas fa-book" style="color:#fff"></i>
-        </div>
-        <h4>Community Wiki</h4>
-        <p>A community-maintained knowledge base. Articles about village history, traditions and key figures — editable by authorised members.</p>
-      </div>
+    <div class="card" style="border-top:3px solid #F0A500">
+      <div class="cicon" style="background:#FEF9EC"><i class="fas fa-calendar-alt" style="color:#B07800"></i></div>
+      <h4>Cultural Calendar</h4>
+      <p>Calendar of cultural events and traditions. Month/year view with event dots and timeline.</p>
     </div>
-    <div class="slide-num">08 / 14</div>
+    <div class="card" style="border-top:3px solid #5B2D8E">
+      <div class="cicon" style="background:#F3EEF9"><i class="fas fa-book-open" style="color:#5B2D8E"></i></div>
+      <h4>Anthropology</h4>
+      <p>History, customs and social structure of Nkenkak-Ngiesang with rich illustrated articles.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #5B2D8E">
+      <div class="cicon" style="background:#F3EEF9"><i class="fas fa-images" style="color:#5B2D8E"></i></div>
+      <h4>Photo Gallery</h4>
+      <p>Masonry grid with full-screen lightbox. Keyboard navigation and swipe on mobile.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #F0A500">
+      <div class="cicon" style="background:#FEF9EC"><i class="fas fa-globe-africa" style="color:#B07800"></i></div>
+      <h4>Diaspora Hub</h4>
+      <p>Community members shown by country across 14+ nations. Country card grid with flags.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #5B2D8E">
+      <div class="cicon" style="background:#F3EEF9"><i class="fas fa-star" style="color:#5B2D8E"></i></div>
+      <h4>Memorial Page</h4>
+      <p>A dignified space to honour community members who have passed. Legacies preserved permanently.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #5B2D8E">
+      <div class="cicon" style="background:#F3EEF9"><i class="fas fa-map-marked-alt" style="color:#5B2D8E"></i></div>
+      <h4>Village Map</h4>
+      <p>Interactive map showing key landmarks, project locations and community facilities.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #F0A500">
+      <div class="cicon" style="background:#FEF9EC"><i class="fas fa-book" style="color:#B07800"></i></div>
+      <h4>Community Wiki</h4>
+      <p>A community-maintained knowledge base of history, traditions and key figures.</p>
+    </div>
   </div>
+  <div class="snum">08 / 14</div>
+</div>
 
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 9 — COMMUNITY & COMMUNICATION
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-dark pattern" id="s9">
-    <div class="eyebrow">Community & Communication</div>
-    <div class="two-col" style="flex:1">
-      <div>
-        <h2 class="slide-title">Staying <span>Connected</span></h2>
-        <p class="lead">Multiple channels keep every member — at home or abroad — informed, engaged and heard.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="card" style="padding:18px">
-            <i class="fas fa-comments" style="color:#f472b6;font-size:1.2rem;margin-bottom:10px;display:block"></i>
-            <h4 style="font-size:.85rem;margin-bottom:6px">Community Forum</h4>
-            <p>Threaded discussions on any topic. Upvotes, replies and rich text. Categories for different interest areas.</p>
-          </div>
-          <div class="card" style="padding:18px">
-            <i class="fas fa-calendar-check" style="color:#22c55e;font-size:1.2rem;margin-bottom:10px;display:block"></i>
-            <h4 style="font-size:.85rem;margin-bottom:6px">Events</h4>
-            <p>Create and manage village events. Free or ticketed. Registration system with countdown timers.</p>
-          </div>
-          <div class="card" style="padding:18px">
-            <i class="fas fa-video" style="color:#3b82f6;font-size:1.2rem;margin-bottom:10px;display:block"></i>
-            <h4 style="font-size:.85rem;margin-bottom:6px">Live Video Rooms</h4>
-            <p>Daily.co powered video meetings. Any admin or leader can host. No downloads required — works in browser.</p>
-          </div>
-          <div class="card" style="padding:18px">
-            <i class="fas fa-newspaper" style="color:#F0A500;font-size:1.2rem;margin-bottom:10px;display:block"></i>
-            <h4 style="font-size:.85rem;margin-bottom:6px">Village News</h4>
-            <p>Full CMS for articles. Featured stories, categories, reading time, comments and social sharing.</p>
-          </div>
-          <div class="card" style="padding:18px">
-            <i class="fas fa-envelope" style="color:#a855f7;font-size:1.2rem;margin-bottom:10px;display:block"></i>
-            <h4 style="font-size:.85rem;margin-bottom:6px">Newsletter</h4>
-            <p>Email subscription system. Admin can send targeted email campaigns to all or filtered members.</p>
-          </div>
-          <div class="card" style="padding:18px">
-            <i class="fas fa-bell" style="color:#f87171;font-size:1.2rem;margin-bottom:10px;display:block"></i>
-            <h4 style="font-size:.85rem;margin-bottom:6px">Push Notifications</h4>
-            <p>Web push notifications to all subscribed members — even on mobile when the browser is closed.</p>
-          </div>
+<!-- ══════════════════════════════════════════
+     SLIDE 9 — COMMUNICATION
+══════════════════════════════════════════ -->
+<div class="slide bg-off" id="s9">
+  <div class="ey">Community & Communication</div>
+  <div class="two-col-top" style="flex:1">
+    <div>
+      <h2 class="slide-h">Staying <span>Connected</span></h2>
+      <div class="div"></div>
+      <p class="lead">Multiple channels keep every member — at home or abroad — informed, engaged and heard.</p>
+      <div class="g2">
+        <div class="card" style="padding:18px">
+          <i class="fas fa-comments" style="color:#5B2D8E;font-size:1.2rem;margin-bottom:10px;display:block"></i>
+          <h4 style="font-size:.85rem">Community Forum</h4>
+          <p>Threaded discussions. Upvotes, replies and categories.</p>
         </div>
-      </div>
-      <div>
-        <div class="card" style="margin-bottom:12px;padding:20px">
-          <div class="eyebrow" style="margin-bottom:12px;font-size:.65rem">Also Included</div>
-          <ul class="feat-list">
-            <li><i class="fas fa-briefcase"></i> Job Board — village and diaspora job listings</li>
-            <li><i class="fas fa-store"></i> Business Directory — local businesses and services</li>
-            <li><i class="fas fa-graduation-cap"></i> Scholarships — applications and award tracking</li>
-            <li><i class="fas fa-hands-helping"></i> Mentorship — connect youth with professionals</li>
-            <li><i class="fas fa-hand-rock"></i> Volunteer Management — applications and hour logs</li>
-            <li><i class="fas fa-file-alt"></i> Documents Library — village records and reports</li>
-            <li><i class="fas fa-users"></i> Member Directory — searchable member profiles</li>
-            <li><i class="fas fa-comment-dots"></i> Private Messaging — secure member-to-member chat</li>
-          </ul>
+        <div class="card" style="padding:18px">
+          <i class="fas fa-calendar-check" style="color:#5B2D8E;font-size:1.2rem;margin-bottom:10px;display:block"></i>
+          <h4 style="font-size:.85rem">Events</h4>
+          <p>Free or ticketed events. Registration and countdown timers.</p>
         </div>
-        <div class="card" style="padding:20px;background:linear-gradient(135deg,rgba(240,165,0,0.1),rgba(91,45,142,0.1));border-color:rgba(240,165,0,0.2)">
-          <div style="font-size:.75rem;font-weight:700;color:#F0A500;font-family:'Sora',sans-serif;margin-bottom:6px">Total Platform Pages</div>
-          <div style="font-size:2.5rem;font-family:'Sora',sans-serif;font-weight:800;color:#fff;line-height:1">30+</div>
-          <div style="font-size:.7rem;color:rgba(255,255,255,0.5);margin-top:4px">Unique pages and features built</div>
+        <div class="card" style="padding:18px">
+          <i class="fas fa-video" style="color:#5B2D8E;font-size:1.2rem;margin-bottom:10px;display:block"></i>
+          <h4 style="font-size:.85rem">Live Video Rooms</h4>
+          <p>Daily.co powered meetings. No download needed.</p>
+        </div>
+        <div class="card" style="padding:18px">
+          <i class="fas fa-newspaper" style="color:#5B2D8E;font-size:1.2rem;margin-bottom:10px;display:block"></i>
+          <h4 style="font-size:.85rem">Village News</h4>
+          <p>Full CMS. Featured stories, reading time, comments.</p>
+        </div>
+        <div class="card" style="padding:18px">
+          <i class="fas fa-envelope" style="color:#5B2D8E;font-size:1.2rem;margin-bottom:10px;display:block"></i>
+          <h4 style="font-size:.85rem">Newsletter</h4>
+          <p>Email campaigns to all members or filtered groups.</p>
+        </div>
+        <div class="card" style="padding:18px">
+          <i class="fas fa-bell" style="color:#5B2D8E;font-size:1.2rem;margin-bottom:10px;display:block"></i>
+          <h4 style="font-size:.85rem">Push Notifications</h4>
+          <p>Web push to all subscribed members — even offline.</p>
         </div>
       </div>
     </div>
-    <div class="slide-num">09 / 14</div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 10 — ADMIN PANEL
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-split pattern" id="s10">
-    <div class="eyebrow">Administration</div>
-    <h2 class="slide-title">Powerful <span>Admin Panel</span></h2>
-    <p class="lead" style="margin-bottom:24px">A complete back-office dashboard for admins and leaders to manage every aspect of the platform without touching code.</p>
-    <div class="grid-4" style="flex:1;align-content:start">
-      <div class="card" style="padding:18px">
-        <i class="fas fa-tachometer-alt" style="color:#F0A500;margin-bottom:8px;display:block;font-size:1.2rem"></i>
-        <h4 style="font-size:.82rem">Dashboard</h4>
-        <p>Live stats: donations, members, projects, recent activity and key metrics at a glance.</p>
-      </div>
-      <div class="card" style="padding:18px">
-        <i class="fas fa-users-cog" style="color:#a855f7;margin-bottom:8px;display:block;font-size:1.2rem"></i>
-        <h4 style="font-size:.82rem">Member Management</h4>
-        <p>Approve members, assign roles (admin / leader / member), view profiles and activity.</p>
-      </div>
-      <div class="card" style="padding:18px">
-        <i class="fas fa-seedling" style="color:#22c55e;margin-bottom:8px;display:block;font-size:1.2rem"></i>
-        <h4 style="font-size:.82rem">Projects & Donations</h4>
-        <p>Create projects, set goals, publish milestones and view all donation records.</p>
-      </div>
-      <div class="card" style="padding:18px">
-        <i class="fas fa-newspaper" style="color:#3b82f6;margin-bottom:8px;display:block;font-size:1.2rem"></i>
-        <h4 style="font-size:.82rem">News & Content</h4>
-        <p>Full article editor with draft, schedule and publish workflow. Bulk delete and featured toggle.</p>
-      </div>
-      <div class="card" style="padding:18px">
-        <i class="fas fa-vote-yea" style="color:#F0A500;margin-bottom:8px;display:block;font-size:1.2rem"></i>
-        <h4 style="font-size:.82rem">Elections & Polls</h4>
-        <p>Create elections, add candidates with photos, open/close voting and publish results.</p>
-      </div>
-      <div class="card" style="padding:18px">
-        <i class="fas fa-envelope-open-text" style="color:#f472b6;margin-bottom:8px;display:block;font-size:1.2rem"></i>
-        <h4 style="font-size:.82rem">Email Campaigns</h4>
-        <p>Send HTML email campaigns to all members or filtered groups. Open rate tracking.</p>
-      </div>
-      <div class="card" style="padding:18px">
-        <i class="fas fa-language" style="color:#a855f7;margin-bottom:8px;display:block;font-size:1.2rem"></i>
-        <h4 style="font-size:.82rem">Language / Vocab</h4>
-        <p>Add, edit and delete Ngiemboon words, proverbs and categories for the language learning page.</p>
-      </div>
-      <div class="card" style="padding:18px">
-        <i class="fas fa-bell" style="color:#f87171;margin-bottom:8px;display:block;font-size:1.2rem"></i>
-        <h4 style="font-size:.82rem">Push Notifications</h4>
-        <p>Send push notifications to all subscribed members. Target by title and body message.</p>
-      </div>
-    </div>
-    <div class="slide-num">10 / 14</div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 11 — TECHNICAL STACK
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-dark pattern" id="s11">
-    <div class="eyebrow">Technology</div>
-    <div class="two-col" style="flex:1">
-      <div>
-        <h2 class="slide-title">Built With Modern <span>Technology</span></h2>
-        <p class="lead">Chosen for reliability, performance, and ease of future maintenance by any developer.</p>
-        <div style="margin-bottom:24px">
-          <div style="font-size:.75rem;font-weight:700;color:#F0A500;font-family:'Sora',sans-serif;margin-bottom:10px;text-transform:uppercase;letter-spacing:.1em">Frontend</div>
-          <div>
-            <span class="tech-chip"><i class="fab fa-react" style="color:#61DAFB"></i> React 18</span>
-            <span class="tech-chip"><i class="fas fa-wind" style="color:#38BDF8"></i> Tailwind CSS</span>
-            <span class="tech-chip"><i class="fas fa-bolt" style="color:#F0A500"></i> Vite</span>
-            <span class="tech-chip"><i class="fas fa-database" style="color:#a855f7"></i> React Query</span>
-            <span class="tech-chip"><i class="fas fa-route" style="color:#22c55e"></i> React Router</span>
-          </div>
-        </div>
-        <div style="margin-bottom:24px">
-          <div style="font-size:.75rem;font-weight:700;color:#F0A500;font-family:'Sora',sans-serif;margin-bottom:10px;text-transform:uppercase;letter-spacing:.1em">Backend</div>
-          <div>
-            <span class="tech-chip"><i class="fab fa-node-js" style="color:#68A063"></i> Node.js</span>
-            <span class="tech-chip"><i class="fas fa-server" style="color:#fff"></i> Express</span>
-            <span class="tech-chip"><i class="fas fa-database" style="color:#3b82f6"></i> PostgreSQL</span>
-            <span class="tech-chip"><i class="fas fa-prism" style="color:#a855f7"></i> Prisma ORM</span>
-            <span class="tech-chip"><i class="fas fa-key" style="color:#F0A500"></i> JWT Auth</span>
-          </div>
-        </div>
-        <div>
-          <div style="font-size:.75rem;font-weight:700;color:#F0A500;font-family:'Sora',sans-serif;margin-bottom:10px;text-transform:uppercase;letter-spacing:.1em">Third-Party Services</div>
-          <div>
-            <span class="tech-chip"><i class="fas fa-image" style="color:#3448C5"></i> Cloudinary</span>
-            <span class="tech-chip"><i class="fas fa-video" style="color:#f472b6"></i> Daily.co</span>
-            <span class="tech-chip"><i class="fas fa-bell" style="color:#22c55e"></i> Web Push</span>
-            <span class="tech-chip"><i class="fas fa-envelope" style="color:#F0A500"></i> Nodemailer</span>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="card" style="margin-bottom:12px">
-          <h4 style="margin-bottom:12px">Architecture</h4>
-          <ul class="feat-list">
-            <li><i class="fas fa-layer-group"></i> REST API with JWT authentication and role-based access (admin / leader / member)</li>
-            <li><i class="fas fa-shield-alt"></i> Password hashing with bcrypt, secure token rotation</li>
-            <li><i class="fas fa-image"></i> Media via Cloudinary CDN — optimised images with auto-format</li>
-            <li><i class="fas fa-video"></i> Video meetings via Daily.co — host privileges for admin/leader roles</li>
-            <li><i class="fas fa-bell"></i> Service worker for push notifications — works on mobile browsers</li>
-            <li><i class="fas fa-database"></i> PostgreSQL with Prisma — typed schema, migrations, relations</li>
-          </ul>
-        </div>
-        <div class="card" style="background:linear-gradient(135deg,rgba(91,45,142,0.15),rgba(240,165,0,0.08));border-color:rgba(240,165,0,0.15)">
-          <div style="font-size:.72rem;font-weight:700;color:#F0A500;font-family:'Sora',sans-serif;margin-bottom:8px">Security</div>
-          <ul class="feat-list" style="margin:0">
-            <li><i class="fas fa-lock"></i> All routes protected with middleware authentication</li>
-            <li><i class="fas fa-user-lock"></i> Role checks on every sensitive endpoint</li>
-            <li><i class="fas fa-ban"></i> Input validation and sanitisation throughout</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="slide-num">11 / 14</div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 12 — MOBILE FIRST
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-purple pattern" id="s12">
-    <div class="eyebrow">Design</div>
-    <div class="two-col" style="flex:1">
-      <div>
-        <h2 class="slide-title">Mobile-First, <span>Beautiful Design</span></h2>
-        <p class="lead">The platform is fully responsive — designed to work perfectly on any screen size, from a village smartphone to a diaspora desktop.</p>
-        <ul class="feat-list">
-          <li><i class="fas fa-mobile-alt"></i> Portal bottom tab bar for quick mobile navigation</li>
-          <li><i class="fas fa-bars"></i> Slide-in drawer with full menu on mobile</li>
-          <li><i class="fas fa-hand-point-up"></i> Swipeable carousels on elections and galleries</li>
-          <li><i class="fas fa-palette"></i> Consistent brand: deep purple + gold colour system</li>
-          <li><i class="fas fa-magic"></i> Smooth animations: fade-in, slide-up, card flips, confetti</li>
-          <li><i class="fas fa-moon"></i> Dark mode sections with glassmorphism cards</li>
-          <li><i class="fas fa-text-height"></i> Sora (headings) + Poppins (body) typography system</li>
-          <li><i class="fas fa-drum"></i> Cultural aesthetic: Adinkra patterns, kente stripes, gold accents</li>
+    <div>
+      <div class="card" style="padding:22px;margin-bottom:14px">
+        <div class="ey" style="font-size:.6rem;margin-bottom:14px">Also Included</div>
+        <ul class="flist">
+          <li><i class="fas fa-briefcase"></i> Job Board — village and diaspora listings</li>
+          <li><i class="fas fa-store"></i> Business Directory — local services</li>
+          <li><i class="fas fa-graduation-cap"></i> Scholarships — applications and awards</li>
+          <li><i class="fas fa-hands-helping"></i> Mentorship — youth meets professionals</li>
+          <li><i class="fas fa-hand-rock"></i> Volunteer Management — logs and applications</li>
+          <li><i class="fas fa-file-alt"></i> Documents Library — village records</li>
+          <li><i class="fas fa-users"></i> Member Directory — searchable profiles</li>
+          <li><i class="fas fa-comment-dots"></i> Private Messaging — secure member chat</li>
         </ul>
       </div>
-      <div>
-        <div style="display:flex;gap:12px;justify-content:center">
-          <!-- Mobile mockup -->
-          <div style="width:160px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:28px;overflow:hidden;padding:8px">
-            <div style="background:#1A0A35;border-radius:20px;overflow:hidden;height:320px">
-              <div style="height:40px;background:linear-gradient(135deg,#1A0A35,#250F47);display:flex;align-items:center;padding:0 12px;gap:8px;border-bottom:1px solid rgba(255,255,255,0.05)">
-                <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#5B2D8E,#7B4DB8);display:flex;align-items:center;justify-content:center">
-                  <i class="fas fa-heart" style="color:#F0A500;font-size:.5rem"></i>
-                </div>
-                <div style="font-size:.55rem;font-weight:700;color:#fff;font-family:'Sora',sans-serif">My Portal</div>
-              </div>
-              <div style="padding:10px;font-size:.6rem">
-                <div style="background:linear-gradient(135deg,rgba(91,45,142,0.3),rgba(240,165,0,0.1));border-radius:12px;padding:10px;margin-bottom:8px;border:1px solid rgba(240,165,0,0.15)">
-                  <div style="color:rgba(255,255,255,0.4);margin-bottom:2px">Total Donated</div>
-                  <div style="color:#F0A500;font-weight:800;font-size:.85rem;font-family:'Sora',sans-serif">XAF 45,000</div>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-                  <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:8px;text-align:center;border:1px solid rgba(255,255,255,0.07)">
-                    <div style="color:#22c55e;font-weight:800;font-size:.8rem">3</div>
-                    <div style="color:rgba(255,255,255,0.35);font-size:.5rem">Events</div>
-                  </div>
-                  <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:8px;text-align:center;border:1px solid rgba(255,255,255,0.07)">
-                    <div style="color:#a855f7;font-weight:800;font-size:.8rem">12h</div>
-                    <div style="color:rgba(255,255,255,0.35);font-size:.5rem">Volunteer</div>
-                  </div>
-                </div>
-                <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:8px">
-                  <div style="color:rgba(255,255,255,0.5);margin-bottom:6px">Recent Activity</div>
-                  <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:4px;margin-bottom:4px"></div>
-                  <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:4px;width:70%;margin-bottom:4px"></div>
-                  <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:4px;width:85%"></div>
-                </div>
-              </div>
-              <!-- Bottom tab bar -->
-              <div style="position:absolute;bottom:8px;left:8px;right:8px;background:rgba(255,255,255,0.08);border-radius:14px;padding:8px;display:flex;justify-content:space-around;backdrop-filter:blur(8px)">
-                <div style="text-align:center"><i class="fas fa-home" style="color:#5B2D8E;font-size:.7rem;display:block"></i><div style="font-size:.35rem;color:#5B2D8E;margin-top:2px">Home</div></div>
-                <div style="text-align:center"><i class="fas fa-heart" style="color:rgba(255,255,255,0.3);font-size:.7rem;display:block"></i><div style="font-size:.35rem;color:rgba(255,255,255,0.3);margin-top:2px">Donate</div></div>
-                <div style="text-align:center"><i class="fas fa-bell" style="color:rgba(255,255,255,0.3);font-size:.7rem;display:block"></i><div style="font-size:.35rem;color:rgba(255,255,255,0.3);margin-top:2px">Alerts</div></div>
-                <div style="text-align:center"><i class="fas fa-user" style="color:rgba(255,255,255,0.3);font-size:.7rem;display:block"></i><div style="font-size:.35rem;color:rgba(255,255,255,0.3);margin-top:2px">Profile</div></div>
-              </div>
-            </div>
-          </div>
-          <!-- Desktop mockup hint -->
-          <div style="flex:1;display:flex;flex-direction:column;gap:10px;justify-content:center">
-            <div class="card" style="padding:14px">
-              <div style="font-size:.65rem;font-weight:700;color:#F0A500;font-family:'Sora',sans-serif;margin-bottom:6px">Desktop</div>
-              <ul class="feat-list" style="margin:0">
-                <li style="font-size:.7rem"><i class="fas fa-sidebar" style="color:#F0A500;width:14px"></i> Fixed sidebar navigation</li>
-                <li style="font-size:.7rem"><i class="fas fa-th-large" style="color:#F0A500;width:14px"></i> Multi-column layouts</li>
-                <li style="font-size:.7rem"><i class="fas fa-expand" style="color:#F0A500;width:14px"></i> Full gallery lightbox</li>
-              </ul>
-            </div>
-            <div class="card" style="padding:14px">
-              <div style="font-size:.65rem;font-weight:700;color:#F0A500;font-family:'Sora',sans-serif;margin-bottom:6px">Mobile</div>
-              <ul class="feat-list" style="margin:0">
-                <li style="font-size:.7rem"><i class="fas fa-grip-horizontal" style="color:#F0A500;width:14px"></i> Bottom tab bar</li>
-                <li style="font-size:.7rem"><i class="fas fa-bars" style="color:#F0A500;width:14px"></i> Slide-in drawer</li>
-                <li style="font-size:.7rem"><i class="fas fa-hand-point-right" style="color:#F0A500;width:14px"></i> Swipe gestures</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+      <div class="card" style="padding:22px;text-align:center;border-top:3px solid #F0A500">
+        <div class="slbl">Total Pages Built</div>
+        <div style="font-size:4rem;font-family:'Sora',sans-serif;font-weight:900;color:#5B2D8E;line-height:1">30+</div>
+        <div style="font-size:.7rem;color:#A3A3A3;margin-top:4px">Unique pages and features</div>
       </div>
     </div>
-    <div class="slide-num">12 / 14</div>
   </div>
+  <div class="snum">09 / 14</div>
+</div>
 
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 13 — DEPLOYMENT PLAN
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-dark pattern" id="s13">
-    <div class="eyebrow">What's Next</div>
-    <div class="two-col" style="flex:1">
-      <div>
-        <h2 class="slide-title">Deployment &amp; <span>Launch Plan</span></h2>
-        <p class="lead">The platform is complete and tested. Deployment is the next step.</p>
-        <div class="timeline">
-          <div class="tl-item">
-            <div class="year">STEP 1</div>
-            <h5>Backend Deployment</h5>
-            <p>Deploy Node.js API to Railway / Render. Connect PostgreSQL database. Set environment variables.</p>
-          </div>
-          <div class="tl-item">
-            <div class="year">STEP 2</div>
-            <h5>Frontend Deployment</h5>
-            <p>Deploy React app to Vercel or Netlify. Configure API URL. Enable HTTPS.</p>
-          </div>
-          <div class="tl-item">
-            <div class="year">STEP 3</div>
-            <h5>Domain & DNS</h5>
-            <p>Connect custom domain (e.g. nkenkak-ngiesang.com). Update DNS records. SSL certificate auto-issued.</p>
-          </div>
-          <div class="tl-item">
-            <div class="year">STEP 4</div>
-            <h5>Seed Data & Admin Setup</h5>
-            <p>Create first admin account. Add initial projects, team members and content. Test all payment flows.</p>
-          </div>
-          <div class="tl-item">
-            <div class="year">STEP 5</div>
-            <h5>Launch & Onboard Members</h5>
-            <p>Share registration link. Send welcome email campaign. Monitor and support first users.</p>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="card" style="margin-bottom:12px;padding:20px">
-          <h4 style="margin-bottom:14px;color:#F0A500">Platform is Ready</h4>
-          <ul class="feat-list">
-            <li><i class="fas fa-check-circle" style="color:#22c55e"></i> All core features built and functional</li>
-            <li><i class="fas fa-check-circle" style="color:#22c55e"></i> Admin panel fully operational</li>
-            <li><i class="fas fa-check-circle" style="color:#22c55e"></i> Mobile-optimised across all pages</li>
-            <li><i class="fas fa-check-circle" style="color:#22c55e"></i> Push notifications working</li>
-            <li><i class="fas fa-check-circle" style="color:#22c55e"></i> Payment integration ready</li>
-            <li><i class="fas fa-check-circle" style="color:#22c55e"></i> Email system configured</li>
-            <li><i class="fas fa-check-circle" style="color:#22c55e"></i> Video meetings powered by Daily.co</li>
-            <li><i class="fas fa-check-circle" style="color:#22c55e"></i> Cultural content framework in place</li>
-          </ul>
-        </div>
-        <div class="card" style="padding:20px;background:linear-gradient(135deg,rgba(22,163,74,0.1),rgba(240,165,0,0.08));border-color:rgba(22,163,74,0.2)">
-          <div style="font-size:.72rem;font-weight:700;color:#4ade80;font-family:'Sora',sans-serif;margin-bottom:6px">Estimated Go-Live</div>
-          <div style="font-size:1.6rem;font-family:'Sora',sans-serif;font-weight:800;color:#fff">Within Days</div>
-          <p style="font-size:.7rem;color:rgba(255,255,255,0.5);margin-top:6px;line-height:1.6">Once domain and hosting are confirmed, the deployment process takes hours — not weeks.</p>
-        </div>
-      </div>
+<!-- ══════════════════════════════════════════
+     SLIDE 10 — ADMIN PANEL
+══════════════════════════════════════════ -->
+<div class="slide bg-white" id="s10">
+  <div class="ey">Administration</div>
+  <h2 class="slide-h">Powerful <span>Admin Panel</span></h2>
+  <p class="lead" style="margin-bottom:18px">A complete back-office dashboard — manage every aspect of the platform without touching a single line of code.</p>
+  <div class="g4" style="flex:1;align-content:start">
+    <div class="card" style="padding:20px;border-top:3px solid #5B2D8E">
+      <i class="fas fa-tachometer-alt" style="color:#5B2D8E;margin-bottom:10px;display:block;font-size:1.2rem"></i>
+      <h4>Dashboard</h4>
+      <p>Live stats: donations, members, projects and key metrics.</p>
     </div>
-    <div class="slide-num">13 / 14</div>
+    <div class="card" style="padding:20px;border-top:3px solid #5B2D8E">
+      <i class="fas fa-users-cog" style="color:#5B2D8E;margin-bottom:10px;display:block;font-size:1.2rem"></i>
+      <h4>Member Management</h4>
+      <p>Approve members, assign roles, view profiles and activity.</p>
+    </div>
+    <div class="card" style="padding:20px;border-top:3px solid #F0A500">
+      <i class="fas fa-seedling" style="color:#B07800;margin-bottom:10px;display:block;font-size:1.2rem"></i>
+      <h4>Projects & Donations</h4>
+      <p>Create projects, set goals, publish milestones and view all donation records.</p>
+    </div>
+    <div class="card" style="padding:20px;border-top:3px solid #5B2D8E">
+      <i class="fas fa-newspaper" style="color:#5B2D8E;margin-bottom:10px;display:block;font-size:1.2rem"></i>
+      <h4>News & Content</h4>
+      <p>Full article editor with draft, schedule and publish workflow.</p>
+    </div>
+    <div class="card" style="padding:20px;border-top:3px solid #F0A500">
+      <i class="fas fa-vote-yea" style="color:#B07800;margin-bottom:10px;display:block;font-size:1.2rem"></i>
+      <h4>Elections & Polls</h4>
+      <p>Create elections, add candidates with photos, open/close voting.</p>
+    </div>
+    <div class="card" style="padding:20px;border-top:3px solid #5B2D8E">
+      <i class="fas fa-envelope-open-text" style="color:#5B2D8E;margin-bottom:10px;display:block;font-size:1.2rem"></i>
+      <h4>Email Campaigns</h4>
+      <p>Send HTML campaigns to all members or filtered groups.</p>
+    </div>
+    <div class="card" style="padding:20px;border-top:3px solid #5B2D8E">
+      <i class="fas fa-language" style="color:#5B2D8E;margin-bottom:10px;display:block;font-size:1.2rem"></i>
+      <h4>Language / Vocab</h4>
+      <p>Add, edit and delete Ngiemboon words, proverbs and categories.</p>
+    </div>
+    <div class="card" style="padding:20px;border-top:3px solid #F0A500">
+      <i class="fas fa-bell" style="color:#B07800;margin-bottom:10px;display:block;font-size:1.2rem"></i>
+      <h4>Push Notifications</h4>
+      <p>Broadcast push notifications to all subscribed members.</p>
+    </div>
   </div>
+  <div class="snum">10 / 14</div>
+</div>
 
-  <!-- ═══════════════════════════════════════════════════
-       SLIDE 14 — THANK YOU
-  ══════════════════════════════════════════════════════ -->
-  <div class="slide bg-dark pattern" id="s14">
-    <div class="orb" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(91,45,142,0.3),transparent 70%)"></div>
-    <div class="orb" style="width:200px;height:200px;bottom:40px;right:80px;background:radial-gradient(circle,rgba(240,165,0,0.15),transparent 70%)"></div>
-    <div class="center" style="position:relative">
-      <div style="width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,#5B2D8E,#7B4DB8);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:0 16px 48px rgba(91,45,142,0.4)">
-        <i class="fas fa-heart" style="color:#F0A500;font-size:2rem"></i>
+<!-- ══════════════════════════════════════════
+     SLIDE 11 — TECH STACK
+══════════════════════════════════════════ -->
+<div class="slide bg-ink" id="s11">
+  <div style="position:absolute;top:-100px;right:-80px;width:360px;height:360px;border-radius:50%;background:rgba(91,45,142,0.2);pointer-events:none"></div>
+  <div class="ey ey-light">Technology</div>
+  <div class="two-col-top" style="flex:1">
+    <div>
+      <h2 class="slide-h slide-h-light">Built With Modern<br/><span>Technology</span></h2>
+      <div class="div"></div>
+      <p class="lead lead-light">Chosen for reliability, performance and ease of future maintenance by any developer.</p>
+
+      <div class="tlbl">Frontend</div>
+      <div>
+        <span class="chip chip-inv"><i class="fab fa-react" style="color:#61DAFB"></i> React 18</span>
+        <span class="chip chip-inv"><i class="fas fa-wind" style="color:#38BDF8"></i> Tailwind CSS</span>
+        <span class="chip chip-inv"><i class="fas fa-bolt" style="color:#F0A500"></i> Vite</span>
+        <span class="chip chip-inv"><i class="fas fa-database" style="color:#c084fc"></i> React Query</span>
+        <span class="chip chip-inv"><i class="fas fa-route" style="color:#4ade80"></i> React Router v6</span>
+        <span class="chip chip-inv"><i class="fas fa-wpforms" style="color:#60a5fa"></i> React Hook Form</span>
       </div>
-      <div class="eyebrow" style="justify-content:center;margin-bottom:16px">N-NDC Digital Platform</div>
-      <h1 class="hero-title" style="text-align:center">
-        Ready to <span>Unite</span><br/>Our Community
-      </h1>
-      <p style="font-size:1rem;color:rgba(255,255,255,0.55);max-width:540px;text-align:center;line-height:1.85;margin-bottom:40px">
-        From Nkenkak-Ngiesang to the world — this platform gives every member a voice, every donor transparency, and every child a brighter future.
-      </p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px">
-        <span class="pill pill-gold"><i class="fas fa-users"></i> 40+ Members</span>
-        <span class="pill pill-purple"><i class="fas fa-globe"></i> 14+ Countries</span>
-        <span class="pill pill-green"><i class="fas fa-rocket"></i> Launch Ready</span>
+
+      <div class="tlbl">Backend</div>
+      <div>
+        <span class="chip chip-inv"><i class="fab fa-node-js" style="color:#68A063"></i> Node.js</span>
+        <span class="chip chip-inv"><i class="fas fa-server" style="color:#fff"></i> Express</span>
+        <span class="chip chip-inv"><i class="fas fa-database" style="color:#60a5fa"></i> PostgreSQL</span>
+        <span class="chip chip-inv"><i class="fas fa-layer-group" style="color:#c084fc"></i> Prisma ORM</span>
+        <span class="chip chip-inv"><i class="fas fa-key" style="color:#F0A500"></i> JWT + bcrypt</span>
+        <span class="chip chip-inv"><i class="fas fa-shield-alt" style="color:#4ade80"></i> Helmet</span>
       </div>
-      <div style="width:100%;height:1px;background:rgba(255,255,255,0.07);margin-bottom:32px"></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;max-width:600px;text-align:center">
-        <div>
-          <div style="font-size:.65rem;color:rgba(255,255,255,0.3);font-family:'Sora',sans-serif;text-transform:uppercase;letter-spacing:.15em;margin-bottom:4px">Platform</div>
-          <div style="font-size:.85rem;font-weight:600;color:rgba(255,255,255,0.7);font-family:'Poppins',sans-serif">nkenkak-ngiesang.com</div>
+
+      <div class="tlbl">Services & Integrations</div>
+      <div>
+        <span class="chip chip-inv"><i class="fas fa-image" style="color:#7BA3FF"></i> Cloudinary CDN</span>
+        <span class="chip chip-inv"><i class="fas fa-video" style="color:#f472b6"></i> Daily.co</span>
+        <span class="chip chip-inv"><i class="fas fa-bell" style="color:#4ade80"></i> Web Push (VAPID)</span>
+        <span class="chip chip-inv"><i class="fas fa-envelope" style="color:#F0A500"></i> Nodemailer / SMTP</span>
+        <span class="chip chip-inv"><i class="fas fa-credit-card" style="color:#60a5fa"></i> Flutterwave</span>
+        <span class="chip chip-inv"><i class="fas fa-robot" style="color:#c084fc"></i> Claude AI (Anthropic)</span>
+      </div>
+    </div>
+    <div>
+      <div class="card-ink" style="padding:24px;margin-bottom:14px">
+        <h4 style="margin-bottom:16px;font-size:1rem;color:#fff">Architecture Highlights</h4>
+        <ul class="flist flist-light">
+          <li><i class="fas fa-layer-group"></i> REST API with JWT auth and role-based access (admin / leader / member)</li>
+          <li><i class="fas fa-shield-alt"></i> Password hashing with bcrypt, secure refresh token rotation</li>
+          <li><i class="fas fa-image"></i> All media via Cloudinary CDN with auto-format & quality optimisation</li>
+          <li><i class="fas fa-video"></i> Video meetings via Daily.co — host privileges for admin/leader roles</li>
+          <li><i class="fas fa-bell"></i> Service worker for push notifications — works on mobile browsers</li>
+          <li><i class="fas fa-database"></i> PostgreSQL + Prisma ORM — typed schema, migrations, full relations</li>
+          <li><i class="fas fa-lock"></i> Rate limiting, CORS, Helmet security on all endpoints</li>
+        </ul>
+      </div>
+      <div class="g2">
+        <div class="card-ink" style="padding:18px;text-align:center">
+          <div style="font-size:2.2rem;font-family:'Sora',sans-serif;font-weight:900;color:#F0A500">30+</div>
+          <div style="font-size:.62rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.1em;margin-top:4px">API Routes</div>
         </div>
-        <div>
-          <div style="font-size:.65rem;color:rgba(255,255,255,0.3);font-family:'Sora',sans-serif;text-transform:uppercase;letter-spacing:.15em;margin-bottom:4px">Founded</div>
-          <div style="font-size:.85rem;font-weight:600;color:rgba(255,255,255,0.7);font-family:'Poppins',sans-serif">June 2024</div>
-        </div>
-        <div>
-          <div style="font-size:.65rem;color:rgba(255,255,255,0.3);font-family:'Sora',sans-serif;text-transform:uppercase;letter-spacing:.15em;margin-bottom:4px">Questions?</div>
-          <div style="font-size:.85rem;font-weight:600;color:rgba(255,255,255,0.7);font-family:'Poppins',sans-serif">Ask the team</div>
+        <div class="card-ink" style="padding:18px;text-align:center">
+          <div style="font-size:2.2rem;font-family:'Sora',sans-serif;font-weight:900;color:#F0A500">20+</div>
+          <div style="font-size:.62rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.1em;margin-top:4px">DB Models</div>
         </div>
       </div>
     </div>
-    <div class="slide-num">14 / 14</div>
   </div>
+  <div class="snum snum-light">11 / 14</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SLIDE 12 — MOBILE FIRST
+══════════════════════════════════════════ -->
+<div class="slide bg-off" id="s12">
+  <div class="ey">Design</div>
+  <div class="two-col" style="flex:1;align-items:start">
+    <div>
+      <h2 class="slide-h">Mobile-First,<br/><span>Beautiful Design</span></h2>
+      <div class="div"></div>
+      <p class="lead">Fully responsive — designed for any screen size, from a village smartphone to a diaspora desktop.</p>
+      <ul class="flist">
+        <li><i class="fas fa-mobile-alt"></i> Portal bottom tab bar for fast mobile navigation</li>
+        <li><i class="fas fa-bars"></i> Slide-in drawer with full navigation on mobile</li>
+        <li><i class="fas fa-hand-point-up"></i> Swipeable carousels on elections and galleries</li>
+        <li><i class="fas fa-palette"></i> Brand: deep purple #5B2D8E + gold #F0A500</li>
+        <li><i class="fas fa-magic"></i> Smooth animations: fade, slide, card flips, confetti</li>
+        <li><i class="fas fa-moon"></i> Dark mode sections with glassmorphism cards</li>
+        <li><i class="fas fa-text-height"></i> Sora (headings) + Inter / Poppins (body) fonts</li>
+        <li><i class="fas fa-drum"></i> Cultural aesthetic: Adinkra patterns, kente stripes</li>
+        <li><i class="fas fa-eye"></i> Reading progress bar and TOC on article pages</li>
+      </ul>
+    </div>
+    <div>
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <!-- Phone mockup -->
+        <div style="width:172px;background:#E8E4E0;border:1px solid #D0CCC8;border-radius:30px;overflow:hidden;padding:8px;flex-shrink:0;box-shadow:0 8px 32px rgba(0,0,0,0.12)">
+          <div style="background:#1A0A35;border-radius:22px;overflow:hidden;height:330px;position:relative">
+            <div style="height:42px;background:linear-gradient(135deg,#1A0A35,#250F47);display:flex;align-items:center;padding:0 12px;gap:8px">
+              <img src="nkek-logoicon.png" alt="" style="height:22px;width:22px;object-fit:contain;opacity:.9;border-radius:6px"/>
+              <div style="font-size:.56rem;font-weight:700;color:#fff;font-family:'Sora',sans-serif">N-NDC Portal</div>
+            </div>
+            <div style="padding:12px;font-size:.6rem">
+              <div style="background:linear-gradient(135deg,rgba(91,45,142,0.4),rgba(240,165,0,0.15));border-radius:12px;padding:12px;margin-bottom:9px;border:1px solid rgba(240,165,0,0.2)">
+                <div style="color:rgba(255,255,255,0.45);margin-bottom:2px">Total Donated</div>
+                <div style="color:#F0A500;font-weight:900;font-size:.96rem;font-family:'Sora',sans-serif">XAF 45,000</div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px">
+                <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:8px;text-align:center">
+                  <div style="color:#4ade80;font-weight:900;font-size:.85rem">3</div>
+                  <div style="color:rgba(255,255,255,0.35);font-size:.48rem">Events</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:8px;text-align:center">
+                  <div style="color:#c084fc;font-weight:900;font-size:.85rem">12h</div>
+                  <div style="color:rgba(255,255,255,0.35);font-size:.48rem">Volunteer</div>
+                </div>
+              </div>
+              <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:9px">
+                <div style="color:rgba(255,255,255,0.4);margin-bottom:6px;font-size:.56rem">Recent Activity</div>
+                <div style="height:4px;background:rgba(255,255,255,0.07);border-radius:3px;margin-bottom:4px"></div>
+                <div style="height:4px;background:rgba(255,255,255,0.07);border-radius:3px;width:72%;margin-bottom:4px"></div>
+                <div style="height:4px;background:rgba(255,255,255,0.07);border-radius:3px;width:84%"></div>
+              </div>
+            </div>
+            <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(10,4,20,0.95);border-top:1px solid rgba(255,255,255,0.06);padding:8px 0;display:flex;justify-content:space-around">
+              <div style="text-align:center"><i class="fas fa-home" style="color:#F0A500;font-size:.72rem;display:block"></i><div style="font-size:.36rem;color:#F0A500;margin-top:2px">Home</div></div>
+              <div style="text-align:center"><i class="fas fa-heart" style="color:rgba(255,255,255,0.28);font-size:.72rem;display:block"></i><div style="font-size:.36rem;color:rgba(255,255,255,0.28);margin-top:2px">Donate</div></div>
+              <div style="text-align:center"><i class="fas fa-bell" style="color:rgba(255,255,255,0.28);font-size:.72rem;display:block"></i><div style="font-size:.36rem;color:rgba(255,255,255,0.28);margin-top:2px">Alerts</div></div>
+              <div style="text-align:center"><i class="fas fa-user" style="color:rgba(255,255,255,0.28);font-size:.72rem;display:block"></i><div style="font-size:.36rem;color:rgba(255,255,255,0.28);margin-top:2px">Profile</div></div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+          <div class="card" style="padding:18px">
+            <div class="slbl">Desktop</div>
+            <ul class="flist" style="margin:0">
+              <li style="font-size:.82rem"><i class="fas fa-th-large"></i> Multi-column layouts</li>
+              <li style="font-size:.82rem"><i class="fas fa-heading"></i> Fixed header navigation</li>
+              <li style="font-size:.82rem"><i class="fas fa-expand"></i> Full gallery lightbox</li>
+              <li style="font-size:.82rem"><i class="fas fa-list"></i> Sidebar on news & articles</li>
+            </ul>
+          </div>
+          <div class="card" style="padding:18px">
+            <div class="slbl">Mobile</div>
+            <ul class="flist" style="margin:0">
+              <li style="font-size:.82rem"><i class="fas fa-grip-horizontal"></i> Bottom tab bar</li>
+              <li style="font-size:.82rem"><i class="fas fa-bars"></i> Slide-in full drawer</li>
+              <li style="font-size:.82rem"><i class="fas fa-hand-point-right"></i> Swipe gestures</li>
+              <li style="font-size:.82rem"><i class="fas fa-bell"></i> Native push notifications</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="snum">12 / 14</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SLIDE 13 — LIVE NOW
+══════════════════════════════════════════ -->
+<div class="slide bg-off" id="s13">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+    <img src="nkek-logoicon.png" alt="" style="height:28px;opacity:.6"/>
+    <div class="ey" style="margin-bottom:0">Status: Live</div>
+  </div>
+  <div class="two-col-top" style="flex:1">
+    <div>
+      <h2 class="slide-h">Platform Is <span style="color:#16a34a">Live</span><br/>&amp; Running</h2>
+      <div class="div" style="background:linear-gradient(90deg,#16a34a,#22c55e)"></div>
+      <p class="lead">The platform is fully deployed and accessible now. Both frontend and backend are live in production.</p>
+      <div style="margin-bottom:22px">
+        <div class="live-badge" style="margin-bottom:10px;display:inline-flex"><div class="live-dot"></div> Frontend — nkenkak-duk6.vercel.app</div><br/>
+        <div class="live-badge" style="display:inline-flex"><div class="live-dot"></div> Backend API — nkenkak-api.onrender.com</div>
+      </div>
+      <div class="tl">
+        <div class="tli" style="--c:#16a34a">
+          <div class="yr" style="color:#16a34a">Done</div>
+          <h5>Backend on Render</h5>
+          <p>Node.js API deployed. PostgreSQL (Neon) connected. All env variables configured.</p>
+        </div>
+        <div class="tli">
+          <div class="yr" style="color:#16a34a">Done</div>
+          <h5>Frontend on Vercel</h5>
+          <p>React app deployed. API connected. Auto-deploy on every git push.</p>
+        </div>
+        <div class="tli">
+          <div class="yr" style="color:#16a34a">Done</div>
+          <h5>CORS & Security</h5>
+          <p>All cross-origin policies configured. HTTPS enabled. Rate limiting active.</p>
+        </div>
+        <div class="tli">
+          <div class="yr">Next</div>
+          <h5>Custom Domain</h5>
+          <p>Connect nkenkak-ngiesang.com to Vercel. DNS update. SSL auto-issued.</p>
+        </div>
+        <div class="tli">
+          <div class="yr">Next</div>
+          <h5>Onboard Members</h5>
+          <p>Share registration link. Send welcome campaign. Monitor first users.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="padding:24px;margin-bottom:14px;border-top:3px solid #16a34a">
+        <h4 style="margin-bottom:16px;color:#16a34a">Everything Working</h4>
+        <div class="check"><i class="fas fa-check-circle"></i> All 30+ features built and functional</div>
+        <div class="check"><i class="fas fa-check-circle"></i> Admin panel fully operational</div>
+        <div class="check"><i class="fas fa-check-circle"></i> Mobile-optimised across all pages</div>
+        <div class="check"><i class="fas fa-check-circle"></i> Push notifications working</div>
+        <div class="check"><i class="fas fa-check-circle"></i> Flutterwave payment integration ready</div>
+        <div class="check"><i class="fas fa-check-circle"></i> Email system (SMTP) configured</div>
+        <div class="check"><i class="fas fa-check-circle"></i> Video meetings via Daily.co</div>
+        <div class="check"><i class="fas fa-check-circle"></i> Auto-deploy on every code push</div>
+      </div>
+      <div class="card" style="padding:20px;text-align:center">
+        <div class="slbl">Estimated Time to Custom Domain</div>
+        <div style="font-size:2.4rem;font-family:'Sora',sans-serif;font-weight:900;color:#5B2D8E;line-height:1;margin:8px 0">~ 30 minutes</div>
+        <div style="font-size:.75rem;color:#737373">Once DNS records are updated</div>
+      </div>
+    </div>
+  </div>
+  <div class="snum">13 / 14</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SLIDE 14 — THANK YOU
+══════════════════════════════════════════ -->
+<div class="slide bg-white" id="s14">
+  <div class="top-bar"></div>
+  <div style="position:absolute;top:-120px;right:-120px;width:480px;height:480px;border-radius:50%;background:linear-gradient(135deg,rgba(91,45,142,0.06),rgba(240,165,0,0.03));pointer-events:none"></div>
+  <div style="position:absolute;bottom:-80px;left:-80px;width:320px;height:320px;border-radius:50%;background:rgba(91,45,142,0.04);pointer-events:none"></div>
+
+  <div class="center">
+    <img src="nkek-logo.png" alt="N-NDC Logo" style="height:88px;object-fit:contain;margin-bottom:28px"/>
+    <div class="ey" style="justify-content:center;margin-bottom:18px">N-NDC Digital Platform</div>
+    <h1 class="hero-h" style="text-align:center;max-width:800px">
+      Built for Our Community.<br/><span>Ready for the World.</span>
+    </h1>
+    <p style="font-size:1rem;color:#737373;max-width:560px;text-align:center;line-height:1.95;margin-bottom:36px">
+      From Nkenkak-Ngiesang to 14+ countries — this platform gives every member a voice, every donor full transparency, and every child a brighter future.
+    </p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px">
+      <span class="pill pp"><i class="fas fa-users"></i> 40+ Members</span>
+      <span class="pill pg"><i class="fas fa-globe"></i> 14+ Countries</span>
+      <span class="pill pp"><i class="fas fa-layer-group"></i> 30+ Features</span>
+      <span class="pill pgreen"><i class="fas fa-rocket"></i> Live Now</span>
+    </div>
+    <div class="live-badge" style="margin-bottom:40px"><div class="live-dot"></div> nkenkak-duk6.vercel.app</div>
+    <div style="width:100%;max-width:600px;height:1px;background:#F0EEE8;margin-bottom:32px"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:40px;max-width:580px;text-align:center">
+      <div>
+        <div style="font-size:.6rem;color:#C3BFBA;font-family:'Sora',sans-serif;text-transform:uppercase;letter-spacing:.18em;margin-bottom:6px">Platform</div>
+        <div style="font-size:.88rem;font-weight:600;color:#404040">nkenkak-duk6.vercel.app</div>
+      </div>
+      <div>
+        <div style="font-size:.6rem;color:#C3BFBA;font-family:'Sora',sans-serif;text-transform:uppercase;letter-spacing:.18em;margin-bottom:6px">Founded</div>
+        <div style="font-size:.88rem;font-weight:600;color:#404040">June 2024</div>
+      </div>
+      <div>
+        <div style="font-size:.6rem;color:#C3BFBA;font-family:'Sora',sans-serif;text-transform:uppercase;letter-spacing:.18em;margin-bottom:6px">Questions?</div>
+        <div style="font-size:.88rem;font-weight:600;color:#404040">Ask the team</div>
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#5B2D8E,#F0A500)"></div>
+  <div class="snum">14 / 14</div>
+</div>
 
 </div><!-- /deck -->
 
-<!-- ── Navigation ── -->
+<!-- ── NAV ── -->
 <div id="nav">
-  <button id="prevBtn" onclick="navigate(-1)" title="Previous (←)">
-    <i class="fas fa-chevron-left" style="font-size:.75rem"></i>
-  </button>
+  <button onclick="navigate(-1)" title="Previous (←)"><i class="fas fa-chevron-left" style="font-size:.72rem"></i></button>
   <div class="dots" id="dots"></div>
   <span id="counter">1 / 14</span>
-  <button id="nextBtn" onclick="navigate(1)" title="Next (→)">
-    <i class="fas fa-chevron-right" style="font-size:.75rem"></i>
-  </button>
+  <button onclick="navigate(1)" title="Next (→)"><i class="fas fa-chevron-right" style="font-size:.72rem"></i></button>
 </div>
 
 <script>
-  const TOTAL = 14
-  let current = 0
+const TOTAL = 14
+let cur = 0
+const dotsEl = document.getElementById('dots')
+const counter = document.getElementById('counter')
+const pbar = document.getElementById('pbar')
 
-  const slides = () => document.querySelectorAll('.slide')
-  const dotsEl = document.getElementById('dots')
-  const counter = document.getElementById('counter')
+for (let i = 0; i < TOTAL; i++) {
+  const d = document.createElement('button')
+  d.className = 'dot' + (i === 0 ? ' active' : '')
+  d.onclick = () => goTo(i)
+  dotsEl.appendChild(d)
+}
 
-  // Build dots
-  for (let i = 0; i < TOTAL; i++) {
-    const d = document.createElement('button')
-    d.className = 'dot' + (i === 0 ? ' active' : '')
-    d.onclick = () => goTo(i)
-    dotsEl.appendChild(d)
-  }
+function goTo(idx) {
+  const all = document.querySelectorAll('.slide')
+  all[cur].classList.remove('active')
+  all[cur].classList.add('out')
+  setTimeout(() => all[cur].classList.remove('out'), 420)
+  cur = ((idx % TOTAL) + TOTAL) % TOTAL
+  all[cur].classList.add('active')
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur))
+  counter.textContent = `${cur + 1} / ${TOTAL}`
+  pbar.style.width = `${((cur + 1) / TOTAL) * 100}%`
+}
 
-  function goTo(idx) {
-    const all = slides()
-    all[current].classList.remove('active')
-    all[current].classList.add('out')
-    setTimeout(() => all[current > idx ? current : current].classList.remove('out'), 500)
+function navigate(dir) { goTo(cur + dir) }
 
-    current = (idx + TOTAL) % TOTAL
-    all[current].classList.add('active')
-    setTimeout(() => {
-      document.querySelectorAll('.slide.out').forEach(s => s.classList.remove('out'))
-    }, 500)
+document.addEventListener('keydown', e => {
+  if (['ArrowRight','ArrowDown',' '].includes(e.key)) { e.preventDefault(); navigate(1) }
+  if (['ArrowLeft','ArrowUp'].includes(e.key))         { e.preventDefault(); navigate(-1) }
+  if (e.key === 'Home') goTo(0)
+  if (e.key === 'End')  goTo(TOTAL - 1)
+})
 
-    // Update dots
-    document.querySelectorAll('.dot').forEach((d, i) => {
-      d.classList.toggle('active', i === current)
-    })
-    counter.textContent = `${current + 1} / ${TOTAL}`
-  }
-
-  function navigate(dir) { goTo(current + dir) }
-
-  // Keyboard
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); navigate(1) }
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); navigate(-1) }
-    if (e.key === 'Home') goTo(0)
-    if (e.key === 'End')  goTo(TOTAL - 1)
-  })
-
-  // Touch swipe
-  let tx = null
-  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX }, { passive: true })
-  document.addEventListener('touchend',   e => {
-    if (tx === null) return
-    const dx = tx - e.changedTouches[0].clientX
-    if (Math.abs(dx) > 50) navigate(dx > 0 ? 1 : -1)
-    tx = null
-  })
+let tx = null
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX }, { passive: true })
+document.addEventListener('touchend', e => {
+  if (tx === null) return
+  const dx = tx - e.changedTouches[0].clientX
+  if (Math.abs(dx) > 48) navigate(dx > 0 ? 1 : -1)
+  tx = null
+})
 </script>
 </body>
 </html>

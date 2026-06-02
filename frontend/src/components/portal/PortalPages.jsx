@@ -6,20 +6,21 @@ import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import api from '../../services/api'
-/*import bcrypt from 'bcryptjs' // not needed; just use the endpoint*/
+import { cn } from '../../lib/utils'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Badge } from '../ui/badge'
 
 /* ─── Shared page header ─── */
 function PageHeader({ title, sub, icon }) {
   return (
     <div className="mb-5 sm:mb-8">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
-          style={{background:'linear-gradient(135deg,#5B2D8E,#7B4DB8)'}}>
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-primary-500 to-primary-light">
           <i className={`fas ${icon} text-sm text-white`}/>
         </div>
         <div>
-          <h1 className="font-display font-bold text-xl sm:text-2xl" style={{color:'#1A0A35'}}>{title}</h1>
-          {sub && <p className="text-xs sm:text-sm" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>{sub}</p>}
+          <h1 className="font-bold text-xl sm:text-2xl text-dark">{title}</h1>
+          {sub && <p className="text-xs sm:text-sm text-muted-foreground">{sub}</p>}
         </div>
       </div>
     </div>
@@ -27,15 +28,17 @@ function PageHeader({ title, sub, icon }) {
 }
 
 /* ─── Stat mini card ─── */
-function MiniStat({ icon, label, value, color='#5B2D8E', bg='rgba(91,45,142,0.08)' }) {
+function MiniStat({ icon, label, value, color = '#5B2D8E', bg = 'rgba(91,45,142,0.08)' }) {
   return (
-    <div className="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-6" style={{boxShadow:'0 4px 24px rgba(91,45,142,0.07)',border:'1px solid rgba(91,45,142,0.06)'}}>
-      <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center mb-2 sm:mb-3" style={{background:bg}}>
-        <i className={`fas ${icon} text-sm sm:text-lg`} style={{color}}/>
-      </div>
-      <div className="font-display font-bold text-lg sm:text-2xl" style={{color:'#1A0A35'}}>{value}</div>
-      <div className="text-[10px] sm:text-xs mt-0.5 leading-tight" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>{label}</div>
-    </div>
+    <Card>
+      <CardContent className="pt-4 sm:pt-6">
+        <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center mb-2 sm:mb-3" style={{ background: bg }}>
+          <i className={`fas ${icon} text-sm sm:text-lg`} style={{ color }}/>
+        </div>
+        <div className="font-bold text-lg sm:text-2xl text-dark">{value}</div>
+        <div className="text-[10px] sm:text-xs mt-0.5 leading-tight text-muted-foreground">{label}</div>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -49,20 +52,19 @@ export function PortalDashboard() {
   const { data: notifs } = useQuery('my-notifs',
     () => api.get('/notifications').then(r => r.data))
 
-  const totalGiven = donations?.filter(d=>d.status==='completed').reduce((s,d)=>s+(+d.amount),0)||0
-  const unread     = notifs?.filter(n=>!n.isRead).length||0
+  const totalGiven = donations?.filter(d => d.status === 'completed').reduce((s, d) => s + (+d.amount), 0) || 0
+  const unread     = notifs?.filter(n => !n.isRead).length || 0
 
   return (
     <div>
       {/* Welcome banner */}
-      <div className="rounded-3xl p-5 sm:p-8 mb-6 sm:mb-8 relative overflow-hidden"
-        style={{background:'linear-gradient(135deg,#250F47,#5B2D8E)'}}>
+      <div className="rounded-3xl p-5 sm:p-8 mb-6 sm:mb-8 relative overflow-hidden bg-gradient-to-br from-dark to-primary-500">
         <div className="wave-pattern absolute inset-0"/>
         <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-widest mb-1" style={{color:'rgba(240,165,0,0.8)',fontFamily:'Sora,sans-serif'}}>Welcome Back</div>
-            <h2 className="font-display font-bold text-2xl text-white mb-1">Hello, {user?.firstName}! 🌿</h2>
-            <p className="text-sm" style={{color:'rgba(255,255,255,0.65)',fontFamily:'Poppins,sans-serif'}}>Thank you for being a part of Nkenkak-Ngiesang. Your support changes lives.</p>
+            <div className="text-xs font-semibold uppercase tracking-widest mb-1 text-gold/80">Welcome Back</div>
+            <h2 className="font-bold text-2xl text-white mb-1">Hello, {user?.firstName}!</h2>
+            <p className="text-sm text-white/65">Thank you for being a part of Nkenkak-Ngiesang. Your support changes lives.</p>
           </div>
           <div className="flex gap-3 flex-wrap">
             <Link to="/projects" className="btn-gold !py-2.5 !px-5 !text-xs">
@@ -77,71 +79,72 @@ export function PortalDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
-        <MiniStat icon="fa-heart"  label="Donations Made"  value={donations?.filter(d=>d.status==='completed').length||0}/>
+        <MiniStat icon="fa-heart"  label="Donations Made"  value={donations?.filter(d => d.status === 'completed').length || 0}/>
         <MiniStat icon="fa-coins"  label="XAF Contributed" value={totalGiven.toLocaleString()} color="#F0A500" bg="rgba(240,165,0,0.1)"/>
         <MiniStat icon="fa-bell"   label="Unread Notifs"   value={unread} color="#dc2626" bg="rgba(220,38,38,0.08)"/>
       </div>
 
-      {/* Recent donations */}
+      {/* Recent donations + notifications */}
       <div className="grid lg:grid-cols-2 gap-6">
-        <div className="card">
-          <div className="p-5 border-b flex items-center justify-between" style={{borderColor:'rgba(91,45,142,0.06)'}}>
-            <h3 className="font-display font-semibold" style={{color:'#1A0A35'}}>Recent Donations</h3>
-            <Link to="/portal/donations" className="text-xs font-semibold hover:underline" style={{color:'#5B2D8E',fontFamily:'Sora,sans-serif'}}>View All →</Link>
+        <Card className="p-0 overflow-hidden">
+          <div className="p-5 border-b border-primary-500/6 flex items-center justify-between">
+            <h3 className="font-semibold text-dark">Recent Donations</h3>
+            <Link to="/portal/donations" className="text-xs font-semibold hover:underline text-primary-500">View All →</Link>
           </div>
-          <div className="divide-y" style={{divideColor:'rgba(91,45,142,0.05)'}}>
-            {donations?.slice(0,4).map(d=>(
+          <div className="divide-y divide-primary-500/5">
+            {donations?.slice(0, 4).map(d => (
               <div key={d.id} className="flex items-center gap-3 px-5 py-3.5">
-                <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{background:'rgba(91,45,142,0.08)'}}>
-                  <i className="fas fa-heart text-xs" style={{color:'#5B2D8E'}}/>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-primary-50">
+                  <i className="fas fa-heart text-xs text-primary-500"/>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold truncate" style={{color:'#1A0A35',fontFamily:'Sora,sans-serif'}}>{d.project_title||'General Fund'}</div>
-                  <div className="text-xs" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>{format(new Date(d.createdAt),'MMM d, yyyy')}</div>
+                  <div className="text-sm font-semibold truncate text-dark">{d.project_title || 'General Fund'}</div>
+                  <div className="text-xs text-muted-foreground">{format(new Date(d.createdAt), 'MMM d, yyyy')}</div>
                 </div>
                 <div className="text-right">
-                  <div className="font-display font-bold text-sm" style={{color:'#1A0A35'}}>{Number(d.amount).toLocaleString()} <span className="text-xs font-normal" style={{color:'#A3A3A3'}}>XAF</span></div>
-                  <span className="text-[10px] font-bold" style={{color:d.status==='completed'?'#16a34a':d.status==='pending'?'#C87800':'#dc2626'}}>{d.status}</span>
+                  <div className="font-bold text-sm text-dark">{Number(d.amount).toLocaleString()} <span className="text-xs font-normal text-muted-foreground">XAF</span></div>
+                  <span className={cn('text-[10px] font-bold',
+                    d.status === 'completed' ? 'text-green-600' :
+                    d.status === 'pending'   ? 'text-amber-600' : 'text-red-600'
+                  )}>{d.status}</span>
                 </div>
               </div>
             ))}
             {!donations?.length && (
               <div className="py-10 text-center">
-                <i className="fas fa-heart text-3xl mb-2 block" style={{color:'rgba(91,45,142,0.15)'}}/>
-                <p className="text-sm" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>No donations yet —&nbsp;
-                  <Link to="/projects" className="hover:underline font-semibold" style={{color:'#5B2D8E'}}>support a project</Link>
+                <i className="fas fa-heart text-3xl mb-2 block text-primary-500/15"/>
+                <p className="text-sm text-muted-foreground">No donations yet —&nbsp;
+                  <Link to="/projects" className="hover:underline font-semibold text-primary-500">support a project</Link>
                 </p>
               </div>
             )}
           </div>
-        </div>
+        </Card>
 
-        {/* Recent notifications */}
-        <div className="card">
-          <div className="p-5 border-b flex items-center justify-between" style={{borderColor:'rgba(91,45,142,0.06)'}}>
-            <h3 className="font-display font-semibold" style={{color:'#1A0A35'}}>Notifications</h3>
-            <Link to="/portal/notifications" className="text-xs font-semibold hover:underline" style={{color:'#5B2D8E',fontFamily:'Sora,sans-serif'}}>View All →</Link>
+        <Card className="p-0 overflow-hidden">
+          <div className="p-5 border-b border-primary-500/6 flex items-center justify-between">
+            <h3 className="font-semibold text-dark">Notifications</h3>
+            <Link to="/portal/notifications" className="text-xs font-semibold hover:underline text-primary-500">View All →</Link>
           </div>
-          <div className="divide-y" style={{divideColor:'rgba(91,45,142,0.05)'}}>
-            {notifs?.slice(0,4).map(n=>(
-              <div key={n.id} className={`flex gap-3 px-5 py-3.5 ${!n.isRead?'bg-primary-50/30':''}`}>
-                <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${n.isRead?'bg-neutral-200':'bg-primary-500'}`}/>
+          <div className="divide-y divide-primary-500/5">
+            {notifs?.slice(0, 4).map(n => (
+              <div key={n.id} className={cn('flex gap-3 px-5 py-3.5', !n.isRead && 'bg-primary-50/30')}>
+                <div className={cn('w-2 h-2 rounded-full mt-1.5 flex-shrink-0', n.isRead ? 'bg-neutral-200' : 'bg-primary-500')}/>
                 <div className="flex-1">
-                  <div className="text-sm font-semibold" style={{color:'#1A0A35',fontFamily:'Sora,sans-serif'}}>{n.title}</div>
-                  <div className="text-xs mt-0.5 line-clamp-1" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>{n.message}</div>
-                  <div className="text-[10px] mt-1" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>{format(new Date(n.createdAt),'MMM d, yyyy · h:mm a')}</div>
+                  <div className={cn('text-sm font-semibold', n.isRead ? 'text-muted-foreground' : 'text-dark')}>{n.title}</div>
+                  <div className="text-xs mt-0.5 line-clamp-1 text-muted-foreground">{n.message}</div>
+                  <div className="text-[10px] mt-1 text-muted-foreground/60">{format(new Date(n.createdAt), 'MMM d, yyyy · h:mm a')}</div>
                 </div>
               </div>
             ))}
             {!notifs?.length && (
               <div className="py-10 text-center">
-                <i className="fas fa-bell text-3xl mb-2 block" style={{color:'rgba(91,45,142,0.15)'}}/>
-                <p className="text-sm" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>All caught up!</p>
+                <i className="fas fa-bell text-3xl mb-2 block text-primary-500/15"/>
+                <p className="text-sm text-muted-foreground">All caught up!</p>
               </div>
             )}
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   )
@@ -153,81 +156,79 @@ export function PortalDashboard() {
 export function PortalProfile() {
   const { user, loadUser } = useAuth()
   const [pwForm, setPwForm] = useState(false)
-  const { register, handleSubmit, formState:{isDirty} } = useForm({ defaultValues:user||{} })
-  const { register:regPw, handleSubmit:handlePw, reset:resetPw } = useForm()
+  const { register, handleSubmit, formState: { isDirty } } = useForm({ defaultValues: user || {} })
+  const { register: regPw, handleSubmit: handlePw, reset: resetPw } = useForm()
 
-  const updateMut = useMutation(data=>api.patch('/users/profile',data),{
-    onSuccess:()=>{ toast.success('Profile updated!'); loadUser() }
+  const updateMut = useMutation(data => api.patch('/users/profile', data), {
+    onSuccess: () => { toast.success('Profile updated!'); loadUser() }
   })
-  const pwMut = useMutation(data=>api.patch('/users/change-password',data),{
-    onSuccess:()=>{ toast.success('Password changed!'); setPwForm(false); resetPw() },
-    onError:(e)=>toast.error(e.response?.data?.error||'Failed')
+  const pwMut = useMutation(data => api.patch('/users/change-password', data), {
+    onSuccess: () => { toast.success('Password changed!'); setPwForm(false); resetPw() },
+    onError: (e) => toast.error(e.response?.data?.error || 'Failed')
   })
 
   return (
     <div className="max-w-2xl">
       <PageHeader title="My Profile" sub="Manage your personal information" icon="fa-user"/>
 
-      {/* Avatar + name header */}
-      <div className="card p-6 mb-5 flex items-center gap-5">
-        <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl flex-shrink-0"
-          style={{background:'linear-gradient(135deg,#5B2D8E,#7B4DB8)'}}>
+      <Card className="p-6 mb-5 flex items-center gap-5">
+        <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl flex-shrink-0 bg-gradient-to-br from-primary-500 to-primary-light">
           {user?.firstName?.[0]}{user?.lastName?.[0]}
         </div>
         <div>
-          <div className="font-display font-bold text-lg" style={{color:'#1A0A35'}}>{user?.firstName} {user?.lastName}</div>
-          <div className="text-sm capitalize" style={{color:'#5B2D8E',fontFamily:'Poppins,sans-serif'}}>{user?.role}</div>
-          <div className="text-xs" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>{user?.email}</div>
+          <div className="font-bold text-lg text-dark">{user?.firstName} {user?.lastName}</div>
+          <div className="text-sm capitalize text-primary-500">{user?.role}</div>
+          <div className="text-xs text-muted-foreground">{user?.email}</div>
         </div>
-      </div>
+      </Card>
 
-      {/* Edit form */}
-      <form onSubmit={handleSubmit(d=>updateMut.mutate(d))} className="card p-6 mb-5 space-y-5">
-        <h3 className="font-display font-semibold border-b pb-3" style={{color:'#1A0A35',borderColor:'rgba(91,45,142,0.08)'}}>Personal Information</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div><label className="label">First Name</label><input {...register('first_name')} className="input"/></div>
-          <div><label className="label">Last Name</label><input {...register('last_name')} className="input"/></div>
-          <div><label className="label">Phone</label><input {...register('phone')} className="input"/></div>
-          <div><label className="label">Country</label><input {...register('country')} className="input"/></div>
-          <div><label className="label">City</label><input {...register('city')} className="input"/></div>
-          <div><label className="label">Village Quarter</label><input {...register('village_quarter')} className="input"/></div>
-        </div>
-        <div><label className="label">Bio</label><textarea {...register('bio')} rows={3} className="input resize-none"/></div>
-        <div className="flex flex-col gap-2">
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" {...register('is_diaspora')} className="w-4 h-4 rounded accent-primary-500"/>
-            <span className="text-sm" style={{color:'#525252',fontFamily:'Poppins,sans-serif'}}>I am a diaspora member</span>
-          </label>
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" {...register('newsletter')} className="w-4 h-4 rounded accent-primary-500"/>
-            <span className="text-sm" style={{color:'#525252',fontFamily:'Poppins,sans-serif'}}>Subscribe to newsletter</span>
-          </label>
-        </div>
-        <button type="submit" disabled={updateMut.isLoading} className="btn-secondary !py-2.5 !text-sm">
-          {updateMut.isLoading?<><i className="fas fa-spinner animate-spin"/>Saving…</>:<><i className="fas fa-save"/>Save Changes</>}
-        </button>
-      </form>
+      <Card className="p-6 mb-5">
+        <form onSubmit={handleSubmit(d => updateMut.mutate(d))} className="space-y-5">
+          <h3 className="font-semibold border-b border-primary-500/8 pb-3 text-dark">Personal Information</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div><label className="label">First Name</label><input {...register('first_name')} className="input"/></div>
+            <div><label className="label">Last Name</label><input {...register('last_name')} className="input"/></div>
+            <div><label className="label">Phone</label><input {...register('phone')} className="input"/></div>
+            <div><label className="label">Country</label><input {...register('country')} className="input"/></div>
+            <div><label className="label">City</label><input {...register('city')} className="input"/></div>
+            <div><label className="label">Village Quarter</label><input {...register('village_quarter')} className="input"/></div>
+          </div>
+          <div><label className="label">Bio</label><textarea {...register('bio')} rows={3} className="input resize-none"/></div>
+          <div className="flex flex-col gap-2">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" {...register('is_diaspora')} className="w-4 h-4 rounded accent-primary-500"/>
+              <span className="text-sm text-muted-foreground">I am a diaspora member</span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" {...register('newsletter')} className="w-4 h-4 rounded accent-primary-500"/>
+              <span className="text-sm text-muted-foreground">Subscribe to newsletter</span>
+            </label>
+          </div>
+          <button type="submit" disabled={updateMut.isLoading} className="btn-secondary !py-2.5 !text-sm">
+            {updateMut.isLoading ? <><i className="fas fa-spinner animate-spin"/>Saving…</> : <><i className="fas fa-save"/>Save Changes</>}
+          </button>
+        </form>
+      </Card>
 
-      {/* Change password */}
-      <div className="card p-6">
+      <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-display font-semibold" style={{color:'#1A0A35'}}>Security</h3>
-          <button onClick={()=>setPwForm(!pwForm)} className="text-xs font-semibold hover:underline" style={{color:'#5B2D8E',fontFamily:'Sora,sans-serif'}}>
-            {pwForm?'Cancel':'Change Password'}
+          <h3 className="font-semibold text-dark">Security</h3>
+          <button onClick={() => setPwForm(!pwForm)} className="text-xs font-semibold hover:underline text-primary-500">
+            {pwForm ? 'Cancel' : 'Change Password'}
           </button>
         </div>
         {pwForm ? (
-          <form onSubmit={handlePw(d=>pwMut.mutate(d))} className="space-y-4">
-            <div><label className="label">Current Password</label><input type="password" {...regPw('current_password',{required:true})} className="input"/></div>
-            <div><label className="label">New Password</label><input type="password" {...regPw('new_password',{required:true,minLength:{value:8,message:'Min 8 characters'}})} className="input"/></div>
+          <form onSubmit={handlePw(d => pwMut.mutate(d))} className="space-y-4">
+            <div><label className="label">Current Password</label><input type="password" {...regPw('current_password', { required: true })} className="input"/></div>
+            <div><label className="label">New Password</label><input type="password" {...regPw('new_password', { required: true, minLength: { value: 8, message: 'Min 8 characters' } })} className="input"/></div>
             <button type="submit" disabled={pwMut.isLoading} className="btn-secondary !py-2.5 !text-sm">
-              {pwMut.isLoading?<><i className="fas fa-spinner animate-spin"/>Updating…</>:<><i className="fas fa-lock"/>Update Password</>}
+              {pwMut.isLoading ? <><i className="fas fa-spinner animate-spin"/>Updating…</> : <><i className="fas fa-lock"/>Update Password</>}
             </button>
           </form>
         ) : (
-          <p className="text-sm" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>Your account is secured with a password.</p>
+          <p className="text-sm text-muted-foreground">Your account is secured with a password.</p>
         )}
-      </div>
+      </Card>
     </div>
   )
 }
@@ -236,11 +237,11 @@ export function PortalProfile() {
    PORTAL DONATIONS
 ══════════════════════════════════════════════ */
 export function PortalDonations() {
-  const { data, isLoading } = useQuery('my-donations', ()=>api.get('/donations/my').then(r=>r.data))
-  const total = data?.filter(d=>d.status==='completed').reduce((s,d)=>s+(+d.amount),0)||0
+  const { data, isLoading } = useQuery('my-donations', () => api.get('/donations/my').then(r => r.data))
+  const total = data?.filter(d => d.status === 'completed').reduce((s, d) => s + (+d.amount), 0) || 0
 
   const printReceipt = (d) => {
-    const win = window.open('','_blank','width=700,height=600')
+    const win = window.open('', '_blank', 'width=700,height=600')
     win.document.write(`
       <html><head><title>Donation Receipt</title>
       <style>
@@ -259,11 +260,11 @@ export function PortalDonations() {
       <div class="sub">Nkenkak-Ngiesang Community Foundation</div>
       <table>
         <tr><td>Reference</td><td>${d.reference}</td></tr>
-        <tr><td>Project</td><td>${d.project_title||'General Fund'}</td></tr>
+        <tr><td>Project</td><td>${d.project_title || 'General Fund'}</td></tr>
         <tr><td>Amount</td><td>${Number(d.amount).toLocaleString()} XAF</td></tr>
-        <tr><td>Method</td><td>${(d.provider||'').replace(/_/g,' ')}</td></tr>
+        <tr><td>Method</td><td>${(d.provider || '').replace(/_/g, ' ')}</td></tr>
         <tr><td>Status</td><td><span class="badge">${d.status}</span></td></tr>
-        <tr><td>Date</td><td>${new Date(d.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</td></tr>
+        <tr><td>Date</td><td>${new Date(d.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</td></tr>
       </table>
       <p style="font-size:13px;color:#525252">Thank you for your generous contribution to the Nkenkak-Ngiesang community. Your support makes a real difference.</p>
       <div class="footer">nkenkak-ngiesang.cm &bull; contact@nkenkak-ngiesang.cm</div>
@@ -277,39 +278,41 @@ export function PortalDonations() {
     <div>
       <PageHeader title="My Donations" sub="Your contribution history" icon="fa-heart"/>
 
-      {/* Stats */}
       <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
-        <MiniStat icon="fa-check-circle" label="Completed"   value={data?.filter(d=>d.status==='completed').length||0} color="#16a34a" bg="rgba(22,163,74,0.08)"/>
-        <MiniStat icon="fa-coins"        label="XAF Total"   value={total.toLocaleString()} color="#F0A500" bg="rgba(240,165,0,0.1)"/>
-        <MiniStat icon="fa-clock"        label="Pending"     value={data?.filter(d=>d.status==='pending').length||0}   color="#C87800" bg="rgba(240,165,0,0.08)"/>
+        <MiniStat icon="fa-check-circle" label="Completed"  value={data?.filter(d => d.status === 'completed').length || 0} color="#16a34a" bg="rgba(22,163,74,0.08)"/>
+        <MiniStat icon="fa-coins"        label="XAF Total"  value={total.toLocaleString()} color="#F0A500" bg="rgba(240,165,0,0.1)"/>
+        <MiniStat icon="fa-clock"        label="Pending"    value={data?.filter(d => d.status === 'pending').length || 0}   color="#C87800" bg="rgba(240,165,0,0.08)"/>
       </div>
 
-      <div className="card overflow-hidden">
+      <Card className="overflow-hidden p-0">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead style={{background:'rgba(91,45,142,0.04)'}}>
+            <thead className="bg-primary-500/4">
               <tr>
-                {['Reference','Project','Amount','Method','Status','Date',''].map(h=>(
-                  <th key={h} className="text-left px-5 py-3.5 text-xs font-bold uppercase tracking-widest" style={{color:'#5B2D8E',fontFamily:'Sora,sans-serif'}}>{h}</th>
+                {['Reference', 'Project', 'Amount', 'Method', 'Status', 'Date', ''].map(h => (
+                  <th key={h} className="text-left px-5 py-3.5 text-xs font-bold uppercase tracking-widest text-primary-500">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {isLoading ? [1,2,3].map(i=>(
-                <tr key={i}><td colSpan={7} className="px-5 py-4"><div className="h-4 rounded-xl animate-pulse" style={{background:'rgba(91,45,142,0.05)'}}/></td></tr>
-              )) : data?.map(d=>(
-                <tr key={d.id} className="table-row">
-                  <td className="px-5 py-3.5 font-mono text-xs" style={{color:'#737373'}}>{d.reference}</td>
-                  <td className="px-5 py-3.5 text-sm" style={{color:'#525252',fontFamily:'Poppins,sans-serif'}}>{d.project_title||'General Fund'}</td>
-                  <td className="px-5 py-3.5 font-display font-bold text-sm" style={{color:'#1A0A35'}}>{Number(d.amount).toLocaleString()} <span className="text-xs font-normal" style={{color:'#A3A3A3'}}>XAF</span></td>
-                  <td className="px-5 py-3.5 text-xs capitalize" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>{d.provider?.replace(/_/g,' ')}</td>
-                  <td className="px-5 py-3.5"><span className="badge" style={{background:d.status==='completed'?'rgba(22,163,74,0.1)':d.status==='pending'?'rgba(240,165,0,0.1)':'rgba(220,38,38,0.1)', color:d.status==='completed'?'#16a34a':d.status==='pending'?'#C87800':'#dc2626'}}>{d.status}</span></td>
-                  <td className="px-5 py-3.5 text-xs" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>{format(new Date(d.createdAt),'MMM d, yyyy')}</td>
+              {isLoading ? [1,2,3].map(i => (
+                <tr key={i}><td colSpan={7} className="px-5 py-4"><div className="h-4 rounded-xl animate-pulse bg-primary-500/5"/></td></tr>
+              )) : data?.map(d => (
+                <tr key={d.id} className="border-b border-primary-500/5 hover:bg-primary-50/40 transition-colors">
+                  <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground">{d.reference}</td>
+                  <td className="px-5 py-3.5 text-sm text-muted-foreground">{d.project_title || 'General Fund'}</td>
+                  <td className="px-5 py-3.5 font-bold text-sm text-dark">{Number(d.amount).toLocaleString()} <span className="text-xs font-normal text-muted-foreground">XAF</span></td>
+                  <td className="px-5 py-3.5 text-xs capitalize text-muted-foreground">{d.provider?.replace(/_/g, ' ')}</td>
                   <td className="px-5 py-3.5">
-                    {d.status==='completed' && (
-                      <button onClick={()=>printReceipt(d)} title="Print receipt"
-                        className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-primary-50"
-                        style={{color:'#5B2D8E'}}>
+                    <Badge variant={d.status === 'completed' ? 'active' : d.status === 'pending' ? 'gold' : 'destructive'} className="text-[10px]">
+                      {d.status}
+                    </Badge>
+                  </td>
+                  <td className="px-5 py-3.5 text-xs text-muted-foreground">{format(new Date(d.createdAt), 'MMM d, yyyy')}</td>
+                  <td className="px-5 py-3.5">
+                    {d.status === 'completed' && (
+                      <button onClick={() => printReceipt(d)} title="Print receipt"
+                        className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-primary-50 text-primary-500">
                         <i className="fas fa-print text-xs"/>
                       </button>
                     )}
@@ -320,13 +323,13 @@ export function PortalDonations() {
           </table>
           {!data?.length && !isLoading && (
             <div className="text-center py-12">
-              <i className="fas fa-heart text-4xl mb-3 block" style={{color:'rgba(91,45,142,0.15)'}}/>
-              <p className="text-sm" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>No donations yet</p>
+              <i className="fas fa-heart text-4xl mb-3 block text-primary-500/15"/>
+              <p className="text-sm text-muted-foreground">No donations yet</p>
               <Link to="/projects" className="btn-secondary !text-sm !py-2 !px-5 mt-3 inline-flex">Support a Project</Link>
             </div>
           )}
         </div>
-      </div>
+      </Card>
     </div>
   )
 }
@@ -335,16 +338,16 @@ export function PortalDonations() {
    PORTAL EVENT REGISTRATIONS
 ══════════════════════════════════════════════ */
 export function PortalEvents() {
-  const { data, isLoading } = useQuery('my-event-regs', ()=>api.get('/events/my-registrations').then(r=>r.data))
-  const upcoming = data?.filter(r=>r.event?.startDate && new Date(r.event.startDate) > new Date() && r.status!=='cancelled')||[]
-  const past     = data?.filter(r=>r.event?.startDate && new Date(r.event.startDate) <= new Date() && r.status!=='cancelled')||[]
+  const { data, isLoading } = useQuery('my-event-regs', () => api.get('/events/my-registrations').then(r => r.data))
+  const upcoming = data?.filter(r => r.event?.startDate && new Date(r.event.startDate) > new Date() && r.status !== 'cancelled') || []
+  const past     = data?.filter(r => r.event?.startDate && new Date(r.event.startDate) <= new Date() && r.status !== 'cancelled') || []
 
-  const CAT_COLORS = {culture:'#5B2D8E',education:'#F0A500',health:'#dc2626',sport:'#16a34a',community:'#0284c7',fundraiser:'#d97706',governance:'#374151'}
+  const CAT_COLORS = { culture: '#5B2D8E', education: '#F0A500', health: '#dc2626', sport: '#16a34a', community: '#0284c7', fundraiser: '#d97706', governance: '#374151' }
 
   const printTicket = (r) => {
     const e = r.event
     const d = e?.startDate ? new Date(e.startDate) : null
-    const win = window.open('','_blank','width=700,height=600')
+    const win = window.open('', '_blank', 'width=700,height=600')
     win.document.write(`
       <html><head><title>Event Ticket</title>
       <style>
@@ -359,17 +362,17 @@ export function PortalEvents() {
         .ref{font-size:22px;font-weight:700;color:#5B2D8E;letter-spacing:3px;text-align:center;margin:16px 0;padding:12px;background:white;border-radius:8px;border:1px dashed rgba(91,45,142,0.2)}
         @media print{button{display:none}}
       </style></head><body>
-      <div class="header"><h2>${e?.title||'Event'}</h2><p>Event Ticket — Nkenkak-Ngiesang</p></div>
+      <div class="header"><h2>${e?.title || 'Event'}</h2><p>Event Ticket — Nkenkak-Ngiesang</p></div>
       <div class="body">
         <div class="ref">${r.ticketRef}</div>
         <table>
           <tr><td>Name</td><td>${r.name}</td></tr>
           <tr><td>Email</td><td>${r.email}</td></tr>
-          ${d?`<tr><td>Date</td><td>${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</td></tr>`:''}
-          ${d?`<tr><td>Time</td><td>${d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</td></tr>`:''}
-          ${e?.venue?`<tr><td>Venue</td><td>${e.venue}</td></tr>`:''}
+          ${d ? `<tr><td>Date</td><td>${d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</td></tr>` : ''}
+          ${d ? `<tr><td>Time</td><td>${d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</td></tr>` : ''}
+          ${e?.venue ? `<tr><td>Venue</td><td>${e.venue}</td></tr>` : ''}
           <tr><td>Status</td><td>${r.status}</td></tr>
-          ${r.isPaid?`<tr><td>Amount Paid</td><td>${Number(r.amount||0).toLocaleString()} XAF</td></tr>`:'<tr><td>Admission</td><td>Free</td></tr>'}
+          ${r.isPaid ? `<tr><td>Amount Paid</td><td>${Number(r.amount || 0).toLocaleString()} XAF</td></tr>` : '<tr><td>Admission</td><td>Free</td></tr>'}
         </table>
         <p style="font-size:12px;color:#A3A3A3;text-align:center">Please present this ticket at the event entrance.</p>
       </div>
@@ -382,39 +385,37 @@ export function PortalEvents() {
   const RegistrationCard = ({ r }) => {
     const e = r.event
     const d = e?.startDate ? new Date(e.startDate) : null
-    const color = CAT_COLORS[e?.category]||'#5B2D8E'
+    const color = CAT_COLORS[e?.category] || '#5B2D8E'
     return (
-      <div className="card p-5 flex items-start gap-4">
+      <Card className="p-5 flex items-start gap-4">
         {d && (
-          <div className="bg-white rounded-2xl px-3 py-2.5 text-center shadow-card flex-shrink-0" style={{border:`1px solid ${color}20`,minWidth:60}}>
-            <div className="font-display font-bold text-xl leading-none" style={{color:'#1A0A35'}}>{format(d,'d')}</div>
-            <div className="text-[9px] uppercase tracking-wider font-semibold mt-0.5" style={{color}}>{format(d,'MMM')}</div>
-            <div className="text-[9px]" style={{color:'#A3A3A3'}}>{format(d,'yyyy')}</div>
+          <div className="bg-white rounded-2xl px-3 py-2.5 text-center shadow-card flex-shrink-0 border" style={{ borderColor: `${color}20`, minWidth: 60 }}>
+            <div className="font-bold text-xl leading-none text-dark">{format(d, 'd')}</div>
+            <div className="text-[9px] uppercase tracking-wider font-semibold mt-0.5" style={{ color }}>{format(d, 'MMM')}</div>
+            <div className="text-[9px] text-muted-foreground">{format(d, 'yyyy')}</div>
           </div>
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            {e?.category && <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-white" style={{background:color}}>{e.category}</span>}
-            {r.isPaid ? <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{background:'rgba(240,165,0,0.1)',color:'#C87800'}}>Paid</span>
-              : <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{background:'rgba(22,163,74,0.1)',color:'#16a34a'}}>Free</span>}
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full capitalize"
-              style={{background:r.status==='confirmed'?'rgba(22,163,74,0.1)':'rgba(220,38,38,0.08)', color:r.status==='confirmed'?'#16a34a':'#dc2626'}}>
-              {r.status}
-            </span>
+            {e?.category && <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-white" style={{ background: color }}>{e.category}</span>}
+            {r.isPaid
+              ? <Badge variant="gold" className="text-[10px] px-2 py-0.5">Paid</Badge>
+              : <Badge variant="active" className="text-[10px] px-2 py-0.5">Free</Badge>}
+            <Badge variant={r.status === 'confirmed' ? 'active' : 'destructive'} className="text-[10px] px-2 py-0.5 capitalize">{r.status}</Badge>
           </div>
-          <Link to={`/events/${e?.slug}`} className="font-display font-semibold text-base hover:underline" style={{color:'#1A0A35'}}>{e?.title}</Link>
-          <div className="flex items-center gap-3 mt-1 text-xs" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>
-            {e?.venue && <span><i className="fas fa-map-marker-alt mr-1" style={{color}}/>{e.venue}</span>}
-            {d && <span><i className="fas fa-clock mr-1" style={{color}}/>{format(d,'h:mm a')}</span>}
+          <Link to={`/events/${e?.slug}`} className="font-semibold text-base hover:underline text-dark">{e?.title}</Link>
+          <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+            {e?.venue && <span><i className="fas fa-map-marker-alt mr-1" style={{ color }}/>{e.venue}</span>}
+            {d && <span><i className="fas fa-clock mr-1" style={{ color }}/>{format(d, 'h:mm a')}</span>}
           </div>
-          <div className="text-xs mt-1 font-mono" style={{color:'#5B2D8E'}}>Ref: {r.ticketRef}</div>
+          <div className="text-xs mt-1 font-mono text-primary-500">Ref: {r.ticketRef}</div>
         </div>
-        <button onClick={()=>printTicket(r)}
+        <button onClick={() => printTicket(r)}
           className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl flex-shrink-0 transition-colors hover:opacity-80"
-          style={{background:`${color}10`,color,border:`1px solid ${color}20`}}>
+          style={{ background: `${color}10`, color, border: `1px solid ${color}20` }}>
           <i className="fas fa-print text-[10px]"/>Print
         </button>
-      </div>
+      </Card>
     )
   }
 
@@ -422,33 +423,31 @@ export function PortalEvents() {
     <div>
       <PageHeader title="My Events" sub="Your event registrations and tickets" icon="fa-calendar-check"/>
 
-      {/* Upcoming */}
       <div className="mb-8">
-        <h3 className="font-display font-semibold text-base mb-4 flex items-center gap-2" style={{color:'#1A0A35'}}>
-          <span className="w-1 h-5 rounded-full" style={{background:'linear-gradient(to bottom,#5B2D8E,#F0A500)'}}/>
-          Upcoming <span className="text-sm font-normal px-2 py-0.5 rounded-full ml-1" style={{background:'rgba(91,45,142,0.08)',color:'#5B2D8E'}}>{upcoming.length}</span>
+        <h3 className="font-semibold text-base mb-4 flex items-center gap-2 text-dark">
+          <span className="w-1 h-5 rounded-full bg-gradient-to-b from-primary-500 to-gold"/>
+          Upcoming <span className="text-sm font-normal px-2 py-0.5 rounded-full ml-1 bg-primary-50 text-primary-500">{upcoming.length}</span>
         </h3>
         {isLoading ? (
-          <div className="space-y-3">{[1,2].map(i=><div key={i} className="h-28 rounded-3xl animate-pulse" style={{background:'rgba(91,45,142,0.04)'}}/>)}</div>
+          <div className="space-y-3">{[1,2].map(i => <div key={i} className="h-28 rounded-3xl animate-pulse bg-primary-500/4"/>)}</div>
         ) : upcoming.length ? (
-          <div className="space-y-3">{upcoming.map(r=><RegistrationCard key={r.id} r={r}/>)}</div>
+          <div className="space-y-3">{upcoming.map(r => <RegistrationCard key={r.id} r={r}/>)}</div>
         ) : (
-          <div className="card p-10 text-center">
-            <i className="fas fa-calendar-plus text-4xl mb-3 block" style={{color:'rgba(91,45,142,0.12)'}}/>
-            <p className="text-sm mb-3" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>No upcoming events registered</p>
+          <Card className="p-10 text-center">
+            <i className="fas fa-calendar-plus text-4xl mb-3 block text-primary-500/12"/>
+            <p className="text-sm mb-3 text-muted-foreground">No upcoming events registered</p>
             <Link to="/events" className="btn-secondary !text-sm !py-2 !px-5 inline-flex">Browse Events</Link>
-          </div>
+          </Card>
         )}
       </div>
 
-      {/* Past */}
       {past.length > 0 && (
         <div>
-          <h3 className="font-display font-semibold text-base mb-4 flex items-center gap-2" style={{color:'#737373'}}>
-            <span className="w-1 h-5 rounded-full" style={{background:'#D4D4D4'}}/>
-            Past Events <span className="text-sm font-normal px-2 py-0.5 rounded-full ml-1" style={{background:'rgba(0,0,0,0.04)',color:'#737373'}}>{past.length}</span>
+          <h3 className="font-semibold text-base mb-4 flex items-center gap-2 text-muted-foreground">
+            <span className="w-1 h-5 rounded-full bg-neutral-300"/>
+            Past Events <span className="text-sm font-normal px-2 py-0.5 rounded-full ml-1 bg-black/4">{past.length}</span>
           </h3>
-          <div className="space-y-3 opacity-70">{past.map(r=><RegistrationCard key={r.id} r={r}/>)}</div>
+          <div className="space-y-3 opacity-70">{past.map(r => <RegistrationCard key={r.id} r={r}/>)}</div>
         </div>
       )}
     </div>
@@ -459,15 +458,14 @@ export function PortalEvents() {
    PORTAL VOLUNTEER STATUS
 ══════════════════════════════════════════════ */
 export function PortalVolunteer() {
-  const { user } = useAuth()
   const { data: apps, isLoading } = useQuery('my-team-apps',
-    ()=>api.get('/team/my-applications').then(r=>r.data).catch(()=>[])
+    () => api.get('/team/my-applications').then(r => r.data).catch(() => [])
   )
 
   const STATUS_CFG = {
-    pending:  { label:'Under Review', color:'#C87800', bg:'rgba(240,165,0,0.1)',  icon:'fa-clock' },
-    accepted: { label:'Accepted',     color:'#16a34a', bg:'rgba(22,163,74,0.1)', icon:'fa-check-circle' },
-    rejected: { label:'Declined',     color:'#dc2626', bg:'rgba(220,38,38,0.1)', icon:'fa-times-circle' },
+    pending:  { label: 'Under Review', color: '#C87800', bg: 'rgba(240,165,0,0.1)',  icon: 'fa-clock' },
+    accepted: { label: 'Accepted',     color: '#16a34a', bg: 'rgba(22,163,74,0.1)', icon: 'fa-check-circle' },
+    rejected: { label: 'Declined',     color: '#dc2626', bg: 'rgba(220,38,38,0.1)', icon: 'fa-times-circle' },
   }
 
   return (
@@ -475,42 +473,41 @@ export function PortalVolunteer() {
       <PageHeader title="Volunteer Applications" sub="Track your team applications" icon="fa-hands-helping"/>
 
       {isLoading ? (
-        <div className="space-y-3">{[1,2].map(i=><div key={i} className="h-24 rounded-3xl animate-pulse" style={{background:'rgba(91,45,142,0.04)'}}/>)}</div>
+        <div className="space-y-3">{[1,2].map(i => <div key={i} className="h-24 rounded-3xl animate-pulse bg-primary-500/4"/>)}</div>
       ) : !apps?.length ? (
-        <div className="card p-12 text-center">
-          <i className="fas fa-hands-helping text-5xl mb-4 block" style={{color:'rgba(91,45,142,0.12)'}}/>
-          <h3 className="font-display font-semibold text-lg mb-2" style={{color:'#1A0A35'}}>No Applications Yet</h3>
-          <p className="text-sm mb-5" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>Join our community team and make a difference.</p>
+        <Card className="p-12 text-center">
+          <i className="fas fa-hands-helping text-5xl mb-4 block text-primary-500/12"/>
+          <h3 className="font-semibold text-lg mb-2 text-dark">No Applications Yet</h3>
+          <p className="text-sm mb-5 text-muted-foreground">Join our community team and make a difference.</p>
           <Link to="/volunteers" className="btn-secondary !text-sm !py-2.5 !px-6 inline-flex">Apply to Volunteer</Link>
-        </div>
+        </Card>
       ) : (
         <div className="space-y-4">
           {apps.map(app => {
-            const cfg = STATUS_CFG[app.status]||STATUS_CFG.pending
+            const cfg = STATUS_CFG[app.status] || STATUS_CFG.pending
             return (
-              <div key={app.id} className="card p-6 flex items-start gap-5">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
-                  style={{background:cfg.bg}}>
-                  <i className={`fas ${cfg.icon} text-lg`} style={{color:cfg.color}}/>
+              <Card key={app.id} className="p-6 flex items-start gap-5">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: cfg.bg }}>
+                  <i className={`fas ${cfg.icon} text-lg`} style={{ color: cfg.color }}/>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-1 flex-wrap">
-                    <h4 className="font-display font-semibold text-base" style={{color:'#1A0A35'}}>{app.role_title||app.role||'Volunteer Position'}</h4>
+                    <h4 className="font-semibold text-base text-dark">{app.role_title || app.role || 'Volunteer Position'}</h4>
                     <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
-                      style={{background:cfg.bg,color:cfg.color}}>
+                      style={{ background: cfg.bg, color: cfg.color }}>
                       <i className={`fas ${cfg.icon} mr-1`}/>{cfg.label}
                     </span>
                   </div>
-                  {app.team && <div className="text-xs mb-2" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>Team: <strong>{app.team}</strong></div>}
-                  {app.message && <div className="text-sm leading-relaxed" style={{color:'#525252',fontFamily:'Poppins,sans-serif'}}>{app.message}</div>}
+                  {app.team && <div className="text-xs mb-2 text-muted-foreground">Team: <strong>{app.team}</strong></div>}
+                  {app.message && <div className="text-sm leading-relaxed text-muted-foreground">{app.message}</div>}
                   {app.review_notes && (
-                    <div className="mt-3 p-3 rounded-xl text-sm" style={{background:cfg.bg,color:cfg.color,fontFamily:'Poppins,sans-serif'}}>
+                    <div className="mt-3 p-3 rounded-xl text-sm" style={{ background: cfg.bg, color: cfg.color }}>
                       <i className="fas fa-comment-alt mr-1.5"/>Reviewer note: {app.review_notes}
                     </div>
                   )}
-                  <div className="text-xs mt-2" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>Applied {format(new Date(app.createdAt),'MMMM d, yyyy')}</div>
+                  <div className="text-xs mt-2 text-muted-foreground">Applied {format(new Date(app.createdAt), 'MMMM d, yyyy')}</div>
                 </div>
-              </div>
+              </Card>
             )
           })}
         </div>
@@ -524,60 +521,60 @@ export function PortalVolunteer() {
 ══════════════════════════════════════════════ */
 export function PortalNotifications() {
   const qc = useQueryClient()
-  const { data, isLoading } = useQuery('my-notifs', ()=>api.get('/notifications').then(r=>r.data))
-  const readAll = useMutation(()=>api.patch('/notifications/read-all'),{onSuccess:()=>qc.invalidateQueries('my-notifs')})
-  const readOne = useMutation(id=>api.patch(`/notifications/${id}/read`),{onSuccess:()=>qc.invalidateQueries('my-notifs')})
+  const { data, isLoading } = useQuery('my-notifs', () => api.get('/notifications').then(r => r.data))
+  const readAll = useMutation(() => api.patch('/notifications/read-all'), { onSuccess: () => qc.invalidateQueries('my-notifs') })
+  const readOne = useMutation(id => api.patch(`/notifications/${id}/read`), { onSuccess: () => qc.invalidateQueries('my-notifs') })
 
   const TYPE_ICONS = {
-    donation:'fa-heart text-rose-500', project_update:'fa-seedling text-green-500',
-    event_reminder:'fa-calendar text-blue-500', forum_reply:'fa-comments text-purple-500',
-    system:'fa-cog text-neutral-400', news:'fa-newspaper text-orange-400',
+    donation: 'fa-heart text-rose-500', project_update: 'fa-seedling text-green-500',
+    event_reminder: 'fa-calendar text-blue-500', forum_reply: 'fa-comments text-purple-500',
+    system: 'fa-cog text-neutral-400', news: 'fa-newspaper text-orange-400',
   }
 
   return (
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-8">
-        <PageHeader title="Notifications" sub={`${data?.filter(n=>!n.isRead).length||0} unread`} icon="fa-bell"/>
-        {data?.some(n=>!n.isRead) && (
-          <button onClick={()=>readAll.mutate()} className="text-xs font-semibold hover:underline" style={{color:'#5B2D8E',fontFamily:'Sora,sans-serif'}}>
+        <PageHeader title="Notifications" sub={`${data?.filter(n => !n.isRead).length || 0} unread`} icon="fa-bell"/>
+        {data?.some(n => !n.isRead) && (
+          <button onClick={() => readAll.mutate()} className="text-xs font-semibold hover:underline text-primary-500">
             Mark all as read
           </button>
         )}
       </div>
 
-      <div className="card divide-y" style={{divideColor:'rgba(91,45,142,0.06)'}}>
-        {isLoading ? [1,2,3].map(i=>(
+      <Card className="p-0 divide-y divide-primary-500/6 overflow-hidden">
+        {isLoading ? [1,2,3].map(i => (
           <div key={i} className="p-5 flex gap-4">
-            <div className="w-10 h-10 rounded-full animate-pulse flex-shrink-0" style={{background:'rgba(91,45,142,0.07)'}}/>
+            <div className="w-10 h-10 rounded-full animate-pulse flex-shrink-0 bg-primary-500/7"/>
             <div className="flex-1 space-y-2">
-              <div className="h-3 rounded-xl animate-pulse" style={{background:'rgba(91,45,142,0.07)'}}/>
-              <div className="h-3 w-2/3 rounded-xl animate-pulse" style={{background:'rgba(91,45,142,0.07)'}}/>
+              <div className="h-3 rounded-xl animate-pulse bg-primary-500/7"/>
+              <div className="h-3 w-2/3 rounded-xl animate-pulse bg-primary-500/7"/>
             </div>
           </div>
-        )) : data?.map(n=>(
-          <div key={n.id} onClick={()=>!n.isRead&&readOne.mutate(n.id)}
-            className={`flex gap-4 p-5 cursor-pointer transition-colors ${!n.isRead?'bg-primary-50/40 hover:bg-primary-50':'hover:bg-neutral-50'}`}>
-            <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{background:'rgba(91,45,142,0.06)'}}>
-              <i className={`fas ${TYPE_ICONS[n.type]||'fa-bell text-primary-500'} text-sm`}/>
+        )) : data?.map(n => (
+          <div key={n.id} onClick={() => !n.isRead && readOne.mutate(n.id)}
+            className={cn('flex gap-4 p-5 cursor-pointer transition-colors',
+              !n.isRead ? 'bg-primary-50/40 hover:bg-primary-50' : 'hover:bg-neutral-50')}>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-primary-50">
+              <i className={`fas ${TYPE_ICONS[n.type] || 'fa-bell text-primary-500'} text-sm`}/>
             </div>
             <div className="flex-1">
               <div className="flex items-start justify-between gap-2">
-                <span className="text-sm font-semibold" style={{color:n.isRead?'#737373':'#1A0A35',fontFamily:'Sora,sans-serif'}}>{n.title}</span>
-                {!n.isRead && <div className="w-2 h-2 rounded-full flex-shrink-0 mt-1.5" style={{background:'#5B2D8E'}}/>}
+                <span className={cn('text-sm font-semibold', n.isRead ? 'text-muted-foreground' : 'text-dark')}>{n.title}</span>
+                {!n.isRead && <div className="w-2 h-2 rounded-full flex-shrink-0 mt-1.5 bg-primary-500"/>}
               </div>
-              <p className="text-xs mt-0.5 leading-relaxed" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>{n.message}</p>
-              <div className="text-[10px] mt-1.5" style={{color:'#C4C4C4',fontFamily:'Poppins,sans-serif'}}>{format(new Date(n.createdAt),'MMM d, yyyy · h:mm a')}</div>
+              <p className="text-xs mt-0.5 leading-relaxed text-muted-foreground">{n.message}</p>
+              <div className="text-[10px] mt-1.5 text-muted-foreground/60">{format(new Date(n.createdAt), 'MMM d, yyyy · h:mm a')}</div>
             </div>
           </div>
         ))}
         {!data?.length && !isLoading && (
           <div className="text-center py-12">
-            <i className="fas fa-bell text-4xl mb-3 block" style={{color:'rgba(91,45,142,0.15)'}}/>
-            <p className="text-sm" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>All caught up! No notifications.</p>
+            <i className="fas fa-bell text-4xl mb-3 block text-primary-500/15"/>
+            <p className="text-sm text-muted-foreground">All caught up! No notifications.</p>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   )
 }

@@ -4,7 +4,10 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { useAuth } from '../../context/AuthContext'
 import AuthSlider from '../common/AuthSlider'
-
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import { Separator } from '../ui/separator'
 
 export default function RegisterPage() {
   const { register: authRegister } = useAuth()
@@ -32,89 +35,107 @@ export default function RegisterPage() {
       </div>
 
       {/* Right form */}
-      <div className="lg:col-span-3 flex items-start justify-center p-8 overflow-y-auto" style={{background:'#FAFAFA'}}>
+      <div className="lg:col-span-3 flex items-start justify-center p-8 overflow-y-auto bg-muted/30">
         <div className="w-full max-w-lg py-6">
           <Link to="/" className="flex items-center gap-3 mb-8 lg:hidden">
-            <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{background:'linear-gradient(135deg,#5B2D8E,#7B4DB8)'}}>
-              <i className="fas fa-heart" style={{color:'#F0A500'}}/>
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary-500 to-primary-light">
+              <i className="fas fa-heart text-gold"/>
             </div>
-            <span className="font-display font-bold" style={{color:'#1A0A35'}}>Nkenkak-Ngiesang</span>
+            <span className="font-display font-bold text-dark">Nkenkak-Ngiesang</span>
           </Link>
 
-          <h2 className="font-display font-bold text-3xl mb-1" style={{color:'#1A0A35'}}>Create Account</h2>
-          <p className="text-sm mb-8" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>Join the Nkenkak-Ngiesang community today</p>
+          <h2 className="font-display font-bold text-3xl mb-1 text-dark">Create Account</h2>
+          <p className="text-sm mb-8 text-muted-foreground">Join the Nkenkak-Ngiesang community today</p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="label">First Name *</label>
-                <input {...register('first_name',{required:'Required'})} placeholder="First name" className="input"/>
-                {errors.first_name && <p className="text-xs mt-1" style={{color:'#dc2626'}}>{errors.first_name.message}</p>}
+              <div className="space-y-1.5">
+                <Label htmlFor="first_name">First Name *</Label>
+                <Input id="first_name" {...register('first_name',{required:'Required'})} placeholder="First name"
+                  className={errors.first_name ? 'border-red-400 focus-visible:ring-red-400' : ''}/>
+                {errors.first_name && <p className="text-xs text-red-500">{errors.first_name.message}</p>}
               </div>
-              <div>
-                <label className="label">Last Name *</label>
-                <input {...register('last_name',{required:'Required'})} placeholder="Last name" className="input"/>
-                {errors.last_name && <p className="text-xs mt-1" style={{color:'#dc2626'}}>{errors.last_name.message}</p>}
+              <div className="space-y-1.5">
+                <Label htmlFor="last_name">Last Name *</Label>
+                <Input id="last_name" {...register('last_name',{required:'Required'})} placeholder="Last name"
+                  className={errors.last_name ? 'border-red-400 focus-visible:ring-red-400' : ''}/>
+                {errors.last_name && <p className="text-xs text-red-500">{errors.last_name.message}</p>}
               </div>
             </div>
-            <div>
-              <label className="label">Email Address *</label>
-              <input type="email" {...register('email',{required:'Email required',pattern:{value:/\S+@\S+\.\S+/,message:'Invalid email'}})} placeholder="your@email.com" className="input"/>
-              {errors.email && <p className="text-xs mt-1" style={{color:'#dc2626'}}>{errors.email.message}</p>}
+
+            <div className="space-y-1.5">
+              <Label htmlFor="email">Email Address *</Label>
+              <Input id="email" type="email"
+                {...register('email',{required:'Email required',pattern:{value:/\S+@\S+\.\S+/,message:'Invalid email'}})}
+                placeholder="your@email.com"
+                className={errors.email ? 'border-red-400 focus-visible:ring-red-400' : ''}/>
+              {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
             </div>
+
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="label">Phone / WhatsApp</label>
-                <input {...register('phone')} placeholder="+237 6XX XXX XXX" className="input"/>
+              <div className="space-y-1.5">
+                <Label htmlFor="phone">Phone / WhatsApp</Label>
+                <Input id="phone" {...register('phone')} placeholder="+237 6XX XXX XXX"/>
               </div>
-              <div>
-                <label className="label">Country *</label>
-                <input {...register('country',{required:'Required'})} placeholder="e.g. Cameroon" className="input"/>
-                {errors.country && <p className="text-xs mt-1" style={{color:'#dc2626'}}>{errors.country.message}</p>}
+              <div className="space-y-1.5">
+                <Label htmlFor="country">Country *</Label>
+                <Input id="country" {...register('country',{required:'Required'})} placeholder="e.g. Cameroon"
+                  className={errors.country ? 'border-red-400 focus-visible:ring-red-400' : ''}/>
+                {errors.country && <p className="text-xs text-red-500">{errors.country.message}</p>}
               </div>
             </div>
-            <div>
-              <label className="label">City</label>
-              <input {...register('city')} placeholder="Your city" className="input"/>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="city">City</Label>
+              <Input id="city" {...register('city')} placeholder="Your city"/>
             </div>
-            <div>
-              <label className="label">Password *</label>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="password">Password *</Label>
               <div className="relative">
-                <input type={showPw?'text':'password'} {...register('password',{required:'Required',minLength:{value:8,message:'Min 8 characters'}})} placeholder="At least 8 characters" className="input pr-12"/>
-                <button type="button" onClick={()=>setShowPw(!showPw)} className="absolute right-4 top-1/2 -translate-y-1/2" style={{color:'#A3A3A3'}}>
+                <Input id="password" type={showPw?'text':'password'}
+                  {...register('password',{required:'Required',minLength:{value:8,message:'Min 8 characters'}})}
+                  placeholder="At least 8 characters"
+                  className={`pr-12 ${errors.password ? 'border-red-400 focus-visible:ring-red-400' : ''}`}/>
+                <button type="button" onClick={()=>setShowPw(!showPw)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
                   <i className={`fas fa-${showPw?'eye-slash':'eye'}`}/>
                 </button>
               </div>
-              {errors.password && <p className="text-xs mt-1" style={{color:'#dc2626'}}>{errors.password.message}</p>}
+              {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
             </div>
+
             <div className="space-y-3 pt-1">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" {...register('is_diaspora')} className="w-4 h-4 rounded accent-primary-500"/>
-                <span className="text-sm" style={{color:'#525252',fontFamily:'Poppins,sans-serif'}}>I am a diaspora member (living outside Cameroon)</span>
+                <span className="text-sm text-foreground/80">I am a diaspora member (living outside Cameroon)</span>
               </label>
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" {...register('newsletter')} defaultChecked className="w-4 h-4 rounded accent-primary-500"/>
-                <span className="text-sm" style={{color:'#525252',fontFamily:'Poppins,sans-serif'}}>Subscribe to village newsletter</span>
+                <span className="text-sm text-foreground/80">Subscribe to village newsletter</span>
               </label>
               <label className="flex items-start gap-3 cursor-pointer">
                 <input type="checkbox" {...register('terms',{required:'You must agree'})} className="w-4 h-4 rounded accent-primary-500 mt-0.5"/>
-                <span className="text-sm" style={{color:'#525252',fontFamily:'Poppins,sans-serif'}}>
-                  I agree to the <Link to="/contact" className="hover:underline font-semibold" style={{color:'#5B2D8E'}}>Community Terms</Link>
+                <span className="text-sm text-foreground/80">
+                  I agree to the <Link to="/contact" className="hover:underline font-semibold text-primary-500">Community Terms</Link>
                 </span>
               </label>
-              {errors.terms && <p className="text-xs" style={{color:'#dc2626'}}>{errors.terms.message}</p>}
+              {errors.terms && <p className="text-xs text-red-500">{errors.terms.message}</p>}
             </div>
-            <button type="submit" disabled={loading} className="btn-secondary w-full justify-center mt-2">
-              {loading ? <><i className="fas fa-spinner animate-spin"/>Creating account…</> : <><i className="fas fa-user-plus"/>Create Account</>}
-            </button>
+
+            <Button type="submit" disabled={loading} className="w-full mt-2" size="lg" variant="secondary">
+              {loading
+                ? <><i className="fas fa-spinner animate-spin"/>Creating account…</>
+                : <><i className="fas fa-user-plus"/>Create Account</>
+              }
+            </Button>
           </form>
 
-          <div className="mt-6 pt-5 text-center border-t" style={{borderColor:'rgba(91,45,142,0.08)'}}>
-            <p className="text-sm" style={{color:'#737373',fontFamily:'Poppins,sans-serif'}}>
-              Already a member?{' '}
-              <Link to="/login" className="font-semibold hover:underline" style={{color:'#5B2D8E'}}>Sign in</Link>
-            </p>
-          </div>
+          <Separator className="my-6"/>
+          <p className="text-sm text-muted-foreground text-center">
+            Already a member?{' '}
+            <Link to="/login" className="font-semibold text-primary-500 hover:underline">Sign in</Link>
+          </p>
         </div>
       </div>
     </div>
