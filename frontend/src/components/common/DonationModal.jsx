@@ -3,16 +3,20 @@ import { useForm } from 'react-hook-form'
 import { useQuery, useQueryClient } from 'react-query'
 import toast from 'react-hot-toast'
 import api from '../../services/api'
+import {
+  HeartHandshake, X, Check, ArrowLeft, Loader2, Lock, Shield, Receipt,
+  Globe, GraduationCap, HeartPulse, Route, Leaf, Music, Sprout, ArrowRight,
+} from 'lucide-react'
 
 const AMOUNTS = [5000, 10000, 25000, 50000, 100000, 250000]
 
 const CAT_META = {
-  education:      { icon: 'fa-graduation-cap', bg: 'linear-gradient(135deg,#250F47,#5B2D8E)' },
-  health:         { icon: 'fa-heartbeat',       bg: 'linear-gradient(135deg,#4A0E0E,#991B1B)' },
-  infrastructure: { icon: 'fa-road',            bg: 'linear-gradient(135deg,#3D2200,#C87800)' },
-  environment:    { icon: 'fa-leaf',            bg: 'linear-gradient(135deg,#052e16,#16a34a)' },
-  culture:        { icon: 'fa-music',           bg: 'linear-gradient(135deg,#2e1065,#7c3aed)' },
-  agriculture:    { icon: 'fa-seedling',        bg: 'linear-gradient(135deg,#422006,#ca8a04)' },
+  education:      { Icon: GraduationCap, bg: 'linear-gradient(135deg,#250F47,#5B2D8E)' },
+  health:         { Icon: HeartPulse,    bg: 'linear-gradient(135deg,#4A0E0E,#991B1B)' },
+  infrastructure: { Icon: Route,         bg: 'linear-gradient(135deg,#3D2200,#C87800)' },
+  environment:    { Icon: Leaf,          bg: 'linear-gradient(135deg,#052e16,#16a34a)' },
+  culture:        { Icon: Music,         bg: 'linear-gradient(135deg,#2e1065,#7c3aed)' },
+  agriculture:    { Icon: Sprout,        bg: 'linear-gradient(135deg,#422006,#ca8a04)' },
 }
 
 const fmt = (n) => Number(n || 0).toLocaleString()
@@ -30,7 +34,6 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
   const customAmt   = watch('custom_amount')
   const finalAmount = custom ? (+customAmt || 0) : amount
 
-  /* Load Flutterwave */
   useEffect(() => {
     if (document.querySelector('script[src*="flutterwave"]')) return
     const s = document.createElement('script')
@@ -45,7 +48,6 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
     { staleTime: 60000 }
   )
 
-  /* Pre-select default project */
   useEffect(() => {
     if (defaultProject && projects) {
       const p = projects.find(p => p.id === defaultProject)
@@ -75,54 +77,29 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
         message:      data.message,
         is_anonymous: data.is_anonymous,
       })
-
       const { tx_ref, flw_public_key } = res.data
       setDonationRef(tx_ref)
-
       if (!flw_public_key || !window.FlutterwaveCheckout) {
         toast.success('Donation recorded! We will contact you for payment confirmation.')
-        refreshProjects()
-        setStep(3)
-        return
+        refreshProjects(); setStep(3); return
       }
-
       window.FlutterwaveCheckout({
-        public_key:      flw_public_key,
-        tx_ref,
-        amount:          finalAmount,
-        currency:        'XAF',
+        public_key: flw_public_key, tx_ref, amount: finalAmount, currency: 'XAF',
         payment_options: 'mobilemoneycameroon, card',
-        customer: {
-          email:        data.donor_email,
-          phone_number: data.donor_phone || '',
-          name:         data.donor_name,
-        },
+        customer: { email: data.donor_email, phone_number: data.donor_phone || '', name: data.donor_name },
         customizations: {
-          title:       'Nkenkak-Ngiesang Village',
-          description: selectedProject
-            ? `Donation — ${selectedProject.title}`
-            : 'General Village Development Fund',
+          title: 'Nkenkak-Ngiesang Village',
+          description: selectedProject ? `Donation — ${selectedProject.title}` : 'General Village Development Fund',
         },
         callback: async (paymentData) => {
-          try {
-            await api.post('/donations/verify', {
-              tx_ref:         paymentData.tx_ref,
-              transaction_id: paymentData.transaction_id,
-            })
-          } catch {}
-          refreshProjects()
-          setStep(3)
+          try { await api.post('/donations/verify', { tx_ref: paymentData.tx_ref, transaction_id: paymentData.transaction_id }) } catch {}
+          refreshProjects(); setStep(3)
         },
-        onclose: () => {
-          setLoading(false)
-          toast('Payment window closed.', { icon: 'ℹ️' })
-        },
+        onclose: () => { setLoading(false); toast('Payment window closed.', { icon: 'ℹ️' }) },
       })
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to initiate payment')
-    } finally {
-      setLoading(false)
-    }
+    } finally { setLoading(false) }
   }
 
   return (
@@ -132,147 +109,107 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
       <div className="bg-white w-full animate-slide-up flex flex-col rounded-[1.75rem] overflow-hidden"
         style={{ maxWidth: 700, maxHeight: '92vh', boxShadow: '0 32px 80px rgba(0,0,0,0.28)' }}>
 
-        {/* ── Header ── */}
+        {/* Header */}
         <div className="px-7 pt-5 pb-4 flex-shrink-0 border-b border-[#F0EBF8]">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-gradient-to-br from-gold to-[#FFB84D]">
-                <i className="fas fa-heart text-white text-sm"/>
+                <HeartHandshake className="w-5 h-5 text-white"/>
               </div>
               <div>
-                <h2 className="font-display font-bold text-base leading-tight text-dark">
-                  Make a Donation
-                </h2>
-                <p className="text-[11px] text-muted-foreground">
-                  Support Nkenkak-Ngiesang · Secured by Flutterwave
-                </p>
+                <h2 className="font-display font-bold text-base leading-tight text-dark">Make a Donation</h2>
+                <p className="text-[11px] text-muted-foreground">Support Nkenkak-Ngiesang · Secured by Flutterwave</p>
               </div>
             </div>
             <button onClick={onClose}
               className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:bg-gray-100 text-muted-foreground">
-              <i className="fas fa-times text-sm"/>
+              <X className="w-4 h-4"/>
             </button>
           </div>
 
-          {/* Steps */}
           {step < 3 && (
             <div className="flex items-center gap-0">
               {[{ n: 1, label: 'Choose Project' }, { n: 2, label: 'Amount & Details' }].map(({ n, label }, i, arr) => (
                 <div key={n} className="flex items-center flex-1">
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all"
-                      style={{
-                        background: step >= n ? 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' : '#F3F4F6',
-                        color:      step >= n ? '#fff' : '#9CA3AF',
-                      }}>
-                      {step > n ? <i className="fas fa-check text-[8px]"/> : n}
+                      style={{ background: step >= n ? 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' : '#F3F4F6', color: step >= n ? '#fff' : '#9CA3AF' }}>
+                      {step > n ? <Check className="w-3 h-3"/> : n}
                     </div>
-                    <span className="text-[11px] font-semibold hidden sm:block"
-                      style={{ color: step >= n ? '#5B2D8E' : '#9CA3AF' }}>
-                      {label}
-                    </span>
+                    <span className="text-[11px] font-semibold hidden sm:block" style={{ color: step >= n ? '#5B2D8E' : '#9CA3AF' }}>{label}</span>
                   </div>
-                  {i < arr.length - 1 && (
-                    <div className="flex-1 h-px mx-3 transition-all duration-500"
-                      style={{ background: step > n ? '#5B2D8E' : '#E5E7EB' }}/>
-                  )}
+                  {i < arr.length - 1 && <div className="flex-1 h-px mx-3 transition-all duration-500" style={{ background: step > n ? '#5B2D8E' : '#E5E7EB' }}/>}
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* ── Body ── */}
-        <div className="flex-1 overflow-y-auto px-7 py-6"
-          style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(91,45,142,0.2) transparent' }}>
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-7 py-6" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(91,45,142,0.2) transparent' }}>
 
-          {/* ════ STEP 1: Project Selection ════ */}
+          {/* STEP 1: Project Selection */}
           {step === 1 && (
             <div className="animate-fade-in">
-              <p className="text-sm mb-4 text-muted-foreground">
-                Choose where your donation goes, or support the General Village Fund.
-              </p>
+              <p className="text-sm mb-4 text-muted-foreground">Choose where your donation goes, or support the General Village Fund.</p>
 
-              {/* General Fund */}
-              <button type="button"
-                onClick={() => { setSelectedProject(null); setStep(2) }}
+              <button type="button" onClick={() => { setSelectedProject(null); setStep(2) }}
                 className="w-full flex items-center gap-4 p-4 rounded-2xl mb-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md border border-primary-500/15"
                 style={{ background: 'linear-gradient(135deg,#F9F5FF,#FFF8E8)' }}>
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-primary-500 to-primary-light">
-                  <i className="fas fa-globe-africa text-white text-lg"/>
+                  <Globe className="w-5 h-5 text-white"/>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-display font-semibold text-sm mb-0.5 text-dark">
-                    General Village Development Fund
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Your donation is allocated where it's needed most
-                  </div>
+                  <div className="font-display font-semibold text-sm mb-0.5 text-dark">General Village Development Fund</div>
+                  <div className="text-xs text-muted-foreground">Your donation is allocated where it's needed most</div>
                 </div>
-                <i className="fas fa-arrow-right text-xs flex-shrink-0 text-primary-500/40"/>
+                <ArrowRight className="w-4 h-4 flex-shrink-0 text-primary-500/40"/>
               </button>
 
-              {/* Divider */}
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex-1 h-px bg-[#F0EBF8]"/>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-primary-500/40">or pick a specific project</span>
                 <div className="flex-1 h-px bg-[#F0EBF8]"/>
               </div>
 
-              {/* Project grid */}
               {projectsLoading ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {[1,2,3,4,5,6].map(i => (
-                    <div key={i} className="h-44 rounded-2xl animate-pulse bg-gray-50"/>
-                  ))}
+                  {[1,2,3,4,5,6].map(i => <div key={i} className="h-44 rounded-2xl animate-pulse bg-gray-50"/>)}
                 </div>
               ) : !projects?.length ? (
                 <div className="text-center py-10 rounded-2xl bg-gray-50">
-                  <i className="fas fa-seedling text-2xl mb-2 block text-[#D1C4E9]"/>
-                  <p className="text-sm text-muted-foreground">
-                    No active projects at the moment.
-                  </p>
+                  <Sprout className="w-8 h-8 mx-auto mb-2 text-[#D1C4E9]"/>
+                  <p className="text-sm text-muted-foreground">No active projects at the moment.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-72 overflow-y-auto pr-1"
                   style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(91,45,142,0.2) transparent' }}>
                   {projects.map(p => {
-                    const pct  = p.goalAmount > 0
-                      ? Math.min(100, Math.round((p.raisedAmount / p.goalAmount) * 100)) : 0
+                    const pct  = p.goalAmount > 0 ? Math.min(100, Math.round((p.raisedAmount / p.goalAmount) * 100)) : 0
                     const meta = CAT_META[p.category] || CAT_META.education
+                    const CatIcon = meta.Icon
                     return (
-                      <button key={p.id} type="button"
-                        onClick={() => { setSelectedProject(p); setStep(2) }}
+                      <button key={p.id} type="button" onClick={() => { setSelectedProject(p); setStep(2) }}
                         className="rounded-2xl overflow-hidden text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md bg-white border border-[#F0EBF8]">
-                        {/* Cover */}
                         <div className="relative h-28 overflow-hidden" style={{ background: meta.bg }}>
                           {p.coverImage
                             ? <img src={p.coverImage} alt={p.title} className="w-full h-full object-cover opacity-85"/>
                             : <div className="w-full h-full flex items-center justify-center">
-                                <i className={`fas ${meta.icon} text-3xl text-white/30`}/>
+                                <CatIcon className="w-8 h-8 text-white/30"/>
                               </div>
                           }
-                          <div className="absolute inset-0"
-                            style={{ background: 'linear-gradient(to top,rgba(6,2,16,0.75),transparent 55%)' }}/>
+                          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top,rgba(6,2,16,0.75),transparent 55%)' }}/>
                           <span className="absolute bottom-2 left-2 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-white capitalize bg-gold/90">
                             {p.category}
                           </span>
-                          <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-black/45 text-gold">
-                            {pct}%
-                          </span>
+                          <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-black/45 text-gold">{pct}%</span>
                         </div>
-                        {/* Info */}
                         <div className="p-3">
-                          <div className="font-display font-semibold text-xs line-clamp-2 mb-2 leading-snug text-dark">
-                            {p.title}
-                          </div>
+                          <div className="font-display font-semibold text-xs line-clamp-2 mb-2 leading-snug text-dark">{p.title}</div>
                           <div className="h-1.5 rounded-full overflow-hidden mb-1.5 bg-[#F0EBF8]">
-                            <div className="h-full rounded-full bg-gradient-to-r from-primary-500 to-gold"
-                              style={{ width: `${pct}%` }}/>
+                            <div className="h-full rounded-full bg-gradient-to-r from-primary-500 to-gold" style={{ width: `${pct}%` }}/>
                           </div>
-                          <div className="text-[9px] text-muted-foreground">
-                            {fmt(p.raisedAmount)} / {fmt(p.goalAmount)} XAF
-                          </div>
+                          <div className="text-[9px] text-muted-foreground">{fmt(p.raisedAmount)} / {fmt(p.goalAmount)} XAF</div>
                         </div>
                       </button>
                     )
@@ -282,29 +219,21 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
             </div>
           )}
 
-          {/* ════ STEP 2: Amount + Details ════ */}
+          {/* STEP 2: Amount + Details */}
           {step === 2 && (
             <form onSubmit={handleSubmit(onSubmit)} className="animate-fade-in">
-
-              {/* Selected project chip */}
               <div className="flex items-center gap-3 p-3 rounded-2xl mb-5 bg-primary-50 border border-primary-500/12">
                 <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0"
                   style={{ background: selectedProject ? (CAT_META[selectedProject.category]?.bg || 'linear-gradient(135deg,#5B2D8E,#7B4DB8)') : 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' }}>
                   {selectedProject?.coverImage
                     ? <img src={selectedProject.coverImage} className="w-full h-full object-cover"/>
-                    : <div className="w-full h-full flex items-center justify-center">
-                        <i className="fas fa-globe-africa text-white text-sm"/>
-                      </div>
+                    : <div className="w-full h-full flex items-center justify-center"><Globe className="w-4 h-4 text-white"/></div>
                   }
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold line-clamp-1 text-dark">
-                    {selectedProject?.title || 'General Village Development Fund'}
-                  </div>
+                  <div className="text-xs font-bold line-clamp-1 text-dark">{selectedProject?.title || 'General Village Development Fund'}</div>
                   <div className="text-[10px] mt-0.5 capitalize text-muted-foreground">
-                    {selectedProject
-                      ? `${selectedProject.category} · Goal: ${fmt(selectedProject.goalAmount)} XAF`
-                      : 'Supporting all community initiatives'}
+                    {selectedProject ? `${selectedProject.category} · Goal: ${fmt(selectedProject.goalAmount)} XAF` : 'Supporting all community initiatives'}
                   </div>
                 </div>
                 <button type="button" onClick={() => setStep(1)}
@@ -313,18 +242,12 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
                 </button>
               </div>
 
-              {/* Two-column layout */}
               <div className="grid grid-cols-2 gap-6">
-
-                {/* Left: Amount */}
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider mb-2.5 text-gray-500">
-                    Select Amount (XAF)
-                  </label>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider mb-2.5 text-gray-500">Select Amount (XAF)</label>
                   <div className="grid grid-cols-2 gap-2 mb-2">
                     {AMOUNTS.map(a => (
-                      <button key={a} type="button"
-                        onClick={() => { setAmount(a); setCustom(false) }}
+                      <button key={a} type="button" onClick={() => { setAmount(a); setCustom(false) }}
                         className="py-2.5 rounded-xl text-xs font-bold transition-all duration-200"
                         style={{
                           background: !custom && amount === a ? 'linear-gradient(135deg,#F0A500,#FFB84D)' : '#F9FAFB',
@@ -336,144 +259,105 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
                       </button>
                     ))}
                   </div>
-
-                  <input type="number" {...register('custom_amount')}
-                    placeholder="Custom amount (XAF)…"
-                    onClick={() => setCustom(true)}
-                    onChange={() => setCustom(true)}
+                  <input type="number" {...register('custom_amount')} placeholder="Custom amount (XAF)…"
+                    onClick={() => setCustom(true)} onChange={() => setCustom(true)}
                     className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none mb-4 transition-all bg-gray-50 text-dark"
                     style={{ border: custom ? '1.5px solid #F0A500' : '1.5px solid #E5E7EB' }}/>
-
-                  {/* Amount summary */}
-                  <div className="p-4 rounded-2xl text-center border border-gold/20"
-                    style={{ background: 'linear-gradient(135deg,#FFF8E8,#FFF3D0)' }}>
-                    <div className="text-[10px] mb-1 text-amber-800">
-                      You are donating
-                    </div>
+                  <div className="p-4 rounded-2xl text-center border border-gold/20" style={{ background: 'linear-gradient(135deg,#FFF8E8,#FFF3D0)' }}>
+                    <div className="text-[10px] mb-1 text-amber-800">You are donating</div>
                     <div className="font-display font-extrabold text-2xl text-gold">
-                      {finalAmount > 0 ? fmt(finalAmount) : '—'}
-                      <span className="text-sm font-semibold ml-1 text-gold/60">XAF</span>
+                      {finalAmount > 0 ? fmt(finalAmount) : '—'}<span className="text-sm font-semibold ml-1 text-gold/60">XAF</span>
                     </div>
-                    <div className="text-[10px] mt-1 text-amber-700">
-                      ≈ {finalAmount > 0 ? (finalAmount / 655).toFixed(2) : '—'} USD
-                    </div>
+                    <div className="text-[10px] mt-1 text-amber-700">≈ {finalAmount > 0 ? (finalAmount / 655).toFixed(2) : '—'} USD</div>
                   </div>
                 </div>
 
-                {/* Right: Donor details */}
                 <div className="space-y-3">
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5 text-gray-500">Full Name *</label>
-                    <input {...register('donor_name', { required: true })}
-                      placeholder="Your full name"
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all bg-gray-50 text-dark"
-                      style={{ border: `1.5px solid ${errors.donor_name ? '#FCA5A5' : '#E5E7EB'}` }}/>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5 text-gray-500">Email Address *</label>
-                    <input type="email" {...register('donor_email', { required: true })}
-                      placeholder="your@email.com"
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all bg-gray-50 text-dark"
-                      style={{ border: `1.5px solid ${errors.donor_email ? '#FCA5A5' : '#E5E7EB'}` }}/>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5 text-gray-500">Phone Number</label>
-                    <input {...register('donor_phone')}
-                      placeholder="+237 6XX XXX XXX"
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all bg-gray-50 border border-[#E5E7EB] text-dark"/>
-                  </div>
+                  {[
+                    { key:'donor_name',  label:'Full Name *',      type:'text',  placeholder:'Your full name',    required:true },
+                    { key:'donor_email', label:'Email Address *',  type:'email', placeholder:'your@email.com',    required:true },
+                    { key:'donor_phone', label:'Phone Number',     type:'text',  placeholder:'+237 6XX XXX XXX',  required:false },
+                  ].map(f => (
+                    <div key={f.key}>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5 text-gray-500">{f.label}</label>
+                      <input type={f.type} {...register(f.key, { required: f.required })} placeholder={f.placeholder}
+                        className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all bg-gray-50 text-dark"
+                        style={{ border: `1.5px solid ${errors[f.key] ? '#FCA5A5' : '#E5E7EB'}` }}/>
+                    </div>
+                  ))}
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5 text-gray-500">Message (optional)</label>
-                    <textarea {...register('message')} rows={2}
-                      placeholder="A kind word for the community…"
+                    <textarea {...register('message')} rows={2} placeholder="A kind word for the community…"
                       className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none transition-all bg-gray-50 border border-[#E5E7EB] text-dark"/>
                   </div>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" {...register('is_anonymous')} className="w-3.5 h-3.5 rounded accent-purple-600"/>
-                    <span className="text-xs text-muted-foreground">
-                      Donate anonymously
-                    </span>
+                    <span className="text-xs text-muted-foreground">Donate anonymously</span>
                   </label>
                 </div>
               </div>
 
-              {/* Actions */}
               <div className="flex gap-3 mt-6">
                 <button type="button" onClick={() => setStep(1)}
-                  className="px-5 py-3 rounded-xl text-sm font-semibold transition-all hover:bg-gray-50 bg-gray-50 text-gray-500 border border-[#E5E7EB]">
-                  <i className="fas fa-arrow-left text-xs mr-1.5"/>Back
+                  className="px-5 py-3 rounded-xl text-sm font-semibold transition-all hover:bg-gray-100 bg-gray-50 text-gray-500 border border-[#E5E7EB] flex items-center gap-1.5">
+                  <ArrowLeft className="w-4 h-4"/>Back
                 </button>
                 <button type="submit" disabled={loading || finalAmount < 100}
                   className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-white transition-all disabled:opacity-60 bg-gradient-to-br from-gold to-[#FFB84D]"
                   style={{ boxShadow: '0 4px 18px rgba(240,165,0,0.35)' }}>
                   {loading
-                    ? <><i className="fas fa-spinner animate-spin text-xs"/>Processing…</>
-                    : <><i className="fas fa-lock text-xs"/>Pay {finalAmount > 0 ? `${fmt(finalAmount)} XAF` : ''} via Flutterwave</>
+                    ? <><Loader2 className="w-4 h-4 animate-spin"/>Processing…</>
+                    : <><Lock className="w-3 h-3"/>Pay {finalAmount > 0 ? `${fmt(finalAmount)} XAF` : ''} via Flutterwave</>
                   }
                 </button>
               </div>
 
-              {/* Trust row */}
               <div className="flex items-center justify-center gap-5 mt-4">
                 {[
-                  { icon: 'fa-lock',       text: 'SSL Secured' },
-                  { icon: 'fa-shield-alt', text: '100% to village' },
-                  { icon: 'fa-receipt',    text: 'Receipt by email' },
-                ].map(t => (
-                  <span key={t.text} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                    <i className={`fas ${t.icon} text-[9px] text-primary-500/40`}/>{t.text}
+                  { Icon: Lock,    text: 'SSL Secured' },
+                  { Icon: Shield,  text: '100% to village' },
+                  { Icon: Receipt, text: 'Receipt by email' },
+                ].map(({ Icon, text }) => (
+                  <span key={text} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                    <Icon className="w-3 h-3 text-primary-500/40"/>{text}
                   </span>
                 ))}
               </div>
             </form>
           )}
 
-          {/* ════ STEP 3: Success ════ */}
+          {/* STEP 3: Success */}
           {step === 3 && (
             <div className="text-center py-8 animate-fade-in">
               <div className="relative w-20 h-20 mx-auto mb-5">
                 <div className="w-20 h-20 rounded-full flex items-center justify-center border-2 border-gold/30"
                   style={{ background: 'linear-gradient(135deg,#FFF8E8,#FFE9A0)' }}>
-                  <i className="fas fa-check text-2xl text-gold"/>
+                  <Check className="w-8 h-8 text-gold"/>
                 </div>
                 <div className="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center bg-gradient-to-br from-gold to-[#FFB84D]">
-                  <i className="fas fa-heart text-[10px] text-white"/>
+                  <HeartHandshake className="w-4 h-4 text-white"/>
                 </div>
               </div>
-
-              <h3 className="font-display font-bold text-2xl mb-2 text-dark">
-                Thank You!
-              </h3>
+              <h3 className="font-display font-bold text-2xl mb-2 text-dark">Thank You!</h3>
               <p className="text-sm leading-relaxed mb-3 max-w-xs mx-auto text-muted-foreground">
-                Your donation of{' '}
-                <strong className="text-gold">{fmt(finalAmount)} XAF</strong>{' '}
-                has been received.
-                {selectedProject && (
-                  <> It will go towards <strong className="text-dark">{selectedProject.title}</strong>.</>
-                )}
+                Your donation of <strong className="text-gold">{fmt(finalAmount)} XAF</strong> has been received.
+                {selectedProject && <> It will go towards <strong className="text-dark">{selectedProject.title}</strong>.</>}
               </p>
-
               {donationRef && (
                 <div className="inline-block px-4 py-2 rounded-xl mb-5 bg-primary-50 border border-primary-500/12">
                   <span className="text-[10px] text-muted-foreground">
-                    Reference:{' '}
-                    <span className="text-primary-500 font-bold">{donationRef}</span>
+                    Reference: <span className="text-primary-500 font-bold">{donationRef}</span>
                   </span>
                 </div>
               )}
-
-              <p className="text-sm font-semibold mb-7 text-gold">
-                Nkenkak-Ngiesang thanks you from the heart.
-              </p>
-
+              <p className="text-sm font-semibold mb-7 text-gold">Nkenkak-Ngiesang thanks you from the heart.</p>
               <button onClick={onClose}
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm text-white transition-all hover:opacity-90 bg-gradient-to-br from-primary-500 to-primary-light"
                 style={{ boxShadow: '0 4px 18px rgba(91,45,142,0.3)' }}>
-                <i className="fas fa-check text-xs"/>Done
+                <Check className="w-4 h-4"/>Done
               </button>
             </div>
           )}
-
         </div>
       </div>
     </div>

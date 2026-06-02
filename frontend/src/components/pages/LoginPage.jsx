@@ -9,6 +9,7 @@ import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { Alert, AlertDescription } from '../ui/alert'
 import { Separator } from '../ui/separator'
+import { HeartHandshake, AlertCircle, Eye, EyeOff, Loader2, LogIn, Info } from 'lucide-react'
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -45,7 +46,7 @@ export default function LoginPage() {
           {/* Mobile logo */}
           <Link to="/" className="flex items-center gap-3 mb-10 lg:hidden">
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary-500 to-primary-light">
-              <i className="fas fa-mountain-city text-gold"/>
+              <HeartHandshake className="w-5 h-5 text-gold"/>
             </div>
             <span className="font-bold text-dark">Nkenkak-Ngiesang</span>
           </Link>
@@ -55,7 +56,7 @@ export default function LoginPage() {
 
           {apiError && (
             <Alert variant="destructive" className="mb-6">
-              <i className="fas fa-exclamation-circle"/>
+              <AlertCircle className="w-4 h-4"/>
               <AlertDescription>{apiError}</AlertDescription>
             </Alert>
           )}
@@ -90,7 +91,7 @@ export default function LoginPage() {
                 />
                 <button type="button" onClick={() => setShowPw(!showPw)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
-                  <i className={`fas fa-${showPw ? 'eye-slash' : 'eye'}`}/>
+                  {showPw ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}
                 </button>
               </div>
               {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
@@ -98,8 +99,8 @@ export default function LoginPage() {
 
             <Button type="submit" disabled={loading} className="w-full" size="lg" variant="default">
               {loading
-                ? <><i className="fas fa-spinner animate-spin"/>Signing in…</>
-                : <><i className="fas fa-sign-in-alt"/>Sign In</>
+                ? <><Loader2 className="w-4 h-4 animate-spin"/>Signing in…</>
+                : <><LogIn className="w-4 h-4"/>Sign In</>
               }
             </Button>
           </form>
@@ -107,7 +108,7 @@ export default function LoginPage() {
           {/* Demo credentials */}
           <div className="mt-5 p-4 rounded-xl bg-primary-50 border border-primary-100">
             <div className="flex items-center gap-2 mb-2">
-              <i className="fas fa-info-circle text-sm text-primary-500"/>
+              <Info className="w-4 h-4 text-primary-500"/>
               <span className="text-xs font-semibold text-primary-500">Demo Credentials</span>
             </div>
             <p className="text-xs text-muted-foreground">

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import api from '../../services/api'
+import { ChevronUp, Send, CheckCircle2, ArrowRight, MapPin, Phone, Mail, ChevronRight, Image } from 'lucide-react'
 
 const EXPLORE = [
   { l:'About Us',          h:'/culture' },
@@ -22,10 +23,10 @@ const COMMUNITY = [
 ]
 
 const SOCIALS = [
-  { icon:'fa-facebook-f',  href:'#', label:'Facebook' },
-  { icon:'fa-youtube',     href:'#', label:'YouTube' },
-  { icon:'fa-instagram',   href:'#', label:'Instagram' },
-  { icon:'fa-whatsapp',    href:'#', label:'WhatsApp' },
+  { icon:'fab fa-facebook-f',  href:'#', label:'Facebook' },
+  { icon:'fab fa-youtube',     href:'#', label:'YouTube' },
+  { icon:'fab fa-instagram',   href:'#', label:'Instagram' },
+  { icon:'fab fa-whatsapp',    href:'#', label:'WhatsApp' },
 ]
 
 export default function Footer({ onDonate }) {
@@ -52,13 +53,12 @@ export default function Footer({ onDonate }) {
 
   return (
     <>
-      {/* Back to top */}
       {showTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-gradient-to-br from-primary-500 to-primary-light text-white"
           title="Back to top">
-          <i className="fas fa-chevron-up text-sm"/>
+          <ChevronUp className="w-4 h-4"/>
         </button>
       )}
 
@@ -70,7 +70,7 @@ export default function Footer({ onDonate }) {
           <div className="relative max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8">
             <div className="flex items-center gap-4 flex-shrink-0">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-gold/15 border border-gold/30">
-                <i className="fas fa-paper-plane text-xl text-gold"/>
+                <Send className="w-6 h-6 text-gold"/>
               </div>
               <div>
                 <h3 className="font-display font-bold text-2xl text-white">Stay Connected</h3>
@@ -79,7 +79,7 @@ export default function Footer({ onDonate }) {
             </div>
             {done ? (
               <div className="flex-1 flex items-center justify-center gap-2 font-semibold text-base text-gold">
-                <i className="fas fa-check-circle text-xl"/>Thank you for subscribing!
+                <CheckCircle2 className="w-5 h-5"/>Thank you for subscribing!
               </div>
             ) : (
               <form onSubmit={subscribe} className="flex w-full flex-1 max-w-md">
@@ -88,7 +88,7 @@ export default function Footer({ onDonate }) {
                   className="flex-1 px-5 py-4 rounded-l-2xl text-sm outline-none bg-white/10 border border-white/15 border-r-0 text-white placeholder:text-white/40"/>
                 <button type="submit"
                   className="px-6 py-4 rounded-r-2xl font-bold text-sm whitespace-nowrap flex items-center gap-2 transition-opacity hover:opacity-90 bg-gradient-to-br from-gold to-[#FFB84D] text-dark">
-                  Subscribe <i className="fas fa-arrow-right text-xs"/>
+                  Subscribe <ArrowRight className="w-3 h-3"/>
                 </button>
               </form>
             )}
@@ -116,13 +116,13 @@ export default function Footer({ onDonate }) {
                 Uniting the Nkenkak-Ngiesang community — at home and in the diaspora — through culture, development, and shared heritage.
               </p>
 
-              {/* Social icons */}
+              {/* Social icons — brand icons stay as FA */}
               <div className="flex items-center gap-2 mb-6">
                 {SOCIALS.map(s => (
                   <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
                     title={s.label}
                     className="w-9 h-9 rounded-xl flex items-center justify-center text-sm transition-all hover:scale-110 bg-white/[0.07] text-white/60 border border-white/[0.08]">
-                    <i className={`fab ${s.icon}`}/>
+                    <i className={s.icon}/>
                   </a>
                 ))}
               </div>
@@ -130,15 +130,15 @@ export default function Footer({ onDonate }) {
               {/* Contact info */}
               <ul className="space-y-3 text-sm">
                 <li className="flex items-start gap-3">
-                  <i className="fas fa-map-marker-alt mt-0.5 flex-shrink-0 text-gold"/>
+                  <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0 text-gold"/>
                   <span className="text-white/55">Nkenkak-Ngiesang, West Region, Cameroon</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <i className="fas fa-phone-alt flex-shrink-0 text-gold"/>
+                  <Phone className="w-4 h-4 flex-shrink-0 text-gold"/>
                   <a href="tel:+237600000000" className="transition-colors hover:text-white text-white/55">+237 6XX XXX XXX</a>
                 </li>
                 <li className="flex items-center gap-3">
-                  <i className="fas fa-envelope flex-shrink-0 text-gold"/>
+                  <Mail className="w-4 h-4 flex-shrink-0 text-gold"/>
                   <a href="mailto:contact@nkenkak-ngiesang.cm" className="transition-colors hover:text-white text-white/55">contact@nkenkak-ngiesang.cm</a>
                 </li>
               </ul>
@@ -152,7 +152,7 @@ export default function Footer({ onDonate }) {
                 {EXPLORE.map(l => (
                   <li key={l.l}>
                     <Link to={l.h} className="text-sm flex items-center gap-2 transition-colors group text-white/55">
-                      <i className="fas fa-chevron-right text-[8px] transition-transform group-hover:translate-x-0.5 text-gold"/>
+                      <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 text-gold"/>
                       <span className="group-hover:text-white transition-colors">{l.l}</span>
                     </Link>
                   </li>
@@ -168,7 +168,7 @@ export default function Footer({ onDonate }) {
                 {COMMUNITY.map(l => (
                   <li key={l.l}>
                     <Link to={l.h} className="text-sm flex items-center gap-2 transition-colors group text-white/55">
-                      <i className="fas fa-chevron-right text-[8px] transition-transform group-hover:translate-x-0.5 text-gold"/>
+                      <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 text-gold"/>
                       <span className="group-hover:text-white transition-colors">{l.l}</span>
                     </Link>
                   </li>
@@ -193,13 +193,13 @@ export default function Footer({ onDonate }) {
                       <Link key={i} to="/gallery"
                         className="aspect-square rounded-xl overflow-hidden flex items-center justify-center transition-all hover:opacity-80"
                         style={{background:`linear-gradient(135deg,${['#250F47,#5B2D8E','#5B2D8E,#7B4DB8','#3D1A6B,#5B2D8E','#4A2478,#7B4DB8','#2E1067,#5B2D8E','#6B4DB8,#9B6FD8'][i]})`}}>
-                        <i className="fas fa-image text-sm text-gold/35"/>
+                        <Image className="w-4 h-4 text-gold/35"/>
                       </Link>
                     ))
                 }
               </div>
               <Link to="/gallery" className="inline-flex items-center gap-1.5 text-xs font-semibold transition-colors hover:text-white text-gold">
-                View Full Gallery <i className="fas fa-arrow-right text-[10px]"/>
+                View Full Gallery <ArrowRight className="w-3 h-3"/>
               </Link>
             </div>
           </div>

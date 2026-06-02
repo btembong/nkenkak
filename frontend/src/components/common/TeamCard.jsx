@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Card } from '../ui/card'
+import { User, ArrowRight, Mail } from 'lucide-react'
 
 const GRADS = [
   'linear-gradient(135deg,#250F47,#5B2D8E)',
@@ -25,8 +26,8 @@ export default function TeamCard({ member: m, index = 0 }) {
             ? <img src={m.avatarUrl} alt={m.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
             : <div className="flex flex-col items-center gap-2 select-none">
-                <div className="w-24 h-24 rounded-full flex items-center justify-center text-4xl bg-gold/18 text-gold/70">
-                  <i className="fas fa-user" />
+                <div className="w-24 h-24 rounded-full flex items-center justify-center bg-gold/18 text-gold/70">
+                  <User className="w-10 h-10"/>
                 </div>
               </div>
           }
@@ -68,7 +69,7 @@ export default function TeamCard({ member: m, index = 0 }) {
               {m.email && (
                 <a href={`mailto:${m.email}`} onClick={e => e.preventDefault()}
                   className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs transition-colors hover:bg-amber-500 bg-black/40 backdrop-blur-sm">
-                  <i className="fas fa-envelope" />
+                  <Mail className="w-3.5 h-3.5"/>
                 </a>
               )}
             </div>
@@ -85,11 +86,11 @@ export default function TeamCard({ member: m, index = 0 }) {
         <div className="px-4 py-3 flex items-center justify-between bg-white">
           <div className="flex items-center gap-2">
             {hasSocial && (
-              <div className="flex gap-1.5">
+              <div className="flex gap-1.5 items-center">
                 {m.facebook && <i className="fab fa-facebook-f text-[10px] text-slate-400" />}
                 {m.twitter  && <i className="fab fa-twitter text-[10px] text-slate-400" />}
                 {m.linkedin && <i className="fab fa-linkedin-in text-[10px] text-slate-400" />}
-                {m.email    && <i className="fas fa-envelope text-[10px] text-slate-400" />}
+                {m.email    && <Mail className="w-2.5 h-2.5 text-slate-400" />}
               </div>
             )}
             {!hasSocial && (
@@ -97,7 +98,7 @@ export default function TeamCard({ member: m, index = 0 }) {
             )}
           </div>
           <span className="flex items-center gap-1 text-[11px] font-semibold group-hover:gap-2 transition-all duration-200 text-primary-500">
-            View Profile <i className="fas fa-arrow-right text-[9px]" />
+            View Profile <ArrowRight className="w-3 h-3" />
           </span>
         </div>
       </Card>

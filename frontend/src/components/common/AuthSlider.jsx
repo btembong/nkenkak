@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { HeartHandshake, Star } from 'lucide-react'
 
 /* ═══════════════════════════════════════════════════════════════
    SLIDE CONFIG  —  edit this array to customise the left panel
@@ -37,7 +38,7 @@ const SLIDES = [
   },
   {
     mode:           'overlay',
-    image:          'https://res.cloudinary.com/dmxnsttmu/image/upload/v1778229359/469182858_587670723943619_6968346166025465972_n_wd5m31.jpg',     // ← paste your Cloudinary / photo URL here
+    image:          'https://res.cloudinary.com/dmxnsttmu/image/upload/v1778229359/469182858_587670723943619_6968346166025465972_n_wd5m31.jpg',
     gradient:       'linear-gradient(135deg,rgba(26,10,53,0.80),rgba(91,45,142,0.65))',
     overlayOpacity: 0.72,
     eyebrow:        'Our Projects',
@@ -49,7 +50,7 @@ const SLIDES = [
   },
   {
     mode:           'full',
-    image:          'https://res.cloudinary.com/dmxnsttmu/image/upload/v1778262556/WhatsApp_Image_2026-04-30_at_20.57.13_yl6xj3.jpg',     // ← paste your Cloudinary / photo URL here
+    image:          'https://res.cloudinary.com/dmxnsttmu/image/upload/v1778262556/WhatsApp_Image_2026-04-30_at_20.57.13_yl6xj3.jpg',
     gradient:       'linear-gradient(to top,rgba(6,2,16,0.90) 0%,rgba(6,2,16,0.45) 55%,rgba(6,2,16,0.10) 100%)',
     overlayOpacity: 0.72,
     eyebrow:        'Our Heritage',
@@ -132,7 +133,7 @@ export default function AuthSlider() {
         <Link to="/" className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl flex items-center justify-center"
             style={{ background: 'rgba(240,165,0,0.18)', border: '1px solid rgba(240,165,0,0.3)' }}>
-            <i className="fas fa-heart text-lg" style={{ color: '#F0A500' }} />
+            <HeartHandshake className="w-5 h-5" style={{ color: '#F0A500' }} />
           </div>
           <div>
             <div className="font-display font-bold text-white">Nkenkak-Ngiesang</div>
@@ -170,7 +171,7 @@ export default function AuthSlider() {
             style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)' }}>
             <div className="flex gap-0.5 mb-2.5">
               {Array.from({ length: 5 }).map((_, j) => (
-                <i key={j} className="fas fa-star text-[10px]" style={{ color: '#F0A500' }} />
+                <Star key={j} className="w-3 h-3 fill-current" style={{ color: '#F0A500' }} />
               ))}
             </div>
             <p className="text-sm italic leading-relaxed"

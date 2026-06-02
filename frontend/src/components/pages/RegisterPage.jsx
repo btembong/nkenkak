@@ -8,6 +8,7 @@ import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { Separator } from '../ui/separator'
+import { HeartHandshake, Eye, EyeOff, Loader2, UserPlus } from 'lucide-react'
 
 export default function RegisterPage() {
   const { register: authRegister } = useAuth()
@@ -39,7 +40,7 @@ export default function RegisterPage() {
         <div className="w-full max-w-lg py-6">
           <Link to="/" className="flex items-center gap-3 mb-8 lg:hidden">
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary-500 to-primary-light">
-              <i className="fas fa-heart text-gold"/>
+              <HeartHandshake className="w-5 h-5 text-gold"/>
             </div>
             <span className="font-display font-bold text-dark">Nkenkak-Ngiesang</span>
           </Link>
@@ -99,7 +100,7 @@ export default function RegisterPage() {
                   className={`pr-12 ${errors.password ? 'border-red-400 focus-visible:ring-red-400' : ''}`}/>
                 <button type="button" onClick={()=>setShowPw(!showPw)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
-                  <i className={`fas fa-${showPw?'eye-slash':'eye'}`}/>
+                  {showPw ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}
                 </button>
               </div>
               {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
@@ -125,8 +126,8 @@ export default function RegisterPage() {
 
             <Button type="submit" disabled={loading} className="w-full mt-2" size="lg" variant="secondary">
               {loading
-                ? <><i className="fas fa-spinner animate-spin"/>Creating account…</>
-                : <><i className="fas fa-user-plus"/>Create Account</>
+                ? <><Loader2 className="w-4 h-4 animate-spin"/>Creating account…</>
+                : <><UserPlus className="w-4 h-4"/>Create Account</>
               }
             </Button>
           </form>

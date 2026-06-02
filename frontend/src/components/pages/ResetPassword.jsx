@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import api from '../../services/api'
+import { LinkIcon, Check, ArrowRight, ArrowLeft, Loader2, Lock, Eye, EyeOff } from 'lucide-react'
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams()
@@ -28,9 +29,9 @@ export default function ResetPassword() {
     return (
       <div className="min-h-screen flex items-center justify-center px-6" style={{ background: 'linear-gradient(135deg,#F3EEF9,#FBF8F2)' }}>
         <div className="card p-8 w-full max-w-md text-center">
-          <i className="fas fa-link-slash text-4xl mb-4 block" style={{ color: '#dc2626' }}/>
-          <h2 className="font-display font-bold text-xl mb-2" style={{ color: '#1A0A35' }}>Invalid Link</h2>
-          <p className="text-sm mb-6" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>This reset link is missing a token. Please request a new one.</p>
+          <LinkIcon className="w-10 h-10 mx-auto mb-4 text-red-500"/>
+          <h2 className="font-display font-bold text-xl mb-2 text-dark">Invalid Link</h2>
+          <p className="text-sm mb-6 text-muted-foreground">This reset link is missing a token. Please request a new one.</p>
           <Link to="/forgot-password" className="btn-secondary w-full justify-center">Request New Link</Link>
         </div>
       </div>
@@ -52,21 +53,21 @@ export default function ResetPassword() {
           {done ? (
             <div className="text-center py-4">
               <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5"
-                style={{ background: 'rgba(22,163,74,0.08)', border: '2px solid rgba(22,163,74,0.2)' }}>
-                <i className="fas fa-check text-2xl" style={{ color: '#16a34a' }}/>
+                style={{ background: 'rgba(91,45,142,0.08)', border: '2px solid rgba(91,45,142,0.2)' }}>
+                <Check className="w-7 h-7 text-primary-500"/>
               </div>
-              <h2 className="font-display font-bold text-2xl mb-2" style={{ color: '#1A0A35' }}>Password Reset!</h2>
-              <p className="text-sm mb-6" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>
+              <h2 className="font-display font-bold text-2xl mb-2 text-dark">Password Reset!</h2>
+              <p className="text-sm mb-6 text-muted-foreground">
                 Your password has been updated. Redirecting you to login…
               </p>
               <Link to="/login" className="btn-secondary w-full justify-center">
-                <i className="fas fa-arrow-right text-xs"/>Go to Login
+                <ArrowRight className="w-3 h-3"/>Go to Login
               </Link>
             </div>
           ) : (
             <>
-              <h2 className="font-display font-bold text-2xl mb-1" style={{ color: '#1A0A35' }}>Set New Password</h2>
-              <p className="text-sm mb-7" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>Choose a strong password of at least 8 characters.</p>
+              <h2 className="font-display font-bold text-2xl mb-1 text-dark">Set New Password</h2>
+              <p className="text-sm mb-7 text-muted-foreground">Choose a strong password of at least 8 characters.</p>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div>
@@ -82,12 +83,11 @@ export default function ResetPassword() {
                       className="input pr-10"
                     />
                     <button type="button" onClick={() => setShowPw(p => !p)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-sm"
-                      style={{ color: '#A3A3A3' }}>
-                      <i className={`fas fa-${showPw ? 'eye-slash' : 'eye'}`}/>
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                      {showPw ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}
                     </button>
                   </div>
-                  {errors.password && <p className="text-xs mt-1" style={{ color: '#dc2626' }}>{errors.password.message}</p>}
+                  {errors.password && <p className="text-xs mt-1 text-red-500">{errors.password.message}</p>}
                 </div>
 
                 <div>
@@ -101,19 +101,19 @@ export default function ResetPassword() {
                     placeholder="Repeat new password"
                     className="input"
                   />
-                  {errors.confirm && <p className="text-xs mt-1" style={{ color: '#dc2626' }}>{errors.confirm.message}</p>}
+                  {errors.confirm && <p className="text-xs mt-1 text-red-500">{errors.confirm.message}</p>}
                 </div>
 
                 <button type="submit" disabled={loading} className="btn-secondary w-full justify-center">
                   {loading
-                    ? <><i className="fas fa-spinner animate-spin"/>Resetting…</>
-                    : <><i className="fas fa-lock"/>Reset Password</>}
+                    ? <><Loader2 className="w-4 h-4 animate-spin"/>Resetting…</>
+                    : <><Lock className="w-4 h-4"/>Reset Password</>}
                 </button>
               </form>
 
               <div className="mt-6 text-center">
-                <Link to="/login" className="text-sm font-semibold flex items-center justify-center gap-2 hover:underline" style={{ color: '#5B2D8E', fontFamily: 'Sora,sans-serif' }}>
-                  <i className="fas fa-arrow-left text-xs"/>Back to Login
+                <Link to="/login" className="text-sm font-semibold flex items-center justify-center gap-2 hover:underline text-primary-500">
+                  <ArrowLeft className="w-3 h-3"/>Back to Login
                 </Link>
               </div>
             </>
