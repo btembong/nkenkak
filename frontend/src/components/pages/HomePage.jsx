@@ -1003,9 +1003,9 @@ export default function HomePage() {
           <div className="space-y-4">
             {[
               { icon:'fa-shield-alt',    color:'#5B2D8E', title:'100% Transparent',  desc:'Full financial reports published after every project milestone. No hidden fees.' },
-              { icon:'fa-users',         color:'#C87800', title:'Community Governed', desc:'Projects are voted on by village elders, youth council, and diaspora members.' },
-              { icon:'fa-map-marker-alt',color:'#16a34a', title:'Direct Impact',      desc:'Funds go straight to contractors and suppliers in the village — zero bureaucracy.' },
-              { icon:'fa-globe',         color:'#0284c7', title:'Diaspora Inclusive', desc:'Whether you\'re in Yaoundé or Paris, you have an equal voice in every decision.' },
+              { icon:'fa-users',         color:'#5B2D8E', title:'Community Governed', desc:'Projects are voted on by village elders, youth council, and diaspora members.' },
+              { icon:'fa-map-marker-alt',color:'#5B2D8E', title:'Direct Impact',      desc:'Funds go straight to contractors and suppliers in the village — zero bureaucracy.' },
+              { icon:'fa-globe',         color:'#5B2D8E', title:'Diaspora Inclusive', desc:'Whether you\'re in Yaoundé or Paris, you have an equal voice in every decision.' },
             ].map(f => (
               <div key={f.title} className="flex gap-4 p-4 rounded-2xl" style={{ background:'#fff', border:'1px solid rgba(91,45,142,0.06)', boxShadow:'0 2px 12px rgba(91,45,142,0.04)' }}>
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background:`${f.color}12` }}>

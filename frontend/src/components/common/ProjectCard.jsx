@@ -22,11 +22,9 @@ const CAT_META = {
 }
 
 function getProgressMeta(pct) {
-  if (pct >= 100) return { grad:'linear-gradient(90deg,#16a34a,#4ade80)', label:'Goal reached!',         color:'text-green-600'   }
-  if (pct >= 90)  return { grad:'linear-gradient(90deg,#16a34a,#5B2D8E)', label:'Nearly funded!',        color:'text-green-600'   }
-  if (pct >= 60)  return { grad:'linear-gradient(90deg,#5B2D8E,#F0A500)', label:'Almost there!',         color:'text-gold'        }
-  if (pct >= 25)  return { grad:'linear-gradient(90deg,#5B2D8E,#7B4DB8)', label:'In progress',           color:'text-primary-500' }
-  return                  { grad:'linear-gradient(90deg,#ef4444,#f97316)', label:'Just getting started',  color:'text-orange-500'  }
+  if (pct >= 100) return { grad:'linear-gradient(90deg,#16a34a,#4ade80)', label:'Goal reached!',  color:'text-green-600'   }
+  if (pct >= 60)  return { grad:'linear-gradient(90deg,#5B2D8E,#F0A500)', label:'Almost there!',  color:'text-primary-500' }
+  return                  { grad:'linear-gradient(90deg,#5B2D8E,#7B4DB8)', label:'In progress',    color:'text-primary-500' }
 }
 
 export default function ProjectCard({ project: p, onDonate }) {
@@ -44,7 +42,7 @@ export default function ProjectCard({ project: p, onDonate }) {
   if (p.endDate && !isCompleted) {
     daysLeft = differenceInDays(new Date(p.endDate), new Date())
     if (daysLeft >= 0) {
-      deadlineCls = daysLeft <= 3 ? 'bg-red-500 text-white' : daysLeft <= 14 ? 'bg-amber-500 text-white' : 'bg-black/40 text-white/85 backdrop-blur-sm'
+      deadlineCls = daysLeft === 0 ? 'bg-red-600 text-white' : 'bg-gold/90 text-dark'
     }
   }
 
