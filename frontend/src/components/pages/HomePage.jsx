@@ -10,6 +10,7 @@ import ProjectCard from '../common/ProjectCard'
 import NewsCard from '../common/NewsCard'
 import TeamCard from '../common/TeamCard'
 import JoinTeamModal from '../common/JoinTeamModal'
+import { Card } from '../ui/card'
 
 /* ─────────────────────────────────────────
    CAUSE CATEGORIES (used once)
@@ -1001,18 +1002,18 @@ export default function HomePage() {
           {/* Feature list */}
           <div className="space-y-4">
             {[
-              { icon:'fa-shield-alt',   color:'#5B2D8E', title:'100% Transparent',      desc:'Full financial reports published after every project milestone. No hidden fees.' },
-              { icon:'fa-users',        color:'#5B2D8E', title:'Community Governed',     desc:'Projects are voted on by village elders, youth council, and diaspora members.' },
-              { icon:'fa-map-marker-alt',color:'#5B2D8E',title:'Direct Impact',          desc:'Funds go straight to contractors and suppliers in the village — zero bureaucracy.' },
-              { icon:'fa-globe',        color:'#5B2D8E', title:'Diaspora Inclusive',     desc:'Whether you\'re in Yaoundé or Paris, you have an equal voice in every decision.' },
+              { icon:'fa-shield-alt',    color:'#5B2D8E', title:'100% Transparent',  desc:'Full financial reports published after every project milestone. No hidden fees.' },
+              { icon:'fa-users',         color:'#C87800', title:'Community Governed', desc:'Projects are voted on by village elders, youth council, and diaspora members.' },
+              { icon:'fa-map-marker-alt',color:'#16a34a', title:'Direct Impact',      desc:'Funds go straight to contractors and suppliers in the village — zero bureaucracy.' },
+              { icon:'fa-globe',         color:'#0284c7', title:'Diaspora Inclusive', desc:'Whether you\'re in Yaoundé or Paris, you have an equal voice in every decision.' },
             ].map(f => (
               <div key={f.title} className="flex gap-4 p-4 rounded-2xl" style={{ background:'#fff', border:'1px solid rgba(91,45,142,0.06)', boxShadow:'0 2px 12px rgba(91,45,142,0.04)' }}>
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background:`${f.color}12` }}>
                   <i className={`fas ${f.icon} text-sm`} style={{ color:f.color }}/>
                 </div>
                 <div>
-                  <h4 className="font-display font-bold text-sm mb-1" style={{ color:'#1A0A35' }}>{f.title}</h4>
-                  <p className="text-xs leading-relaxed" style={{ color:'#737373', fontFamily:'Poppins,sans-serif' }}>{f.desc}</p>
+                  <h4 className="font-display font-bold text-sm mb-1 text-dark">{f.title}</h4>
+                  <p className="text-xs leading-relaxed text-muted-foreground">{f.desc}</p>
                 </div>
               </div>
             ))}
@@ -1045,40 +1046,48 @@ export default function HomePage() {
                 const daysAway = differenceInDays(d, new Date())
                 const countdownLabel = daysAway === 0 ? 'Today!' : daysAway === 1 ? 'Tomorrow' : daysAway > 0 ? `In ${daysAway} days` : null
                 return (
-                  <Link key={e.id} to={`/events/${e.slug}`} className="card overflow-hidden group block hover:-translate-y-1 transition-transform">
-                    <div className="h-44 flex items-center justify-center relative overflow-hidden"
-                      style={{ background:'linear-gradient(135deg,#250F47,#5B2D8E)' }}>
-                      {e.coverImage
-                        ? <img src={e.coverImage} alt="" className="absolute inset-0 w-full h-full object-cover"/>
-                        : <><div className="wave-pattern absolute inset-0"/><i className="fas fa-calendar-alt text-4xl relative z-10" style={{ color:'rgba(240,165,0,0.4)' }}/></>}
-                      <div className="absolute top-3 left-3 bg-white rounded-xl px-3 py-2 text-center shadow-card z-10">
-                        <div className="font-display font-bold text-lg leading-none" style={{ color:'#1A0A35' }}>{format(d,'d')}</div>
-                        <div className="text-[9px] uppercase tracking-wider font-semibold" style={{ color:'#5B2D8E', fontFamily:'Sora,sans-serif' }}>{format(d,'MMM')}</div>
+                  <Link key={e.id} to={`/events/${e.slug}`} className="block group">
+                    <Card className="overflow-hidden p-0 hover:-translate-y-1 transition-all duration-300 hover:shadow-xl h-full flex flex-col">
+                      <div className="h-44 flex items-center justify-center relative overflow-hidden flex-shrink-0"
+                        style={{ background:'linear-gradient(135deg,#250F47,#5B2D8E)' }}>
+                        {e.coverImage
+                          ? <img src={e.coverImage} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+                          : <><div className="wave-pattern absolute inset-0"/><i className="fas fa-calendar-alt text-4xl relative z-10" style={{ color:'rgba(240,165,0,0.4)' }}/></>}
+                        {/* Date badge */}
+                        <div className="absolute top-3 left-3 bg-white rounded-xl px-3 py-2 text-center shadow-lg z-10">
+                          <div className="font-display font-bold text-lg leading-none text-dark">{format(d,'d')}</div>
+                          <div className="text-[9px] uppercase tracking-wider font-semibold text-primary-500">{format(d,'MMM')}</div>
+                        </div>
+                        {/* Right badges */}
+                        <div className="absolute top-3 right-3 flex flex-col gap-1 items-end z-10">
+                          {countdownLabel && (
+                            <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-white/15 text-white border border-white/25 backdrop-blur-sm">
+                              <i className="fas fa-clock text-[8px] mr-1"/>{countdownLabel}
+                            </span>
+                          )}
+                          {e.category && (
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full text-white bg-gold/90">
+                              {e.category}
+                            </span>
+                          )}
+                          {isPaid
+                            ? <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-gold/90 text-dark">{Number(e.ticketPrice).toLocaleString()} XAF</span>
+                            : <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-green-500/85 text-white">Free</span>}
+                        </div>
                       </div>
-                      <div className="absolute top-3 right-3 flex flex-col gap-1 items-end z-10">
-                        {countdownLabel && (
-                          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full"
-                            style={{ background:'rgba(255,255,255,0.15)', color:'#fff', border:'1px solid rgba(255,255,255,0.25)', backdropFilter:'blur(8px)' }}>
-                            <i className="fas fa-clock text-[8px] mr-1"/>{countdownLabel}
-                          </span>
-                        )}
-                        {e.category && <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full text-white" style={{ background:'rgba(240,165,0,0.9)' }}>{e.category}</span>}
-                        {isPaid
-                          ? <span className="text-[10px] font-bold px-2.5 py-1 rounded-full" style={{ background:'rgba(240,165,0,0.9)', color:'#1A0A35' }}>{Number(e.ticketPrice).toLocaleString()} XAF</span>
-                          : <span className="text-[10px] font-bold px-2.5 py-1 rounded-full" style={{ background:'rgba(22,163,74,0.85)', color:'#fff' }}>Free</span>}
+                      <div className="p-5 flex flex-col flex-1">
+                        <h3 className="font-display font-semibold text-base mb-2 line-clamp-2 text-dark group-hover:text-primary-500 transition-colors">{e.title}</h3>
+                        <div className="flex items-center gap-3 text-xs mb-3 text-muted-foreground">
+                          <span className="flex items-center gap-1"><i className="fas fa-clock text-primary-500"/>{format(d,'h:mm a')}</span>
+                          {e.venue && <span className="flex items-center gap-1 truncate"><i className="fas fa-map-marker-alt text-gold"/>{e.venue}</span>}
+                        </div>
+                        <p className="text-xs line-clamp-2 mb-4 leading-relaxed text-muted-foreground flex-1">{e.description}</p>
+                        <div className="flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-4 rounded-2xl border border-primary-500/20 text-primary-500 mt-auto group-hover:bg-primary-50 transition-colors">
+                          <i className="fas fa-arrow-right text-[9px]"/>
+                          {isPaid ? `Get Ticket · ${Number(e.ticketPrice).toLocaleString()} XAF` : 'Register Now — Free'}
+                        </div>
                       </div>
-                    </div>
-                    <div className="p-5">
-                      <h3 className="font-display font-semibold text-base mb-2 line-clamp-2" style={{ color:'#1A0A35' }}>{e.title}</h3>
-                      <div className="flex items-center gap-3 text-xs mb-3" style={{ color:'#A3A3A3', fontFamily:'Poppins,sans-serif' }}>
-                        <span className="flex items-center gap-1"><i className="fas fa-clock" style={{ color:'#5B2D8E' }}/>{format(d,'h:mm a')}</span>
-                        {e.venue && <span className="flex items-center gap-1 truncate"><i className="fas fa-map-marker-alt" style={{ color:'#F0A500' }}/>{e.venue}</span>}
-                      </div>
-                      <p className="text-xs line-clamp-2 mb-4 leading-relaxed" style={{ color:'#737373', fontFamily:'Poppins,sans-serif' }}>{e.description}</p>
-                      <div className="btn-outline !py-2 !px-4 !text-xs w-full justify-center pointer-events-none">
-                        {isPaid ? `Get Ticket · ${Number(e.ticketPrice).toLocaleString()} XAF` : 'Register Now — Free'}
-                      </div>
-                    </div>
+                    </Card>
                   </Link>
                 )
               })}
