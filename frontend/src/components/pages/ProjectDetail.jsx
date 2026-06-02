@@ -176,7 +176,7 @@ export default function ProjectDetail() {
           </div>
 
           {/* ── Related projects ── */}
-          {related?.length > 0 && <RelatedProjects projects={related} />}
+          {related?.length >= 2 && <RelatedProjects projects={related} />}
         </div>
       </section>
 
