@@ -758,135 +758,168 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════ ABOUT ════════════════ */}
-      <section className="py-24 overflow-hidden bg-white">
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+      <section className="py-24 overflow-hidden" style={{ background: '#FBF8F2' }}>
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-start">
 
-          {/* Left: Image collage */}
-          <div className="relative" style={{ minHeight: 480 }}>
-            <div className="absolute -top-8 -left-8 w-72 h-72 rounded-full pointer-events-none"
-              style={{ background:'radial-gradient(circle,rgba(91,45,142,0.07),transparent 70%)' }}/>
+          {/* Left: Mission panel — full-bleed photo + stats pinned to bottom */}
+          <div className="relative rounded-3xl overflow-hidden lg:sticky lg:top-24"
+            style={{ minHeight: 540, boxShadow: '0 28px 72px rgba(91,45,142,0.2)' }}>
 
-            <div className="absolute left-0 top-0 w-[58%] rounded-3xl overflow-hidden"
-              style={{ height: 420, boxShadow:'0 24px 64px rgba(91,45,142,0.25)' }}>
-              <img
-                src="https://res.cloudinary.com/dmxnsttmu/image/upload/q_auto/f_auto/v1778262556/WhatsApp_Image_2026-04-30_at_20.57.13_yl6xj3.jpg"
-                alt="Nkenkak-Ngiesang community"
-                className="absolute inset-0 w-full h-full object-cover object-center"
-              />
-              <div className="absolute inset-0" style={{ background:'linear-gradient(160deg,rgba(26,10,53,0.75),rgba(91,45,142,0.55))' }}/>
-              <div className="relative h-full flex flex-col justify-between p-6">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                  style={{ background:'rgba(240,165,0,0.15)', border:'1px solid rgba(240,165,0,0.25)' }}>
-                  <Landmark className="w-5 h-5 text-gold"/>
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase tracking-widest font-bold mb-1 text-gold/70">Est. N-NDC</div>
-                  <div className="font-display font-extrabold text-white leading-none" style={{ fontSize:'3.5rem' }}>2024</div>
-                  <div className="text-sm mt-2 text-white/55">Years of unity, culture & development</div>
-                </div>
+            {/* Full-bleed photo */}
+            <img
+              src="https://res.cloudinary.com/dmxnsttmu/image/upload/q_auto/f_auto/v1778262556/WhatsApp_Image_2026-04-30_at_20.57.13_yl6xj3.jpg"
+              alt="Nkenkak-Ngiesang community gathering"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            {/* Gradient — lighter at top, heavier at bottom so photo reads */}
+            <div className="absolute inset-0"
+              style={{ background: 'linear-gradient(180deg,rgba(20,8,45,0.28) 0%,rgba(20,8,45,0.45) 45%,rgba(20,8,45,0.93) 100%)' }}
+            />
+
+            {/* Top badge */}
+            <div className="relative p-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-sm"
+                style={{ background: 'rgba(240,165,0,0.18)', border: '1px solid rgba(240,165,0,0.3)' }}>
+                <Landmark className="w-3.5 h-3.5 text-gold" />
+                <span className="text-xs font-bold text-gold" style={{ fontFamily: 'Sora,sans-serif' }}>
+                  N-NDC — Est. 2024
+                </span>
               </div>
             </div>
 
-            <div className="absolute right-0 top-0 w-[38%] rounded-3xl overflow-hidden"
-              style={{ height: 190, background:'linear-gradient(135deg,#F0A500,#FFB84D)', boxShadow:'0 12px 40px rgba(240,165,0,0.3)' }}>
-              <div className="h-full flex flex-col items-center justify-center gap-2">
-                <Users className="w-8 h-8 text-white opacity-90"/>
-                <div className="font-display font-extrabold text-white text-2xl leading-none">
-                  {stats?.memberCount || stats?.donorCount || '40'}+
-                </div>
-                <div className="text-xs text-white/70">Registered Members</div>
-              </div>
-            </div>
+            {/* Bottom: founding quote + stat grid */}
+            <div className="absolute inset-x-0 bottom-0 p-6">
+              <blockquote className="mb-5">
+                <div className="w-6 h-0.5 rounded-full bg-gold mb-3" />
+                <p className="text-sm leading-[1.8] text-white/85 italic" style={{ fontFamily: 'Poppins,sans-serif' }}>
+                  "We do not build for ourselves alone — we build for the children who will inherit this village."
+                </p>
+                <footer className="text-[11px] mt-2 font-semibold" style={{ color: 'rgba(240,165,0,0.7)' }}>
+                  — N-NDC Founding Charter, June 2024
+                </footer>
+              </blockquote>
 
-            <div className="absolute right-0 bottom-0 w-[38%] rounded-3xl overflow-hidden"
-              style={{ height: 210, background:'linear-gradient(135deg,#FBF8F2,#F3EEF9)', border:'1px solid rgba(91,45,142,0.1)', boxShadow:'0 8px 32px rgba(91,45,142,0.08)' }}>
-              <div className="h-full flex flex-col items-center justify-center gap-3 p-4">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                  style={{ background:'rgba(91,45,142,0.1)' }}>
-                  <Globe className="w-5 h-5 text-primary-500"/>
-                </div>
-                <div className="text-center">
-                  <div className="font-display font-extrabold text-2xl text-dark">14+</div>
-                  <div className="text-xs mt-0.5 text-muted-foreground">Countries Represented</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="absolute left-[52%] bottom-[140px] -translate-x-1/2 bg-white rounded-full px-4 py-2.5 flex items-center gap-2.5 z-10"
-              style={{ boxShadow:'0 8px 32px rgba(91,45,142,0.15)', border:'1px solid rgba(91,45,142,0.08)' }}>
-              <div className="flex -space-x-1.5">
-                {['#5B2D8E','#F0A500','#7B4DB8','#3D1A6B'].map((c, i) => (
-                  <div key={i} className="w-6 h-6 rounded-full border-2 border-white flex-shrink-0" style={{ background:c }}/>
+              {/* 4-stat grid */}
+              <div className="grid grid-cols-4 gap-2">
+                {[
+                  { n: '2024',                                   l: 'Founded'  },
+                  { n: `${stats?.memberCount || '40'}+`,         l: 'Members'  },
+                  { n: '14+',                                    l: 'Countries'},
+                  { n: `${stats?.projectCount || '12'}+`,        l: 'Projects' },
+                ].map(({ n, l }) => (
+                  <div key={l} className="flex flex-col items-center py-2.5 px-1 rounded-2xl backdrop-blur-sm"
+                    style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.14)' }}>
+                    <div className="font-display font-bold text-white text-sm leading-none">{n}</div>
+                    <div className="text-[9px] text-white/50 mt-0.5 uppercase tracking-wide">{l}</div>
+                  </div>
                 ))}
               </div>
-              <span className="text-[11px] font-bold whitespace-nowrap text-dark">
-                {stats?.donorCount ? `${stats.donorCount.toLocaleString()}+` : '2,400+'} Donors Worldwide
-              </span>
-            </div>
-
-            <div className="absolute bottom-2 left-2 grid gap-1.5 pointer-events-none" style={{ gridTemplateColumns:'repeat(5,8px)' }}>
-              {Array.from({length:20}).map((_,i) => (
-                <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background:'rgba(91,45,142,0.15)' }}/>
-              ))}
             </div>
           </div>
 
-          {/* Right: Text */}
-          <div>
-            <div className="eyebrow mb-3">About N-NDC (Nkenkak-Ngiesang Development Council)</div>
+          {/* Right: Content */}
+          <div className="py-2">
+            <div className="eyebrow mb-3">About N-NDC</div>
             <h2 className="section-title mb-5">
               Rooted in Heritage,<br/>Building for <span>Tomorrow</span>
             </h2>
 
-            <p className="text-sm leading-relaxed mb-6 text-muted-foreground">
-              Nkenkak-Ngiesang is more than a village — it is a living community bound by shared history, culture, and purpose. N-NDC is a nonprofit, apolitical body driving development from within.
+            <p className="text-sm leading-relaxed mb-8 text-muted-foreground">
+              Nkenkak-Ngiesang is more than a village — it is a living community bound by shared history, culture, and purpose. N-NDC is a nonprofit, apolitical body driving development from within, with full accountability to every member.
             </p>
 
-            {/* 3-step timeline */}
-            <div className="mb-8">
+            {/* Timeline — improved visual weight */}
+            <div className="mb-8 relative">
+              {/* Vertical connector */}
+              <div className="absolute left-[17px] top-9 bottom-4 w-0.5 rounded-full"
+                style={{ background: 'linear-gradient(to bottom,#5B2D8E 0%,rgba(91,45,142,0.08) 100%)' }} />
+
               {[
-                { Icon: Building2,    date: 'June 2024', title: 'Organisation Founded',    desc: 'Chief N\'fonji-Sang called an all-village meeting; N-NDC established as a nonprofit, apolitical development body.' },
-                { Icon: Sprout,       date: 'Aug 2024',  title: 'First Projects Launched', desc: 'Executive bureau formed; school renovation and clean water initiative approved and funded by community.' },
-                { Icon: CheckCircle2, date: '2025 →',    title: 'Growing Impact',          desc: '12+ projects, 42+ families served, members actively contributing from 14+ countries worldwide.' },
-              ].map(({ Icon: TIcon, date, title, desc }, i, arr) => (
-                <div key={title} className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ background:'rgba(91,45,142,0.1)' }}>
-                      <TIcon className="w-4 h-4 text-primary-500"/>
-                    </div>
-                    {i < arr.length - 1 && <div className="w-0.5 h-6 my-1 rounded-full" style={{ background:'rgba(91,45,142,0.12)' }}/>}
+                { Icon: Building2,    date: 'June 2024', title: 'Organisation Founded',    desc: "Chief N'fonji-Sang called an all-village meeting; N-NDC established as a nonprofit, apolitical development body.", active: false },
+                { Icon: Sprout,       date: 'Aug 2024',  title: 'First Projects Launched', desc: 'Executive bureau formed; school renovation and clean water initiative approved and funded by community.', active: false },
+                { Icon: CheckCircle2, date: 'Now →',     title: 'Growing Impact',          desc: '12+ projects, 42+ families served, members actively contributing from 14+ countries worldwide.', active: true },
+              ].map(({ Icon: TIcon, date, title, desc, active }, i, arr) => (
+                <div key={title} className="flex gap-4 relative"
+                  style={{ paddingBottom: i < arr.length - 1 ? 28 : 0 }}>
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 relative z-10 transition-all"
+                    style={{
+                      background: active ? 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' : '#fff',
+                      boxShadow: active ? '0 4px 16px rgba(91,45,142,0.35)' : '0 2px 8px rgba(91,45,142,0.1)',
+                      border: active ? 'none' : '1.5px solid rgba(91,45,142,0.15)',
+                    }}>
+                    <TIcon className="w-4 h-4" style={{ color: active ? '#fff' : '#5B2D8E' }} />
                   </div>
-                  <div className={i < arr.length - 1 ? 'pb-4' : ''}>
+                  <div className="pt-1">
                     <div className="text-[10px] font-bold uppercase tracking-widest text-gold mb-0.5">{date}</div>
-                    <div className="font-display font-bold text-sm text-dark mb-0.5">{title}</div>
+                    <div className="font-display font-bold text-sm text-dark mb-1">{title}</div>
                     <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Three pillars */}
-            <div className="grid grid-cols-3 gap-3 mb-8">
+            {/* 3 distinct value cards */}
+            <div className="grid grid-cols-3 gap-3 mb-7">
               {[
-                { Icon: Landmark,   label:'Culture & Heritage' },
-                { Icon: Handshake,  label:'Community First'    },
-                { Icon: TrendingUp, label:'Real Impact'        },
-              ].map(({ Icon: PIcon, label }) => (
-                <div key={label} className="rounded-2xl p-3.5 text-center" style={{ background:'rgba(91,45,142,0.08)' }}>
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center mx-auto mb-2" style={{ background:'rgba(91,45,142,0.12)' }}>
-                    <PIcon className="w-4 h-4 text-primary-500"/>
+                {
+                  Icon: Landmark,
+                  label: 'Culture',
+                  fact: '200+ years of heritage celebrated & preserved',
+                  accent: '#C87800',
+                  bg: 'rgba(240,165,0,0.06)',
+                  border: 'rgba(240,165,0,0.2)',
+                },
+                {
+                  Icon: Handshake,
+                  label: 'Community',
+                  fact: 'Every project is voted on by members — no exceptions',
+                  accent: '#5B2D8E',
+                  bg: 'rgba(91,45,142,0.06)',
+                  border: 'rgba(91,45,142,0.15)',
+                },
+                {
+                  Icon: TrendingUp,
+                  label: 'Impact',
+                  fact: `${stats?.familiesServed || 42}+ families with clean water since 2024`,
+                  accent: '#15803D',
+                  bg: 'rgba(21,128,61,0.06)',
+                  border: 'rgba(21,128,61,0.2)',
+                },
+              ].map(({ Icon: PIcon, label, fact, accent, bg, border }) => (
+                <div key={label} className="rounded-2xl p-4 flex flex-col gap-3"
+                  style={{ background: bg, border: `1px solid ${border}` }}>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+                    style={{ background: `${accent}20` }}>
+                    <PIcon className="w-4 h-4" style={{ color: accent }} />
                   </div>
-                  <div className="text-[11px] font-bold leading-tight text-primary-500">{label}</div>
+                  <div>
+                    <div className="text-[9px] font-bold uppercase tracking-widest mb-1"
+                      style={{ color: accent }}>{label}</div>
+                    <div className="text-[11px] leading-snug font-semibold text-dark">{fact}</div>
+                  </div>
                 </div>
               ))}
             </div>
 
-            {/* Live stats */}
-            <div className="grid grid-cols-3 gap-4 py-6 mb-7 border-y" style={{ borderColor:'rgba(91,45,142,0.08)' }}>
-              <StatCounter Icon={Users}        value={stats?.donorCount    || 2400} label="Global Donors"   suffix="+" />
-              <StatCounter Icon={Sprout}       value={stats?.projectCount  || 12}   label="Projects Funded" />
-              <StatCounter Icon={CheckCircle2} value={stats?.familiesServed || 42}  label="Families Served" />
+            {/* Transparency trust bar — replaces duplicate stat counters */}
+            <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-7"
+              style={{ background: 'rgba(91,45,142,0.05)', border: '1px solid rgba(91,45,142,0.1)' }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: 'rgba(91,45,142,0.1)' }}>
+                <Shield className="w-4 h-4 text-primary-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-bold text-dark leading-snug">Full financial transparency since founding</div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">
+                  Every XAF tracked and published after each project milestone.
+                </div>
+              </div>
+              <Link to="/transparency"
+                className="text-[11px] font-bold flex items-center gap-1 flex-shrink-0 whitespace-nowrap transition-all hover:gap-2 duration-200"
+                style={{ color: '#5B2D8E' }}>
+                View Reports <ArrowRight className="w-3 h-3" />
+              </Link>
             </div>
 
             <div className="flex items-center gap-3 flex-wrap">
@@ -894,8 +927,8 @@ export default function HomePage() {
               <Link to="/projects" className="btn-outline">View Projects</Link>
               <button onClick={openDonate}
                 className="flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-xl transition-all hover:opacity-90"
-                style={{ background:'rgba(240,165,0,0.1)', color:'#C87800', border:'1px solid rgba(240,165,0,0.2)' }}>
-                <Heart className="w-3 h-3"/>Donate
+                style={{ background: 'rgba(240,165,0,0.1)', color: '#C87800', border: '1px solid rgba(240,165,0,0.2)' }}>
+                <Heart className="w-3 h-3" />Donate
               </button>
             </div>
           </div>

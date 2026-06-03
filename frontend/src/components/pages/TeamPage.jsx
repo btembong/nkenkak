@@ -31,12 +31,16 @@ const TEAM_ACCENT = {
   education:   '#7C3AED',
 }
 
+function leaderInitials(name) {
+  return name.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()
+}
+
 /* ─── Leadership spotlight card ─── */
 function LeaderCard({ member: m, index = 0 }) {
   const GRADS = [
+    'linear-gradient(135deg,#92600A,#C88A1A)',
     'linear-gradient(135deg,#250F47,#5B2D8E)',
     'linear-gradient(135deg,#3D1A6B,#7B4DB8)',
-    'linear-gradient(135deg,#5B2D8E,#9B6FD8)',
   ]
   return (
     <Link to={`/team/${m.id}`} className="group block focus:outline-none">
@@ -54,9 +58,15 @@ function LeaderCard({ member: m, index = 0 }) {
             <img src={m.avatarUrl} alt={m.name}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
           ) : (
-            <div className="w-28 h-28 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(240,165,0,0.15)' }}>
-              <Crown className="w-12 h-12" style={{ color: 'rgba(240,165,0,0.6)' }} />
+            <div
+              className="w-24 h-24 rounded-2xl flex items-center justify-center font-display font-bold text-3xl text-white select-none shadow-xl"
+              style={{
+                background: 'rgba(255,255,255,0.14)',
+                backdropFilter: 'blur(10px)',
+                border: '1.5px solid rgba(255,255,255,0.28)',
+              }}
+            >
+              {leaderInitials(m.name)}
             </div>
           )}
 
