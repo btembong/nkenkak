@@ -4,7 +4,9 @@
       "Bash(npm audit:*)",
       "Bash(taskkill /PID 54180 /F)",
       "Bash(cmd /c \"taskkill /PID 54180 /F\")",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(curl -s http://localhost:5000/health)",
+      "Bash(curl -s http://localhost:3000/health)"
     ]
   }
 }
