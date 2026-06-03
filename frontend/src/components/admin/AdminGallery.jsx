@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import api from '../../services/api'
 
-function AdminAlbums() {
+function AdminAlbums({ onAddToAlbum }) {
   const qc = useQueryClient()
   const [showForm, setShowForm] = useState(false)
   const { register, handleSubmit, reset } = useForm()
@@ -43,12 +43,19 @@ function AdminAlbums() {
               </div>
               <div className="p-4">
                 <h4 className="font-semibold text-sm mb-0.5" style={{color:'#1A0A35',fontFamily:'Sora,sans-serif'}}>{album.title}</h4>
-                <p className="text-xs mb-3" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>{album._count?.items || 0} items</p>
-                <button onClick={() => { if (confirm('Delete album?')) deleteMut.mutate(album.id) }}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-xl"
-                  style={{background:'rgba(220,38,38,0.08)',color:'#dc2626'}}>
-                  <i className="fas fa-trash text-[10px] mr-1"/>Delete
-                </button>
+                <p className="text-xs mb-3" style={{color:'#A3A3A3',fontFamily:'Poppins,sans-serif'}}>{album._count?.items || 0} item{album._count?.items !== 1 ? 's' : ''}</p>
+                <div className="flex gap-2">
+                  <button onClick={() => onAddToAlbum(album)}
+                    className="text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1"
+                    style={{background:'rgba(91,45,142,0.08)',color:'#5B2D8E'}}>
+                    <i className="fas fa-plus text-[10px]"/>Add photos
+                  </button>
+                  <button onClick={() => { if (confirm('Delete album?')) deleteMut.mutate(album.id) }}
+                    className="text-xs font-semibold px-3 py-1.5 rounded-xl"
+                    style={{background:'rgba(220,38,38,0.08)',color:'#dc2626'}}>
+                    <i className="fas fa-trash text-[10px]"/>
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -96,12 +103,14 @@ export default function AdminGallery() {
   const qc = useQueryClient()
   const [tab, setTab] = useState('items')
   const [showForm, setShowForm] = useState(false)
+  const [presetAlbum, setPresetAlbum] = useState(null)
   const [lightbox, setLightbox] = useState(null)
   const [filterType, setFilterType] = useState('all')
-  const { register, handleSubmit, reset, formState: { errors } } = useForm()
+  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm()
 
   const { data: items, isLoading } = useQuery('admin-gallery', () => api.get('/gallery?all=1').then(r => r.data))
   const { data: projects } = useQuery('projects-mini', () => api.get('/projects?limit=50').then(r => r.data.projects))
+  const { data: albums = [] } = useQuery('admin-albums', () => api.get('/gallery-albums?all=1').then(r => r.data))
   const { data: pendingItems = [], isLoading: pendingLoading } = useQuery('gallery-pending', () => api.get('/gallery/pending').then(r => r.data))
 
   const reviewMut = useMutation(({ id, action }) => api.patch(`/gallery/${id}/review`, { action }), {
@@ -112,7 +121,7 @@ export default function AdminGallery() {
   })
 
   const createMut = useMutation(data => api.post('/gallery', data), {
-    onSuccess: () => { qc.invalidateQueries('admin-gallery'); toast.success('Item added!'); setShowForm(false); reset() }
+    onSuccess: () => { qc.invalidateQueries('admin-gallery'); qc.invalidateQueries('admin-albums'); toast.success('Item added!'); setShowForm(false); setPresetAlbum(null); reset() }
   })
   const deleteMut = useMutation(id => api.delete(`/gallery/${id}`), {
     onSuccess: () => { qc.invalidateQueries('admin-gallery'); toast.success('Deleted'); setLightbox(null) }
@@ -173,7 +182,14 @@ export default function AdminGallery() {
         ))}
       </div>
 
-      {tab === 'albums' && <AdminAlbums/>}
+      {tab === 'albums' && <AdminAlbums onAddToAlbum={album => {
+        setPresetAlbum(album)
+        setTab('items')
+        setTimeout(() => {
+          setValue('album_id', album.id)
+          setShowForm(true)
+        }, 50)
+      }}/>}
 
       {tab === 'pending' && (
         <div>
@@ -327,6 +343,15 @@ export default function AdminGallery() {
                 {item.showInGallery === false && (
                   <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(220,38,38,0.8)', color: '#fff' }}>Section only</span>
                 )}
+                {item.albumId && (() => {
+                  const alb = albums.find(a => a.id === item.albumId)
+                  return alb ? (
+                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full truncate max-w-[90px]"
+                      style={{ background: 'rgba(91,45,142,0.85)', color: '#fff' }}>
+                      <i className="fas fa-layer-group mr-1 text-[8px]"/>{alb.title}
+                    </span>
+                  ) : null
+                })()}
               </div>
               <div className="absolute bottom-0 left-0 right-0 px-2 py-1.5" style={{ background: 'linear-gradient(to top,rgba(0,0,0,0.65),transparent)' }}>
                 {item.title && <p className="text-[10px] text-white truncate" style={{ fontFamily: 'Poppins,sans-serif' }}>{item.title}</p>}
@@ -408,9 +433,15 @@ export default function AdminGallery() {
             <div className="px-7 pt-6 pb-4 border-b flex items-center justify-between" style={{ borderColor: 'rgba(91,45,142,0.08)' }}>
               <div>
                 <h3 className="font-display font-bold text-xl" style={{ color: '#1A0A35' }}>Add Gallery Item</h3>
-                <p className="text-xs mt-0.5" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>Add a photo, video or document to the gallery</p>
+                {presetAlbum ? (
+                  <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: '#5B2D8E', fontFamily: 'Poppins,sans-serif' }}>
+                    <i className="fas fa-layer-group text-[9px]"/>Adding to <strong>{presetAlbum.title}</strong>
+                  </p>
+                ) : (
+                  <p className="text-xs mt-0.5" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>Add a photo, video or document to the gallery</p>
+                )}
               </div>
-              <button onClick={() => { setShowForm(false); reset() }} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100" style={{ color: '#A3A3A3' }}>
+              <button onClick={() => { setShowForm(false); setPresetAlbum(null); reset() }} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100" style={{ color: '#A3A3A3' }}>
                 <i className="fas fa-times" />
               </button>
             </div>
@@ -430,12 +461,19 @@ export default function AdminGallery() {
                   </select>
                 </div>
                 <div>
-                  <label className="label">Linked Project</label>
-                  <select {...register('project_id')} className="input">
-                    <option value="">None</option>
-                    {projects?.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
+                  <label className="label">Album</label>
+                  <select {...register('album_id')} className="input">
+                    <option value="">No album</option>
+                    {albums.map(a => <option key={a.id} value={a.id}>{a.title}</option>)}
                   </select>
                 </div>
+              </div>
+              <div>
+                <label className="label">Linked Project</label>
+                <select {...register('project_id')} className="input">
+                  <option value="">None</option>
+                  {projects?.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
+                </select>
               </div>
               <div>
                 <label className="label">Title</label>
@@ -467,7 +505,7 @@ export default function AdminGallery() {
                 </label>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => { setShowForm(false); reset() }}
+                <button type="button" onClick={() => { setShowForm(false); setPresetAlbum(null); reset() }}
                   className="flex-1 py-3 rounded-2xl text-sm font-semibold"
                   style={{ background: 'rgba(91,45,142,0.05)', color: '#737373', border: '1px solid rgba(91,45,142,0.1)', fontFamily: 'Sora,sans-serif' }}>
                   Cancel

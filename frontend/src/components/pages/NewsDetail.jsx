@@ -544,7 +544,7 @@ export default function NewsDetail() {
                 All Articles <ArrowRight className="w-3 h-3"/>
               </Link>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 gap-6">
               {related.map(a => <NewsCard key={a.id} article={a}/>)}
             </div>
           </div>

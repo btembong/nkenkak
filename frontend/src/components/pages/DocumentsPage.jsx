@@ -39,6 +39,77 @@ function FileTypeIcon({ fileType, color }) {
   return <i className={`fas ${icon} text-xl`} style={{ color }} />
 }
 
+function PDFViewer({ doc, onClose, onDownload, isDownloading }) {
+  return (
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 z-40"
+        style={{ background: 'rgba(15,0,30,0.55)', backdropFilter: 'blur(3px)' }}
+        onClick={onClose}
+      />
+      {/* Panel */}
+      <div
+        className="fixed right-0 top-0 bottom-0 z-50 flex flex-col"
+        style={{ width: 'min(780px, 100vw)', background: '#F3EDF8', boxShadow: '-8px 0 40px rgba(75,0,130,0.18)' }}
+      >
+        {/* Header */}
+        <div className="flex items-center gap-3 px-5 py-4 border-b flex-shrink-0"
+          style={{ background: '#fff', borderColor: 'rgba(75,0,130,0.08)' }}>
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: 'rgba(75,0,130,0.07)' }}>
+            <i className="fas fa-file-pdf text-sm" style={{ color: '#4b0082' }} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-display font-bold text-sm truncate" style={{ color: '#2d004e' }}>{doc.title}</h3>
+            {doc.description && (
+              <p className="text-[11px] truncate" style={{ color: '#A3A3A3', fontFamily: '"Exo 2",sans-serif' }}>{doc.description}</p>
+            )}
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={() => onDownload(doc)}
+              disabled={isDownloading}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all disabled:opacity-60"
+              style={{
+                background: 'linear-gradient(135deg,#4b0082,#a57fc0)',
+                color: '#fff',
+                fontFamily: '"Exo 2",sans-serif',
+                boxShadow: '0 3px 10px rgba(75,0,130,0.28)',
+              }}>
+              {isDownloading
+                ? <><i className="fas fa-spinner fa-spin text-[10px]" /> Opening…</>
+                : <><i className="fas fa-download text-[10px]" /> Download</>}
+            </button>
+            <button
+              onClick={onClose}
+              className="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:bg-gray-100"
+              style={{ color: '#A3A3A3' }}>
+              <i className="fas fa-times text-sm" />
+            </button>
+          </div>
+        </div>
+        {/* iframe */}
+        <div className="flex-1 overflow-hidden">
+          {doc.fileUrl ? (
+            <iframe
+              src={doc.fileUrl}
+              title={doc.title}
+              className="w-full h-full border-0"
+              style={{ background: '#fff' }}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full">
+              <i className="fas fa-file-pdf text-5xl mb-4" style={{ color: 'rgba(75,0,130,0.18)' }} />
+              <p className="text-sm" style={{ color: '#737373', fontFamily: '"Exo 2",sans-serif' }}>No file URL available for preview.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  )
+}
+
 function SkeletonRow() {
   return (
     <div className="rounded-2xl p-5 mb-3 animate-pulse flex items-center gap-4" style={{ background: '#fff', boxShadow: '0 2px 8px rgba(75,0,130,0.04)' }}>
@@ -52,9 +123,10 @@ function SkeletonRow() {
   )
 }
 
-function DocumentRow({ doc, onDownload, isDownloading }) {
+function DocumentRow({ doc, onDownload, isDownloading, onPreview }) {
   const cat = getCatMeta(doc.category)
   const fileSize = formatFileSize(doc.fileSize)
+  const isPdf = (doc.fileType || '').toLowerCase().includes('pdf')
 
   return (
     <div className="rounded-2xl px-5 py-4 mb-3 flex items-center gap-4 transition-all hover:shadow-md group"
@@ -91,23 +163,38 @@ function DocumentRow({ doc, onDownload, isDownloading }) {
         </div>
       </div>
 
-      {/* Download button */}
-      <button
-        onClick={() => onDownload(doc)}
-        disabled={isDownloading}
-        className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all disabled:opacity-60"
-        style={{
-          background: isDownloading ? 'rgba(75,0,130,0.06)' : 'linear-gradient(135deg,#4b0082,#a57fc0)',
-          color: isDownloading ? '#A3A3A3' : '#fff',
-          fontFamily: '"Exo 2",sans-serif',
-          boxShadow: isDownloading ? 'none' : '0 4px 14px rgba(75,0,130,0.28)',
-          cursor: isDownloading ? 'not-allowed' : 'pointer',
-          whiteSpace: 'nowrap',
-        }}>
-        {isDownloading
-          ? <><i className="fas fa-spinner fa-spin text-[10px]" /> Opening…</>
-          : <><i className="fas fa-download text-[10px]" /> Download</>}
-      </button>
+      {/* Action buttons */}
+      <div className="flex-shrink-0 flex items-center gap-2">
+        {isPdf && (
+          <button
+            onClick={() => onPreview(doc)}
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all"
+            style={{
+              background: 'rgba(75,0,130,0.07)',
+              color: '#4b0082',
+              fontFamily: '"Exo 2",sans-serif',
+              whiteSpace: 'nowrap',
+            }}>
+            <i className="fas fa-eye text-[10px]" /> Preview
+          </button>
+        )}
+        <button
+          onClick={() => onDownload(doc)}
+          disabled={isDownloading}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all disabled:opacity-60"
+          style={{
+            background: isDownloading ? 'rgba(75,0,130,0.06)' : 'linear-gradient(135deg,#4b0082,#a57fc0)',
+            color: isDownloading ? '#A3A3A3' : '#fff',
+            fontFamily: '"Exo 2",sans-serif',
+            boxShadow: isDownloading ? 'none' : '0 4px 14px rgba(75,0,130,0.28)',
+            cursor: isDownloading ? 'not-allowed' : 'pointer',
+            whiteSpace: 'nowrap',
+          }}>
+          {isDownloading
+            ? <><i className="fas fa-spinner fa-spin text-[10px]" /> Opening…</>
+            : <><i className="fas fa-download text-[10px]" /> Download</>}
+        </button>
+      </div>
     </div>
   )
 }
@@ -116,6 +203,7 @@ export default function DocumentsPage() {
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('all')
   const [downloading, setDownloading] = useState(new Set())
+  const [previewDoc, setPreviewDoc] = useState(null)
 
   const { data, isLoading } = useQuery(
     'documents',
@@ -148,6 +236,14 @@ export default function DocumentsPage() {
 
   return (
     <div style={{ background: '#F3EDF8', minHeight: '100vh' }}>
+      {previewDoc && (
+        <PDFViewer
+          doc={previewDoc}
+          onClose={() => setPreviewDoc(null)}
+          onDownload={handleDownload}
+          isDownloading={downloading.has(previewDoc.id)}
+        />
+      )}
       {/* Hero */}
       <div className="page-hero relative overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #a57fc0 0%, transparent 50%), radial-gradient(circle at 80% 20%, #4b0082 0%, transparent 40%)' }} />
@@ -273,6 +369,7 @@ export default function DocumentsPage() {
                 doc={doc}
                 onDownload={handleDownload}
                 isDownloading={downloading.has(doc.id)}
+                onPreview={setPreviewDoc}
               />
             ))}
           </div>

@@ -68,7 +68,7 @@ router.post('/contribute', authenticate, isMember, async (req, res) => {
 
 /* ── POST admin add (leaders / admins) ── */
 router.post('/', authenticate, isLeader, async (req, res) => {
-  const { title, description, url, thumbnail, media_type, project_id, is_featured, tags, show_in_gallery } = req.body
+  const { title, description, url, thumbnail, media_type, project_id, album_id, is_featured, tags, show_in_gallery } = req.body
   if (!url) return res.status(400).json({ error: 'URL required' })
   const tagsArr = Array.isArray(tags) ? tags
     : (typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : [])
@@ -77,6 +77,7 @@ router.post('/', authenticate, isLeader, async (req, res) => {
       title, description, url, thumbnail,
       mediaType:    media_type   || 'image',
       projectId:    project_id   || null,
+      albumId:      album_id     || null,
       isFeatured:   !!is_featured,
       showInGallery: show_in_gallery !== false && show_in_gallery !== 'false',
       tags:         tagsArr,
@@ -105,7 +106,7 @@ router.patch('/:id/review', authenticate, isAdmin, async (req, res) => {
 
 /* ── PATCH edit (leaders / admins) ── */
 router.patch('/:id', authenticate, isLeader, async (req, res) => {
-  const { title, description, is_featured, sort_order, tags, show_in_gallery, status } = req.body
+  const { title, description, is_featured, sort_order, tags, show_in_gallery, status, album_id } = req.body
   const tagsArr = Array.isArray(tags) ? tags
     : (typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : undefined)
   const item = await prisma.gallery.update({
@@ -118,6 +119,7 @@ router.patch('/:id', authenticate, isLeader, async (req, res) => {
       ...(tagsArr         !== undefined && { tags: tagsArr }),
       ...(show_in_gallery !== undefined && { showInGallery: show_in_gallery !== false && show_in_gallery !== 'false' }),
       ...(status          !== undefined && { status }),
+      ...(album_id        !== undefined && { albumId: album_id || null }),
     },
   })
   res.json(item)

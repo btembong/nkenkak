@@ -13,11 +13,11 @@ import JoinTeamModal from '../common/JoinTeamModal'
 import { Card } from '../ui/card'
 import {
   Heart, ArrowRight, Users, Globe, Sprout, GraduationCap, HeartPulse,
-  Droplets, Route, Music, Landmark, TrendingUp, Shield, MapPin, Mail,
-  Clock, Calendar, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight,
+  Droplets, Route, Music, TrendingUp, Shield, MapPin, Mail,
+  Clock, Calendar, ChevronDown, ChevronLeft, ChevronRight,
   X, Flame, Send, Expand, Pause, Play, Bell, AlertCircle, UserPlus,
-  Award, Building2, Check, Newspaper, MapPinned, Handshake, Home,
-  LayoutGrid, Search,
+  Award, Check, Newspaper, MapPinned, Home, LayoutGrid, Search,
+  BookMarked, UsersRound, BarChart3, Flag, Rocket, Zap,
 } from 'lucide-react'
 
 /* ─────────────────────────────────────────
@@ -776,16 +776,6 @@ export default function HomePage() {
               style={{ background: 'linear-gradient(180deg,rgba(20,8,45,0.28) 0%,rgba(20,8,45,0.45) 45%,rgba(20,8,45,0.93) 100%)' }}
             />
 
-            {/* Top badge */}
-            <div className="relative p-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-sm"
-                style={{ background: 'rgba(240,165,0,0.18)', border: '1px solid rgba(240,165,0,0.3)' }}>
-                <Landmark className="w-3.5 h-3.5 text-gold" />
-                <span className="text-xs font-bold text-gold" style={{ fontFamily: 'Sora,sans-serif' }}>
-                  N-NDC — Est. 2024
-                </span>
-              </div>
-            </div>
 
             {/* Bottom: founding quote + stat grid */}
             <div className="absolute inset-x-0 bottom-0 p-6">
@@ -835,9 +825,9 @@ export default function HomePage() {
                 style={{ background: 'linear-gradient(to bottom,#5B2D8E 0%,rgba(91,45,142,0.08) 100%)' }} />
 
               {[
-                { Icon: Building2,    date: 'June 2024', title: 'Organisation Founded',    desc: "Chief N'fonji-Sang called an all-village meeting; N-NDC established as a nonprofit, apolitical development body.", active: false },
-                { Icon: Sprout,       date: 'Aug 2024',  title: 'First Projects Launched', desc: 'Executive bureau formed; school renovation and clean water initiative approved and funded by community.', active: false },
-                { Icon: CheckCircle2, date: 'Now →',     title: 'Growing Impact',          desc: '12+ projects, 42+ families served, members actively contributing from 14+ countries worldwide.', active: true },
+                { Icon: Flag,   date: 'June 2024', title: 'Organisation Founded',    desc: "Chief N'fonji-Sang called an all-village meeting; N-NDC established as a nonprofit, apolitical development body.", active: false },
+                { Icon: Rocket, date: 'Aug 2024',  title: 'First Projects Launched', desc: 'Executive bureau formed; school renovation and clean water initiative approved and funded by community.', active: false },
+                { Icon: Zap,    date: 'Now →',     title: 'Growing Impact',          desc: '12+ projects, 42+ families served, members actively contributing from 14+ countries worldwide.', active: true },
               ].map(({ Icon: TIcon, date, title, desc, active }, i, arr) => (
                 <div key={title} className="flex gap-4 relative"
                   style={{ paddingBottom: i < arr.length - 1 ? 28 : 0 }}>
@@ -863,7 +853,7 @@ export default function HomePage() {
             <div className="grid grid-cols-3 gap-3 mb-7">
               {[
                 {
-                  Icon: Landmark,
+                  Icon: BookMarked,
                   label: 'Culture',
                   fact: '200+ years of heritage celebrated & preserved',
                   accent: '#C87800',
@@ -871,7 +861,7 @@ export default function HomePage() {
                   border: 'rgba(240,165,0,0.2)',
                 },
                 {
-                  Icon: Handshake,
+                  Icon: UsersRound,
                   label: 'Community',
                   fact: 'Every project is voted on by members — no exceptions',
                   accent: '#5B2D8E',
@@ -879,7 +869,7 @@ export default function HomePage() {
                   border: 'rgba(91,45,142,0.15)',
                 },
                 {
-                  Icon: TrendingUp,
+                  Icon: BarChart3,
                   label: 'Impact',
                   fact: `${stats?.familiesServed || 42}+ families with clean water since 2024`,
                   accent: '#15803D',
@@ -924,12 +914,6 @@ export default function HomePage() {
 
             <div className="flex items-center gap-3 flex-wrap">
               <Link to="/culture" className="btn-secondary">Our Story</Link>
-              <Link to="/projects" className="btn-outline">View Projects</Link>
-              <button onClick={openDonate}
-                className="flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-xl transition-all hover:opacity-90"
-                style={{ background: 'rgba(240,165,0,0.1)', color: '#C87800', border: '1px solid rgba(240,165,0,0.2)' }}>
-                <Heart className="w-3 h-3" />Donate
-              </button>
             </div>
           </div>
         </div>
@@ -997,13 +981,6 @@ export default function HomePage() {
       <section className="py-20" style={{ background:'linear-gradient(135deg,#FBF8F2,#F3EEF9)' }}>
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="eyebrow mb-3">Why Belong with us N-NDC</div>
-            <h2 className="section-title mb-5">
-              Community-Led,<br/><span>Zero Overhead</span>
-            </h2>
-            <p className="text-sm leading-relaxed mb-6 text-muted-foreground">
-              Unlike large NGOs, we are the community. Every project is proposed by a village member, approved by the council, and executed with full financial transparency — you can see exactly where your money goes.
-            </p>
             <div className="grid grid-cols-2 gap-4 mb-6">
               {CAUSE_CATS.map(c => (
                 <Link to={`/projects?cat=${c.label.toLowerCase()}`} key={c.label}

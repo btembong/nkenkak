@@ -303,36 +303,75 @@ export default function Navbar({ onDonate }) {
               </button>
             </div>
 
-            <div className="p-6 flex flex-col gap-1">
-              {[
-                { label: t('home'),          href: '/' },
-                { label: t('aboutUs'),       href: '/culture' },
-                { label: t('anthropology'),  href: '/anthropology' },
-                { label: t('donation'),      href: '/projects' },
-                { label: t('events'),        href: '/events' },
-                { label: t('news'),          href: '/news' },
-                { label: t('contact'),       href: '/contact' },
-                { label: t('ourTeam'),       href: '/team' },
-                { label: t('gallery'),       href: '/gallery' },
-                { label: 'Notices',          href: '/notices' },
-                { label: 'Documents',        href: '/documents' },
-                { label: 'Mentorship',       href: '/mentorship' },
-                { label: 'Directory',        href: '/directory' },
-                { label: 'Community Chat',   href: '/chat' },
-                { label: 'Petitions',        href: '/petitions' },
-                { label: 'Jobs',             href: '/jobs' },
-                { label: 'Wiki',             href: '/wiki' },
-                { label: 'Budget',           href: '/budget' },
-                { label: 'Elections',        href: '/elections' },
-                { label: 'Live Meetings',    href: '/live' },
-              ].map(item => (
-                <Link key={item.href} to={item.href}
-                  className="flex items-center gap-3 py-3 px-4 rounded-2xl text-sm font-medium text-white/80 hover:bg-white/8 border-b border-white/6 transition-colors">
-                  {item.label}
-                </Link>
-              ))}
+            <div className="p-6 flex flex-col gap-4">
 
-              <div className="flex flex-col gap-3 mt-6">
+              {/* Main */}
+              <div>
+                <div className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2 px-1" style={{ color: 'rgba(238,181,73,0.55)' }}>Main</div>
+                {[
+                  { label: t('home'),         href: '/' },
+                  { label: t('events'),       href: '/events' },
+                  { label: t('news'),         href: '/news' },
+                  { label: t('donation'),     href: '/projects' },
+                  { label: t('contact'),      href: '/contact' },
+                ].map(item => (
+                  <Link key={item.href} to={item.href}
+                    className="flex items-center gap-3 py-2.5 px-4 rounded-xl text-sm font-medium text-white/80 hover:bg-white/8 transition-colors">
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+
+              {/* About & Culture */}
+              <div>
+                <div className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2 px-1" style={{ color: 'rgba(238,181,73,0.55)' }}>About & Culture</div>
+                {[
+                  { label: t('aboutUs'),      href: '/culture' },
+                  { label: t('anthropology'), href: '/anthropology' },
+                  { label: 'Our Language',    href: '/language' },
+                  { label: 'Governance',      href: '/governance' },
+                  { label: 'Village Map',     href: '/village-map' },
+                  { label: t('ourTeam'),      href: '/team' },
+                  { label: t('gallery'),      href: '/gallery' },
+                  { label: t('diaspora'),     href: '/diaspora' },
+                  { label: t('volunteers'),   href: '/volunteers' },
+                ].map(item => (
+                  <Link key={item.href} to={item.href}
+                    className="flex items-center gap-3 py-2.5 px-4 rounded-xl text-sm font-medium text-white/80 hover:bg-white/8 transition-colors">
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Community & Resources */}
+              <div>
+                <div className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2 px-1" style={{ color: 'rgba(238,181,73,0.55)' }}>Community & Resources</div>
+                {[
+                  { label: 'Notices',           href: '/notices' },
+                  { label: 'Documents',         href: '/documents' },
+                  { label: 'Mentorship',        href: '/mentorship' },
+                  { label: 'Directory',         href: '/directory' },
+                  { label: 'Scholarships',      href: '/scholarships' },
+                  { label: 'Transparency',      href: '/transparency' },
+                  { label: 'Memorial',          href: '/memorial' },
+                  { label: 'Cultural Calendar', href: '/cultural-calendar' },
+                  { label: 'Community Chat',    href: '/chat' },
+                  { label: 'Petitions',         href: '/petitions' },
+                  { label: 'Jobs & Classifieds',href: '/jobs' },
+                  { label: 'Knowledge Wiki',    href: '/wiki' },
+                  { label: 'Village Budget',    href: '/budget' },
+                  { label: 'Elections',         href: '/elections' },
+                  { label: 'Live Meetings',     href: '/live' },
+                ].map(item => (
+                  <Link key={item.href} to={item.href}
+                    className="flex items-center gap-3 py-2.5 px-4 rounded-xl text-sm font-medium text-white/80 hover:bg-white/8 transition-colors">
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+
+
+              <div className="flex flex-col gap-3 mt-2">
                 {!user ? (
                   <>
                     <Link to="/login" className="btn-outline-white w-full justify-center">{t('login')}</Link>
