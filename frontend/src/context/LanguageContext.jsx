@@ -379,6 +379,17 @@ const translations = {
     meetingLink:       'Meeting Link',
     noLiveMeetings:    'No live meetings scheduled',
     upcomingMeetings:  'Upcoming Meetings',
+
+    // ── Team ─────────────────────────────────────────
+    ourPeople:         'Our People',
+    teamBehindMission: 'The Team Behind the Mission',
+    teamDesc:          'Meet the dedicated leaders and volunteers driving development and culture in Nkenkak-Ngiesang.',
+    meetEveryone:      'Meet Everyone',
+    meetTeam:          'Meet the Team',
+
+    // ── Gallery extras ───────────────────────────────
+    morePhotos:        'more photos',
+    donate:            'Donate',
   },
 
   fr: {
@@ -759,6 +770,17 @@ const translations = {
     meetingLink:       'Lien de la Réunion',
     noLiveMeetings:    'Aucune réunion en direct prévue',
     upcomingMeetings:  'Réunions à Venir',
+
+    // ── Team ─────────────────────────────────────────
+    ourPeople:         'Notre Équipe',
+    teamBehindMission: "L'Équipe Derrière la Mission",
+    teamDesc:          "Rencontrez les leaders et bénévoles dévoués qui conduisent le développement et la culture à Nkenkak-Ngiesang.",
+    meetEveryone:      'Rencontrer Tout le Monde',
+    meetTeam:          "Rencontrer l'Équipe",
+
+    // ── Gallery extras ───────────────────────────────
+    morePhotos:        'photos de plus',
+    donate:            'Donner',
   },
 }
 

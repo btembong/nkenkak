@@ -49,4 +49,15 @@ router.post('/send', authenticate, isAdmin, async (req, res) => {
   res.json({ message: `Campaign queued for ${subs.length} subscribers`, count: subs.length })
 })
 
+// Manual digest trigger — admin only, for testing
+router.post('/trigger-digest', authenticate, isAdmin, async (req, res) => {
+  try {
+    const { sendWeeklyDigest } = require('../services/digest')
+    res.json({ message: 'Digest triggered — sending in background' })
+    sendWeeklyDigest().catch(console.error)
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
 module.exports = router
