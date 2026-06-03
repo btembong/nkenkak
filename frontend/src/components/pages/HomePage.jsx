@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
+import { useLanguage } from '../../context/LanguageContext'
 import { useQuery } from 'react-query'
 import { format, differenceInDays } from 'date-fns'
 import { useInView } from 'react-intersection-observer'
@@ -559,6 +560,7 @@ function AnnouncementBanner() {
 
 export default function HomePage() {
   const { openDonate } = useOutletContext()
+  const { t } = useLanguage()
   const [joinOpen,  setJoinOpen]  = useState(false)
   const [heroSlide, setHeroSlide] = useState(0)
 
@@ -634,16 +636,16 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap gap-3 mb-10">
               <button onClick={openDonate} className="btn-gold">
-                <Heart className="w-3 h-3"/>Donate Now
+                <Heart className="w-3 h-3"/>{t('donateNow')}
               </button>
-              <Link to="/projects" className="btn-outline-white">Explore Projects</Link>
+              <Link to="/projects" className="btn-outline-white">{t('viewAllProjects')}</Link>
             </div>
             {/* Live quick stats */}
             <div className="flex flex-wrap gap-7">
               {[
-                { Icon: Users,  val: stats ? `${(stats.donorCount||0).toLocaleString()}+` : '2,400+', label:'Global Donors'   },
-                { Icon: Sprout, val: stats ? `${stats.projectCount||0}`                   : '12',     label:'Active Projects' },
-                { Icon: Globe,  val:'14+',                                                            label:'Countries'       },
+                { Icon: Users,  val: stats ? `${(stats.donorCount||0).toLocaleString()}+` : '2,400+', label: t('globalDonors')   },
+                { Icon: Sprout, val: stats ? `${stats.projectCount||0}`                   : '12',     label: t('activeProjects') },
+                { Icon: Globe,  val: '14+',                                                           label: t('countries')      },
               ].map(s => (
                 <div key={s.label} className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -809,9 +811,9 @@ export default function HomePage() {
 
           {/* Right: Content */}
           <div className="py-2">
-            <div className="eyebrow mb-3">About N-NDC</div>
+            <div className="eyebrow mb-3">{t('aboutNNDC')}</div>
             <h2 className="section-title mb-5">
-              Rooted in Heritage,<br/>Building for <span>Tomorrow</span>
+              {t('rootedInHeritage').split(',')[0]},<br/>{t('rootedInHeritage').split(',')[1]}
             </h2>
 
             <p className="text-sm leading-relaxed mb-8 text-muted-foreground">
@@ -825,9 +827,9 @@ export default function HomePage() {
                 style={{ background: 'linear-gradient(to bottom,#5B2D8E 0%,rgba(91,45,142,0.08) 100%)' }} />
 
               {[
-                { Icon: Flag,   date: 'June 2024', title: 'Organisation Founded',    desc: "Chief N'fonji-Sang called an all-village meeting; N-NDC established as a nonprofit, apolitical development body.", active: false },
-                { Icon: Rocket, date: 'Aug 2024',  title: 'First Projects Launched', desc: 'Executive bureau formed; school renovation and clean water initiative approved and funded by community.', active: false },
-                { Icon: Zap,    date: 'Now →',     title: 'Growing Impact',          desc: '12+ projects, 42+ families served, members actively contributing from 14+ countries worldwide.', active: true },
+                { Icon: Flag,   date: 'June 2024', title: t('orgFounded'),    desc: "Chief N'fonji-Sang called an all-village meeting; N-NDC established as a nonprofit, apolitical development body.", active: false },
+                { Icon: Rocket, date: 'Aug 2024',  title: t('firstProjects'), desc: 'Executive bureau formed; school renovation and clean water initiative approved and funded by community.', active: false },
+                { Icon: Zap,    date: 'Now →',     title: t('growingImpact'), desc: '12+ projects, 42+ families served, members actively contributing from 14+ countries worldwide.', active: true },
               ].map(({ Icon: TIcon, date, title, desc, active }, i, arr) => (
                 <div key={title} className="flex gap-4 relative"
                   style={{ paddingBottom: i < arr.length - 1 ? 28 : 0 }}>
@@ -854,7 +856,7 @@ export default function HomePage() {
               {[
                 {
                   Icon: BookMarked,
-                  label: 'Culture',
+                  label: t('cultureLabel'),
                   fact: '200+ years of heritage celebrated & preserved',
                   accent: '#C87800',
                   bg: 'rgba(240,165,0,0.06)',
@@ -862,7 +864,7 @@ export default function HomePage() {
                 },
                 {
                   Icon: UsersRound,
-                  label: 'Community',
+                  label: t('communityLabel'),
                   fact: 'Every project is voted on by members — no exceptions',
                   accent: '#5B2D8E',
                   bg: 'rgba(91,45,142,0.06)',
@@ -870,7 +872,7 @@ export default function HomePage() {
                 },
                 {
                   Icon: BarChart3,
-                  label: 'Impact',
+                  label: t('impactLabel'),
                   fact: `${stats?.familiesServed || 42}+ families with clean water since 2024`,
                   accent: '#15803D',
                   bg: 'rgba(21,128,61,0.06)',
@@ -900,20 +902,20 @@ export default function HomePage() {
                 <Shield className="w-4 h-4 text-primary-500" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-bold text-dark leading-snug">Full financial transparency since founding</div>
+                <div className="text-xs font-bold text-dark leading-snug">{t('transparencyMsg')}</div>
                 <div className="text-[11px] text-muted-foreground mt-0.5">
-                  Every XAF tracked and published after each project milestone.
+                  {t('transparencyDesc')}
                 </div>
               </div>
               <Link to="/transparency"
                 className="text-[11px] font-bold flex items-center gap-1 flex-shrink-0 whitespace-nowrap transition-all hover:gap-2 duration-200"
                 style={{ color: '#5B2D8E' }}>
-                View Reports <ArrowRight className="w-3 h-3" />
+                {t('viewReports')} <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
 
             <div className="flex items-center gap-3 flex-wrap">
-              <Link to="/culture" className="btn-secondary">Our Story</Link>
+              <Link to="/culture" className="btn-secondary">{t('ourStory')}</Link>
             </div>
           </div>
         </div>
@@ -926,12 +928,12 @@ export default function HomePage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="eyebrow justify-center mb-3">Our Projects</div>
+            <div className="eyebrow justify-center mb-3">{t('featuredProjects')}</div>
             <h2 className="section-title">
-              Real Impact,<br/>Real <span>Village Stories</span>
+              {t('realImpact').split(',')[0]},<br/>{t('realImpact').split(',')[1]}
             </h2>
             <p className="text-sm mt-3 max-w-xl mx-auto text-muted-foreground">
-              Every project is proposed, vetted, and funded by our community — 100% of donations go directly to the village.
+              {t('realImpactDesc')}
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -943,21 +945,21 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-2 gap-6 mt-8">
             <div className="rounded-3xl p-8 relative overflow-hidden" style={{ background:'linear-gradient(135deg,#FBF8F2,#F3EEF9)', border:'1px solid rgba(91,45,142,0.08)' }}>
-              <h3 className="font-display font-bold text-xl mb-3 text-dark">Give Your Time, Change a Life</h3>
+              <h3 className="font-display font-bold text-xl mb-3 text-dark">{t('giveYourTime')}</h3>
               <p className="text-sm mb-5 text-muted-foreground">
-                Skills, expertise, and presence matter just as much as money. Join our volunteer network and help build something lasting for the next generation.
+                {t('giveYourTimeDesc')}
               </p>
               <div className="flex items-center gap-3">
-                <button onClick={() => setJoinOpen(true)} className="btn-secondary !py-2.5 !px-5 !text-xs">Become A Volunteer</button>
-                <Link to="/volunteers" className="btn-outline !py-2.5 !px-5 !text-xs">Meet Volunteers</Link>
+                <button onClick={() => setJoinOpen(true)} className="btn-secondary !py-2.5 !px-5 !text-xs">{t('becomeVolunteer')}</button>
+                <Link to="/volunteers" className="btn-outline !py-2.5 !px-5 !text-xs">{t('meetVolunteers')}</Link>
               </div>
             </div>
             <div className="rounded-3xl p-8 relative overflow-hidden" style={{ background:'linear-gradient(135deg,#250F47,#5B2D8E)' }}>
               <div className="wave-pattern absolute inset-0"/>
               <div className="relative">
-                <h3 className="font-display font-bold text-xl mb-3 text-white">Make a Donation Today</h3>
+                <h3 className="font-display font-bold text-xl mb-3 text-white">{t('makeADonation')}</h3>
                 <p className="text-sm mb-5 text-white/70">
-                  Every FCFA matters. Choose an amount and contribute to the project closest to your heart.
+                  {t('everyFCFA')}
                 </p>
                 <div className="flex gap-2 mb-5 flex-wrap">
                   {['5,000','10,000','25,000','50,000'].map(a => (

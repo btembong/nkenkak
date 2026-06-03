@@ -138,14 +138,14 @@ export default function Navbar({ onDonate }) {
         scrolled ? 'shadow-card border-b border-border' : 'border-b border-transparent'
       )}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 md:h-24">
+          <div className="flex items-center justify-between h-20 md:h-24">
 
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 flex-shrink-0">
               <img
                 src="https://res.cloudinary.com/dmxnsttmu/image/upload/v1778254134/nkek-logo_jdaxf8.png"
                 alt="Nkenkak-Ngiesang Development Council"
-                className="h-14 md:h-28 lg:h-32 w-auto object-contain"
+                className="h-20 md:h-28 lg:h-32 w-auto object-contain"
                 onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
               />
               <div style={{ display: 'none' }} className="items-center gap-3">

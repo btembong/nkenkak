@@ -3,24 +3,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import api from '../../services/api'
 import { ChevronUp, Send, CheckCircle2, ArrowRight, MapPin, Phone, Mail, ChevronRight, Image } from 'lucide-react'
-
-const EXPLORE = [
-  { l:'About Us',          h:'/culture' },
-  { l:'Our Projects',      h:'/projects' },
-  { l:'News & Updates',    h:'/news' },
-  { l:'Upcoming Events',   h:'/events' },
-  { l:'Gallery',           h:'/gallery' },
-  { l:'Contact Us',        h:'/contact' },
-]
-
-const COMMUNITY = [
-  { l:'Diaspora Network',  h:'/diaspora' },
-  { l:'Forum',             h:'/forum' },
-  { l:'Volunteers',        h:'/volunteers' },
-  { l:'Scholarships',      h:'/scholarships' },
-  { l:'Business Directory',h:'/directory' },
-  { l:'Mentorship',        h:'/mentorship' },
-]
+import { useLanguage } from '../../context/LanguageContext'
 
 const SOCIALS = [
   { icon:'fab fa-facebook-f',  href:'#', label:'Facebook' },
@@ -30,9 +13,28 @@ const SOCIALS = [
 ]
 
 export default function Footer({ onDonate }) {
+  const { t } = useLanguage()
   const [email, setEmail]   = useState('')
   const [done,  setDone]    = useState(false)
   const [showTop, setShowTop] = useState(false)
+
+  const EXPLORE = [
+    { l: t('aboutUsFooter'),         h: '/culture' },
+    { l: t('ourProjects'),           h: '/projects' },
+    { l: t('newsUpdates'),           h: '/news' },
+    { l: t('upcomingEventsFooter'),  h: '/events' },
+    { l: t('gallery'),               h: '/gallery' },
+    { l: t('contactUs'),             h: '/contact' },
+  ]
+
+  const COMMUNITY = [
+    { l: t('diasporaNetwork'),   h: '/diaspora' },
+    { l: t('forum'),             h: '/forum' },
+    { l: t('volunteers'),        h: '/volunteers' },
+    { l: t('scholarships'),      h: '/scholarships' },
+    { l: t('businessDirectory'), h: '/directory' },
+    { l: t('mentorship'),        h: '/mentorship' },
+  ]
 
   const { data: galleryData } = useQuery('footer-gallery',
     () => api.get('/gallery?limit=6').then(r => r.data?.items || r.data || []),
@@ -73,22 +75,22 @@ export default function Footer({ onDonate }) {
                 <Send className="w-6 h-6 text-gold"/>
               </div>
               <div>
-                <h3 className="font-display font-bold text-2xl text-white">Stay Connected</h3>
-                <p className="text-sm text-white/60">Get village news &amp; updates in your inbox</p>
+                <h3 className="font-display font-bold text-2xl text-white">{t('stayConnected')}</h3>
+                <p className="text-sm text-white/60">{t('getVillageNews')}</p>
               </div>
             </div>
             {done ? (
               <div className="flex-1 flex items-center justify-center gap-2 font-semibold text-base text-gold">
-                <CheckCircle2 className="w-5 h-5"/>Thank you for subscribing!
+                <CheckCircle2 className="w-5 h-5"/>{t('thankYouSubscribed')}
               </div>
             ) : (
               <form onSubmit={subscribe} className="flex w-full flex-1 max-w-md">
                 <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required
-                  placeholder="Enter your email address"
+                  placeholder={t('enterEmail')}
                   className="flex-1 px-5 py-4 rounded-l-2xl text-sm outline-none bg-white/10 border border-white/15 border-r-0 text-white placeholder:text-white/40"/>
                 <button type="submit"
                   className="px-6 py-4 rounded-r-2xl font-bold text-sm whitespace-nowrap flex items-center gap-2 transition-opacity hover:opacity-90 bg-gradient-to-br from-[#eeb549] to-[#f5cc77]" style={{ color: '#2d004e' }}>
-                  Subscribe <ArrowRight className="w-3 h-3"/>
+                  {t('subscribeBtn')} <ArrowRight className="w-3 h-3"/>
                 </button>
               </form>
             )}
@@ -146,7 +148,7 @@ export default function Footer({ onDonate }) {
 
             {/* Explore */}
             <div>
-              <h4 className="font-display font-bold text-white mb-4">Explore</h4>
+              <h4 className="font-display font-bold text-white mb-4">{t('explore')}</h4>
               <div className="h-0.5 w-8 mb-5 rounded-full bg-gradient-to-r from-gold to-transparent"/>
               <ul className="space-y-3">
                 {EXPLORE.map(l => (
@@ -162,7 +164,7 @@ export default function Footer({ onDonate }) {
 
             {/* Community */}
             <div>
-              <h4 className="font-display font-bold text-white mb-4">Community</h4>
+              <h4 className="font-display font-bold text-white mb-4">{t('communitySection')}</h4>
               <div className="h-0.5 w-8 mb-5 rounded-full bg-gradient-to-r from-gold to-transparent"/>
               <ul className="space-y-3">
                 {COMMUNITY.map(l => (
@@ -178,7 +180,7 @@ export default function Footer({ onDonate }) {
 
             {/* Gallery */}
             <div>
-              <h4 className="font-display font-bold text-white mb-4">Our Gallery</h4>
+              <h4 className="font-display font-bold text-white mb-4">{t('ourGallery')}</h4>
               <div className="h-0.5 w-8 mb-5 rounded-full bg-gradient-to-r from-gold to-transparent"/>
               <div className="grid grid-cols-3 gap-2 mb-4">
                 {galleryImages.length > 0
@@ -199,7 +201,7 @@ export default function Footer({ onDonate }) {
                 }
               </div>
               <Link to="/gallery" className="inline-flex items-center gap-1.5 text-xs font-semibold transition-colors hover:text-white text-gold">
-                View Full Gallery <ArrowRight className="w-3 h-3"/>
+                {t('viewFullGallery')} <ArrowRight className="w-3 h-3"/>
               </Link>
             </div>
           </div>
@@ -209,14 +211,14 @@ export default function Footer({ onDonate }) {
         <div className="px-6 py-4 bg-[#120728] border-t border-white/5">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs text-white/40">
-              © {new Date().getFullYear()} Nkenkak-Ngiesang Development Council. All rights reserved.
+              © {new Date().getFullYear()} Nkenkak-Ngiesang Development Council. {t('allRightsReserved')}
             </p>
             <div className="flex items-center gap-4 text-xs">
-              <Link to="/faq" className="transition-colors hover:text-white text-white/40">FAQ</Link>
+              <Link to="/faq" className="transition-colors hover:text-white text-white/40">{t('faq')}</Link>
               <span className="text-white/15">·</span>
-              <Link to="/contact" className="transition-colors hover:text-white text-white/40">Contact</Link>
+              <Link to="/contact" className="transition-colors hover:text-white text-white/40">{t('contact')}</Link>
               <span className="text-white/15">·</span>
-              <Link to="/portal" className="transition-colors hover:text-white text-white/40">Member Portal</Link>
+              <Link to="/portal" className="transition-colors hover:text-white text-white/40">{t('memberPortal')}</Link>
             </div>
           </div>
         </div>

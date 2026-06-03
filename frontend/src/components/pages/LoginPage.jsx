@@ -9,7 +9,7 @@ import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { Alert, AlertDescription } from '../ui/alert'
 import { Separator } from '../ui/separator'
-import { HeartHandshake, AlertCircle, Eye, EyeOff, Loader2, LogIn, Info } from 'lucide-react'
+import { HeartHandshake, AlertCircle, Eye, EyeOff, Loader2, LogIn } from 'lucide-react'
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -104,18 +104,6 @@ export default function LoginPage() {
               }
             </Button>
           </form>
-
-          {/* Demo credentials */}
-          <div className="mt-5 p-4 rounded-xl bg-primary-50 border border-primary-100">
-            <div className="flex items-center gap-2 mb-2">
-              <Info className="w-4 h-4 text-primary-500"/>
-              <span className="text-xs font-semibold text-primary-500">Demo Credentials</span>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              <strong>Email:</strong> admin@nkenkak-ngiesang.cm<br/>
-              <strong>Password:</strong> Admin@1234
-            </p>
-          </div>
 
           <Separator className="my-8"/>
           <p className="text-sm text-muted-foreground text-center">
