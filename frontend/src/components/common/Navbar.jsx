@@ -371,25 +371,42 @@ export default function Navbar({ onDonate }) {
               </div>
 
 
-              <div className="flex flex-col gap-3 mt-2">
+              <div className="flex flex-col gap-3 pt-5 mt-2 border-t" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
                 {!user ? (
                   <>
-                    <Link to="/login" className="btn-outline-white w-full justify-center">{t('login')}</Link>
-                    <Link to="/register" className="btn-secondary w-full justify-center">Join Community</Link>
+                    <Link to="/login"
+                      className="flex items-center justify-center w-full py-3 rounded-2xl text-sm font-semibold transition-all"
+                      style={{ border: '2px solid rgba(255,255,255,0.35)', color: '#fff', background: 'transparent' }}>
+                      {t('login')}
+                    </Link>
+                    <Link to="/register"
+                      className="flex items-center justify-center w-full py-3 rounded-2xl text-sm font-semibold transition-all"
+                      style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)', color: '#fff' }}>
+                      Join Community
+                    </Link>
                   </>
                 ) : (
                   <>
-                    <Link to="/portal" className="btn-secondary w-full justify-center">{t('myDashboard')}</Link>
-                    <button onClick={handleLogout} className="text-sm font-medium text-red-400 text-center py-2">
+                    <Link to="/portal"
+                      className="flex items-center justify-center w-full py-3 rounded-2xl text-sm font-semibold transition-all"
+                      style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)', color: '#fff' }}>
+                      {t('myDashboard')}
+                    </Link>
+                    <button onClick={handleLogout}
+                      className="w-full py-2.5 rounded-2xl text-sm font-medium"
+                      style={{ color: '#f87171', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)' }}>
                       {t('logout')}
                     </button>
                   </>
                 )}
-                <button onClick={() => { onDonate(); setMobileOpen(false) }} className="btn-gold w-full justify-center">
+                <button onClick={() => { onDonate(); setMobileOpen(false) }}
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-sm font-semibold transition-all"
+                  style={{ background: 'linear-gradient(135deg,#eeb549,#FFB84D)', color: '#fff', boxShadow: '0 4px 16px rgba(238,181,73,0.35)' }}>
                   <HeartHandshake className="w-4 h-4"/>{t('donateNow')}
                 </button>
                 <button onClick={toggleLang}
-                  className="flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-semibold text-gold border border-gold/30">
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-sm font-semibold"
+                  style={{ color: '#eeb549', border: '1px solid rgba(238,181,73,0.3)', background: 'rgba(238,181,73,0.06)' }}>
                   <Globe className="w-4 h-4"/>
                   {lang === 'en' ? 'Passer en Français' : 'Switch to English'}
                 </button>
