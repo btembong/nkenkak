@@ -9,12 +9,12 @@ import {
 } from 'lucide-react'
 
 const GRADS = {
-  education:      'linear-gradient(135deg,#250F47,#5B2D8E)',
+  education:      'linear-gradient(135deg,#2d004e,#4b0082)',
   health:         'linear-gradient(135deg,#4A0E0E,#991B1B)',
-  infrastructure: 'linear-gradient(135deg,#3D2200,#C87800)',
+  infrastructure: 'linear-gradient(135deg,#2d004e,#4b0082)',
   environment:    'linear-gradient(135deg,#052e16,#16a34a)',
-  culture:        'linear-gradient(135deg,#2e1065,#7c3aed)',
-  agriculture:    'linear-gradient(135deg,#422006,#ca8a04)',
+  culture:        'linear-gradient(135deg,#430075,#4b0082)',
+  agriculture:    'linear-gradient(135deg,#2d004e,#eeb549)',
 }
 
 const CAT_META = {
@@ -27,9 +27,9 @@ const CAT_META = {
 }
 
 function getProgressMeta(pct) {
-  if (pct >= 100) return { grad:'linear-gradient(90deg,#F0A500,#FFB84D)', label:'Goal reached!',  color:'text-gold'        }
-  if (pct >= 60)  return { grad:'linear-gradient(90deg,#5B2D8E,#F0A500)', label:'Almost there!',  color:'text-primary-500' }
-  return                  { grad:'linear-gradient(90deg,#5B2D8E,#7B4DB8)', label:'In progress',    color:'text-primary-500' }
+  if (pct >= 100) return { grad:'linear-gradient(90deg,#eeb549,#f5cc77)', label:'Goal reached!',  color:'text-gold'        }
+  if (pct >= 60)  return { grad:'linear-gradient(90deg,#4b0082,#eeb549)', label:'Almost there!',  color:'text-primary-500' }
+  return                  { grad:'linear-gradient(90deg,#4b0082,#a57fc0)', label:'In progress',    color:'text-primary-500' }
 }
 
 export default function ProjectCard({ project: p, onDonate }) {

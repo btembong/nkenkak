@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import { useForm } from 'react-hook-form'
 import { format } from 'date-fns'
@@ -9,6 +9,7 @@ import api from '../../services/api'
 import { cn } from '../../lib/utils'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Badge } from '../ui/badge'
+import { Camera, UploadCloud, Loader2, CheckCircle2, Clock, XCircle, Image, Video, X } from 'lucide-react'
 
 /* ─── Shared page header ─── */
 function PageHeader({ title, sub, icon }) {
@@ -575,6 +576,213 @@ export function PortalNotifications() {
           </div>
         )}
       </Card>
+    </div>
+  )
+}
+
+/* ══════════════════════════════════════════════
+   PORTAL GALLERY — member submissions
+══════════════════════════════════════════════ */
+export function PortalGallery() {
+  const qc = useQueryClient()
+  const inputRef = useRef()
+  const [file,     setFile]     = useState(null)
+  const [preview,  setPreview]  = useState(null)
+  const [title,    setTitle]    = useState('')
+  const [desc,     setDesc]     = useState('')
+  const [uploading, setUploading] = useState(false)
+
+  const { data: submissions = [], isLoading } = useQuery(
+    'my-gallery-submissions',
+    () => api.get('/gallery/my').then(r => r.data)
+  )
+
+  const pickFile = (f) => {
+    if (!f) return
+    setFile(f)
+    setPreview(URL.createObjectURL(f))
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    pickFile(e.dataTransfer.files?.[0])
+  }
+
+  const submitMut = useMutation(
+    async () => {
+      // 1. upload the file to cloudinary
+      setUploading(true)
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('folder', 'nkenkak/gallery')
+      const { data: uploaded } = await api.post('/upload/image', fd, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      setUploading(false)
+      // 2. submit contribution
+      return api.post('/gallery/contribute', {
+        url:        uploaded.url,
+        media_type: file.type.startsWith('video') ? 'video' : 'image',
+        title:      title.trim() || null,
+        description: desc.trim() || null,
+      })
+    },
+    {
+      onSuccess: () => {
+        toast.success('Submitted! An admin will review your photo.')
+        qc.invalidateQueries('my-gallery-submissions')
+        setFile(null); setPreview(null); setTitle(''); setDesc('')
+      },
+      onError: (e) => {
+        setUploading(false)
+        toast.error(e.response?.data?.error || 'Upload failed')
+      },
+    }
+  )
+
+  const STATUS_CFG = {
+    pending:  { label: 'Under Review', color: '#c48b1a', bg: 'rgba(238,181,73,0.1)',  Icon: Clock },
+    approved: { label: 'Approved',     color: '#16a34a', bg: 'rgba(22,163,74,0.1)',   Icon: CheckCircle2 },
+    rejected: { label: 'Not Accepted', color: '#dc2626', bg: 'rgba(220,38,38,0.1)',   Icon: XCircle },
+  }
+
+  return (
+    <div className="max-w-2xl">
+      <PageHeader title="Gallery Upload" sub="Share your photos and videos with the community" icon="fa-camera"/>
+
+      {/* Upload form */}
+      <Card className="p-6 mb-6">
+        <h3 className="font-semibold text-base mb-4 text-dark">Submit a Photo or Video</h3>
+
+        {/* Drop zone */}
+        <div
+          onDrop={handleDrop}
+          onDragOver={e => e.preventDefault()}
+          onClick={() => !uploading && !submitMut.isLoading && inputRef.current.click()}
+          className="relative rounded-2xl overflow-hidden cursor-pointer border-2 border-dashed transition-all hover:border-primary-500 mb-4"
+          style={{ borderColor: preview ? 'transparent' : 'rgba(75,0,130,0.2)', background: preview ? 'transparent' : 'rgba(75,0,130,0.03)', minHeight: 160 }}
+        >
+          {preview ? (
+            <div className="relative group">
+              {file?.type.startsWith('video') ? (
+                <video src={preview} className="w-full rounded-2xl max-h-56 object-cover"/>
+              ) : (
+                <img src={preview} alt="preview" className="w-full rounded-2xl max-h-56 object-cover"/>
+              )}
+              <div className="absolute inset-0 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                style={{ background: 'rgba(45,0,78,0.55)' }}>
+                <span className="text-white text-xs font-semibold flex items-center gap-1.5">
+                  <Camera className="w-3.5 h-3.5"/> Change file
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full py-10 gap-2">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-1" style={{ background: 'rgba(75,0,130,0.07)' }}>
+                <UploadCloud className="w-6 h-6 text-primary-500"/>
+              </div>
+              <span className="text-sm font-semibold text-primary-500">Click or drag & drop</span>
+              <span className="text-xs text-muted-foreground">Photos (JPG, PNG, WebP) or Videos (MP4) up to 50 MB</span>
+            </div>
+          )}
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*,video/*"
+            className="hidden"
+            onChange={e => pickFile(e.target.files?.[0])}
+          />
+        </div>
+
+        {preview && (
+          <button
+            type="button"
+            onClick={() => { setFile(null); setPreview(null) }}
+            className="mb-4 text-[11px] font-semibold flex items-center gap-1 text-red-500"
+          >
+            <X className="w-2.5 h-2.5"/> Remove
+          </button>
+        )}
+
+        <div className="space-y-3 mb-5">
+          <div>
+            <label className="label">Title <span className="font-normal lowercase normal-case text-muted-foreground">(optional)</span></label>
+            <input
+              type="text"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              placeholder="e.g. Annual Harvest Festival 2025"
+              className="input"
+            />
+          </div>
+          <div>
+            <label className="label">Description <span className="font-normal lowercase normal-case text-muted-foreground">(optional)</span></label>
+            <textarea
+              value={desc}
+              onChange={e => setDesc(e.target.value)}
+              rows={2}
+              placeholder="Tell us about this photo or video…"
+              className="input resize-none"
+            />
+          </div>
+        </div>
+
+        <button
+          onClick={() => submitMut.mutate()}
+          disabled={!file || uploading || submitMut.isLoading}
+          className="btn-secondary !text-sm !py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {uploading || submitMut.isLoading
+            ? <><Loader2 className="w-3.5 h-3.5 animate-spin"/>Uploading…</>
+            : <><UploadCloud className="w-3.5 h-3.5"/>Submit for Review</>}
+        </button>
+
+        <p className="text-xs mt-3 text-muted-foreground">
+          Your submission will be reviewed by an admin before appearing in the public gallery.
+        </p>
+      </Card>
+
+      {/* Past submissions */}
+      <h3 className="font-semibold text-base mb-3 text-dark">My Submissions</h3>
+      {isLoading ? (
+        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-20 rounded-2xl animate-pulse bg-primary-500/5"/>)}</div>
+      ) : submissions.length === 0 ? (
+        <Card className="p-10 text-center">
+          <Image className="w-10 h-10 mx-auto mb-3 text-primary-500/15"/>
+          <p className="text-sm text-muted-foreground">No submissions yet. Upload your first photo above!</p>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          {submissions.map(item => {
+            const cfg = STATUS_CFG[item.status] || STATUS_CFG.pending
+            const StatusIcon = cfg.Icon
+            const isVid = item.mediaType === 'video'
+            return (
+              <Card key={item.id} className="p-4 flex items-center gap-4">
+                {/* Thumb */}
+                <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center"
+                  style={{ background: 'linear-gradient(135deg,#2d004e,#4b0082)' }}>
+                  {item.url
+                    ? <img src={item.thumbnail || item.url} alt={item.title || ''} className="w-full h-full object-cover"/>
+                    : (isVid ? <Video className="w-6 h-6 text-white/30"/> : <Image className="w-6 h-6 text-white/30"/>)
+                  }
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-sm truncate text-dark">{item.title || 'Untitled'}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{format(new Date(item.createdAt), 'MMM d, yyyy')}</div>
+                </div>
+
+                <div className="flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-full flex-shrink-0"
+                  style={{ background: cfg.bg, color: cfg.color }}>
+                  <StatusIcon className="w-3 h-3"/>
+                  {cfg.label}
+                </div>
+              </Card>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

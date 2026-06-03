@@ -22,6 +22,16 @@ router.get('/', async (req, res) => {
   res.json(items)
 })
 
+/* ── GET my own submissions (any member) ── */
+router.get('/my', authenticate, isMember, async (req, res) => {
+  const items = await prisma.gallery.findMany({
+    where: { uploadedBy: req.user.id },
+    orderBy: { createdAt: 'desc' },
+    take: 50,
+  })
+  res.json(items)
+})
+
 /* ── GET pending submissions (admin only) ── */
 router.get('/pending', authenticate, isAdmin, async (req, res) => {
   const items = await prisma.gallery.findMany({

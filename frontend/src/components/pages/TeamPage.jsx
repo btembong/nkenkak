@@ -7,10 +7,11 @@ import JoinTeamModal from '../common/JoinTeamModal'
 import {
   Home, ChevronRight, Users, CheckCircle2, Handshake, Sprout,
   GraduationCap, HardHat, Drama, Rocket, Leaf, HeartPulse,
-  UserPlus, Crown, Globe, FolderKanban, ArrowRight, Mail,
+  UserPlus, Crown, Globe, FolderKanban, ArrowRight, Mail, LayoutGrid, Heart,
 } from 'lucide-react'
 
-const TEAMS = ['all', 'leadership', 'development', 'culture', 'youth', 'health', 'environment']
+const CORE_TEAMS = ['all', 'leadership', 'development', 'culture', 'youth', 'health', 'environment', 'education']
+const VOLUNTEER_TEAM = 'volunteer'
 
 const JOIN_TEAMS = [
   { id: 'development', Icon: HardHat,       label: 'Development',      desc: 'Build & Infrastructure' },
@@ -21,14 +22,25 @@ const JOIN_TEAMS = [
   { id: 'health',      Icon: HeartPulse,    label: 'Health',           desc: 'Care & Wellness' },
 ]
 
+const TEAM_ICONS = {
+  all:         LayoutGrid,
+  leadership:  Crown,
+  development: HardHat,
+  culture:     Drama,
+  youth:       Rocket,
+  health:      HeartPulse,
+  environment: Leaf,
+  education:   GraduationCap,
+}
+
 const TEAM_ACCENT = {
-  leadership:  '#F0A500',
-  development: '#5B2D8E',
-  culture:     '#B91C1C',
-  youth:       '#15803D',
-  health:      '#0369A1',
-  environment: '#16A34A',
-  education:   '#7C3AED',
+  leadership:  '#a57fc0',
+  development: '#4b0082',
+  culture:     '#430075',
+  youth:       '#2d004e',
+  health:      '#4b0082',
+  environment: '#a57fc0',
+  education:   '#430075',
 }
 
 function leaderInitials(name) {
@@ -38,19 +50,19 @@ function leaderInitials(name) {
 /* ─── Leadership spotlight card ─── */
 function LeaderCard({ member: m, index = 0 }) {
   const GRADS = [
-    'linear-gradient(135deg,#92600A,#C88A1A)',
-    'linear-gradient(135deg,#250F47,#5B2D8E)',
-    'linear-gradient(135deg,#3D1A6B,#7B4DB8)',
+    'linear-gradient(135deg,#2d004e,#4b0082)',
+    'linear-gradient(135deg,#430075,#4b0082)',
+    'linear-gradient(135deg,#4b0082,#a57fc0)',
   ]
   return (
     <Link to={`/team/${m.id}`} className="group block focus:outline-none">
       <div
-        className="relative overflow-hidden rounded-3xl transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-[0_24px_56px_rgba(91,45,142,0.25)]"
-        style={{ boxShadow: '0 4px 20px rgba(91,45,142,0.12)' }}
+        className="relative overflow-hidden rounded-3xl transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-[0_24px_56px_rgba(75,0,130,0.25)]"
+        style={{ boxShadow: '0 4px 20px rgba(75,0,130,0.12)' }}
       >
         {/* Gold top accent */}
         <div className="absolute top-0 inset-x-0 h-1 z-20 rounded-t-3xl"
-          style={{ background: 'linear-gradient(90deg,#F0A500,#FFD166)' }} />
+          style={{ background: 'linear-gradient(90deg,#4b0082,#a57fc0)' }} />
 
         <div className="relative h-80 overflow-hidden flex items-center justify-center"
           style={{ background: GRADS[index % GRADS.length] }}>
@@ -76,7 +88,7 @@ function LeaderCard({ member: m, index = 0 }) {
           {/* Crown badge */}
           <div className="absolute top-4 left-4 z-10">
             <span className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
-              style={{ background: 'rgba(240,165,0,0.2)', color: '#F0A500', border: '1px solid rgba(240,165,0,0.3)' }}>
+              style={{ background: 'rgba(75,0,130,0.15)', color: '#a57fc0', border: '1px solid rgba(75,0,130,0.25)' }}>
               <Crown className="w-2.5 h-2.5" /> Leadership
             </span>
           </div>
@@ -126,26 +138,31 @@ export default function TeamPage() {
     return data.reduce((acc, m) => ({ ...acc, [m.team]: (acc[m.team] || 0) + 1 }), {})
   }, [data])
 
-  const leadership = useMemo(() => data?.filter(m => m.team === 'leadership') || [], [data])
-  const filtered   = useMemo(
-    () => filter === 'all' ? data || [] : (data || []).filter(m => m.team === filter),
-    [data, filter]
-  )
+  const leadership  = useMemo(() => data?.filter(m => m.team === 'leadership')   || [], [data])
+  const volunteers  = useMemo(() => data?.filter(m => m.team === VOLUNTEER_TEAM) || [], [data])
+  const coreMembers = useMemo(() => data?.filter(m => m.team !== 'leadership' && m.team !== VOLUNTEER_TEAM) || [], [data])
+
+  const filtered = useMemo(() => {
+    const pool = filter === 'all' ? coreMembers : (data || []).filter(m => m.team === filter)
+    return pool
+  }, [data, coreMembers, filter])
+
   const showLeadershipSpotlight = filter === 'all' && leadership.length > 0
+  const activeTeams = CORE_TEAMS.filter(t => t === 'all' || (countByTeam[t] || 0) > 0)
 
   const STATS = [
-    { Icon: Users,         label: 'Members',     value: data?.length || '—' },
-    { Icon: FolderKanban,  label: 'Departments', value: Object.keys(countByTeam).length || 7 },
-    { Icon: Globe,         label: 'Countries',   value: 3 },
-    { Icon: Handshake,     label: 'Est.',         value: '2010' },
+    { Icon: Crown,         label: 'Leaders',      value: leadership.length  || '—' },
+    { Icon: Users,         label: 'Team Members', value: coreMembers.length || '—' },
+    { Icon: Heart,         label: 'Volunteers',   value: volunteers.length  || '—' },
+    { Icon: Handshake,     label: 'Est.',          value: '2010' },
   ]
 
   return (
     <div>
       {/* Hero */}
       <div className="page-hero py-20 px-6 text-center">
-        <div className="eyebrow justify-center mb-3" style={{ color: 'rgba(240,165,0,0.9)' }}>
-          <span className="w-5 h-0.5 rounded-full inline-block mr-2" style={{ background: '#F0A500' }} />
+        <div className="eyebrow justify-center mb-3" style={{ color: '#a57fc0' }}>
+          <span className="w-5 h-0.5 rounded-full inline-block mr-2" style={{ background: '#a57fc0' }} />
           Our Team
         </div>
         <h1 className="font-display font-bold text-4xl text-white mb-3">Village Leaders & Team</h1>
@@ -159,12 +176,12 @@ export default function TeamPage() {
       </div>
 
       {/* Stats bar */}
-      <div style={{ background: 'linear-gradient(135deg,#1A0A35,#250F47)' }}>
+      <div style={{ background: 'linear-gradient(135deg,#2d004e,#430075)' }}>
         <div className="max-w-6xl mx-auto px-6 py-5 grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
           {STATS.map(({ Icon, label, value }) => (
             <div key={label} className="flex items-center gap-3 px-6 first:pl-0 last:pr-0">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: 'rgba(240,165,0,0.12)' }}>
+                style={{ background: 'rgba(75,0,130,0.10)' }}>
                 <Icon className="w-4 h-4 text-gold" />
               </div>
               <div>
@@ -176,7 +193,7 @@ export default function TeamPage() {
         </div>
       </div>
 
-      <section className="py-16" style={{ background: '#FAFAFA' }}>
+      <section className="py-16" style={{ background: '#F3EDF8' }}>
         <div className="max-w-6xl mx-auto px-6">
 
           {/* Leadership spotlight */}
@@ -184,10 +201,10 @@ export default function TeamPage() {
             <div className="mb-14">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-                  style={{ background: 'rgba(240,165,0,0.12)' }}>
+                  style={{ background: 'rgba(75,0,130,0.10)' }}>
                   <Crown className="w-4 h-4 text-gold" />
                 </div>
-                <h2 className="font-display font-bold text-xl" style={{ color: '#1A0A35' }}>Leadership Council</h2>
+                <h2 className="font-display font-bold text-xl" style={{ color: '#2d004e' }}>Leadership Council</h2>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                 {leadership.map((m, i) => <LeaderCard key={m.id} member={m} index={i} />)}
@@ -195,53 +212,121 @@ export default function TeamPage() {
             </div>
           )}
 
-          {/* Filter tabs */}
-          <div className="flex flex-wrap gap-2 justify-center mb-10">
-            {TEAMS.map(t => {
-              const count = t === 'all' ? data?.length || 0 : countByTeam[t] || 0
-              const active = filter === t
-              return (
-                <button key={t} onClick={() => setFilter(t)}
-                  className="px-4 py-2 rounded-full text-sm font-semibold transition-all capitalize flex items-center gap-1.5"
-                  style={{
-                    background: active ? 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' : '#fff',
-                    color: active ? '#fff' : '#5B2D8E',
-                    fontFamily: 'Sora,sans-serif',
-                    boxShadow: active ? '0 4px 16px rgba(91,45,142,0.35)' : '0 2px 8px rgba(91,45,142,0.07)',
-                    borderColor: active ? 'transparent' : 'rgba(91,45,142,0.08)',
-                    border: '1px solid',
-                  }}>
-                  {t === 'all' ? 'All Members' : t}
-                  {count > 0 && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full font-bold"
-                      style={{
-                        background: active ? 'rgba(255,255,255,0.2)' : 'rgba(91,45,142,0.08)',
-                        color: active ? 'rgba(255,255,255,0.9)' : '#7B4DB8',
-                      }}>
-                      {count}
-                    </span>
-                  )}
-                </button>
-              )
-            })}
+          {/* ── Department filter bar ── */}
+          <div className="bg-white rounded-2xl p-5 mb-8" style={{ boxShadow: '0 1px 10px rgba(75,0,130,0.08)', border: '1px solid rgba(75,0,130,0.08)' }}>
+            <div className="flex items-center justify-between pb-4 mb-4 border-b" style={{ borderColor: 'rgba(75,0,130,0.07)' }}>
+              <div>
+                <h2 className="font-display font-bold text-sm text-dark">Department Teams</h2>
+                <p className="text-[11px] mt-0.5" style={{ color: 'rgba(75,0,130,0.45)' }}>Filter by department</p>
+              </div>
+              {!isLoading && (
+                <span className="text-[11px] font-bold px-3 py-1 rounded-full flex-shrink-0"
+                  style={{ background: 'rgba(75,0,130,0.07)', color: '#4b0082' }}>
+                  {filtered.length} member{filtered.length !== 1 ? 's' : ''}
+                </span>
+              )}
+            </div>
+            <div className="relative">
+              <div className="overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+                <div className="flex items-center p-1 rounded-2xl w-max"
+                  style={{ background: 'rgba(75,0,130,0.06)', border: '1px solid rgba(75,0,130,0.09)' }}>
+                  {activeTeams.flatMap((t, i) => {
+                    const Icon   = TEAM_ICONS[t]
+                    const count  = t === 'all' ? coreMembers.length : (countByTeam[t] || 0)
+                    const active = filter === t
+                    const prevActive = i > 0 && filter === activeTeams[i - 1]
+                    const sep = i > 0 && !active && !prevActive
+                      ? [<div key={`sep-${t}`} className="w-px h-4 flex-shrink-0" style={{ background: 'rgba(75,0,130,0.13)' }}/>]
+                      : []
+                    return [...sep, (
+                      <button key={t} onClick={() => setFilter(t)}
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all capitalize flex-shrink-0 whitespace-nowrap"
+                        style={{
+                          background: active ? 'linear-gradient(135deg,#4b0082,#a57fc0)' : 'transparent',
+                          color:      active ? '#fff' : '#A3A3A3',
+                          boxShadow:  active ? '0 2px 10px rgba(75,0,130,0.28)' : 'none',
+                        }}>
+                        {Icon && <Icon className="w-3.5 h-3.5" style={{ opacity: active ? 1 : 0.6 }}/>}
+                        {t === 'all' ? 'All Departments' : t}
+                        {count > 0 && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none"
+                            style={{
+                              background: active ? 'rgba(255,255,255,0.22)' : 'rgba(75,0,130,0.08)',
+                              color: active ? 'rgba(255,255,255,0.95)' : '#a57fc0',
+                            }}>
+                            {count}
+                          </span>
+                        )}
+                      </button>
+                    )]
+                  })}
+                </div>
+              </div>
+              <div className="absolute right-0 top-0 bottom-0 w-8 pointer-events-none rounded-r-2xl"
+                style={{ background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.9))' }}/>
+            </div>
           </div>
 
-          {/* Grid */}
+          {/* ── Department members grid ── */}
           {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-16">
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="h-72 rounded-3xl animate-pulse" style={{ background: 'rgba(91,45,142,0.05)' }} />
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-16">
+              {[1,2,3,4,5,6,7,8].map(i => (
+                <div key={i} className="rounded-3xl animate-pulse" style={{ height: 300, background: 'rgba(75,0,130,0.05)' }}/>
               ))}
             </div>
+          ) : filtered.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-16">
+              {filtered.map((m, i) => <TeamCard key={m.id} member={m} index={i}/>)}
+            </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-16">
-              {filtered
-                .filter(m => filter === 'all' ? m.team !== 'leadership' : true)
-                .map((m, i) => <TeamCard key={m.id} member={m} index={i} />)}
-              {filtered.filter(m => filter === 'all' ? m.team !== 'leadership' : true).length === 0 && (
-                <div className="col-span-3 text-center py-16">
-                  <Users className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(91,45,142,0.15)' }} />
-                  <p className="text-sm text-muted-foreground">No team members in this category yet.</p>
+            <div className="text-center py-16 mb-16 rounded-3xl" style={{ background: 'rgba(75,0,130,0.03)', border: '1px dashed rgba(75,0,130,0.1)' }}>
+              <Users className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(75,0,130,0.15)' }}/>
+              <p className="text-sm text-muted-foreground">No team members in this department yet.</p>
+            </div>
+          )}
+
+          {/* ── Volunteer Contributors section ── */}
+          {(volunteers.length > 0 || isLoading) && filter === 'all' && (
+            <div className="mb-16">
+              {/* Section header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+                    style={{ background: 'rgba(75,0,130,0.10)' }}>
+                    <Heart className="w-4 h-4 text-gold"/>
+                  </div>
+                  <div>
+                    <h2 className="font-display font-bold text-xl text-dark">Volunteer Contributors</h2>
+                    <p className="text-xs text-muted-foreground mt-0.5">Community members giving their time and skills</p>
+                  </div>
+                </div>
+                {!isLoading && (
+                  <span className="text-[11px] font-bold px-3 py-1 rounded-full"
+                    style={{ background: 'rgba(75,0,130,0.07)', color: '#4b0082' }}>
+                    {volunteers.length} volunteer{volunteers.length !== 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
+
+              {/* Divider with label */}
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex-1 h-px" style={{ background: 'rgba(75,0,130,0.08)' }}/>
+                <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full"
+                  style={{ background: 'rgba(75,0,130,0.06)', color: '#a57fc0' }}>
+                  Community Volunteers
+                </span>
+                <div className="flex-1 h-px" style={{ background: 'rgba(75,0,130,0.08)' }}/>
+              </div>
+
+              {isLoading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {[1,2,3,4,5,6].map(i => (
+                    <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: 'rgba(75,0,130,0.05)' }}/>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {volunteers.map(m => <TeamCard key={m.id} member={m} compact/>)}
                 </div>
               )}
             </div>
@@ -249,7 +334,7 @@ export default function TeamPage() {
 
           {/* Why us */}
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-16 py-16 border-y"
-            style={{ borderColor: 'rgba(91,45,142,0.08)' }}>
+            style={{ borderColor: 'rgba(75,0,130,0.08)' }}>
             <div>
               <div className="eyebrow mb-3">Why Choose Us</div>
               <h2 className="section-title mb-4">A Community Team<br /><span>Built on Trust</span></h2>
@@ -264,7 +349,7 @@ export default function TeamPage() {
                 ].map(f => (
                   <div key={f.t} className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                      style={{ background: 'rgba(240,165,0,0.12)' }}>
+                      style={{ background: 'rgba(75,0,130,0.10)' }}>
                       <CheckCircle2 className="w-3.5 h-3.5 text-gold" />
                     </div>
                     <div>
@@ -279,14 +364,14 @@ export default function TeamPage() {
             {/* Stat grid replaces icon placeholders */}
             <div className="grid grid-cols-2 gap-4">
               {[
-                { n: data?.length || '24+', l: 'Active Members',  sub: 'Village & diaspora', Icon: Users,        bg: 'linear-gradient(135deg,#250F47,#5B2D8E)' },
-                { n: Object.keys(countByTeam).length || 7,         l: 'Departments',          sub: 'Specialised teams', Icon: FolderKanban, bg: 'linear-gradient(135deg,#3D1A6B,#7B4DB8)' },
-                { n: '12+',   l: 'Projects',          sub: 'Completed & ongoing', Icon: HardHat,      bg: 'linear-gradient(135deg,#1A3A20,#2D5016)' },
-                { n: 3,       l: 'Countries',         sub: 'Where our team lives', Icon: Globe,        bg: 'linear-gradient(135deg,#5B2D8E,#9B6FD8)' },
+                { n: leadership.length  || '4+',  l: 'Leaders',       sub: 'Council & executives',    Icon: Crown,        bg: 'linear-gradient(135deg,#2d004e,#4b0082)' },
+                { n: coreMembers.length || '20+', l: 'Team Members',  sub: 'Across all departments',  Icon: Users,        bg: 'linear-gradient(135deg,#430075,#a57fc0)' },
+                { n: volunteers.length  || '10+', l: 'Volunteers',    sub: 'Community contributors',  Icon: Heart,        bg: 'linear-gradient(135deg,#052e16,#16a34a)' },
+                { n: 3,                           l: 'Countries',     sub: 'Where our team lives',    Icon: Globe,        bg: 'linear-gradient(135deg,#4b0082,#a57fc0)' },
               ].map(({ n, l, sub, Icon, bg }, i) => (
                 <div key={i} className="rounded-3xl p-6 flex flex-col gap-3"
-                  style={{ background: bg, boxShadow: '0 4px 20px rgba(91,45,142,0.15)' }}>
-                  <Icon className="w-6 h-6" style={{ color: 'rgba(240,165,0,0.6)' }} />
+                  style={{ background: bg, boxShadow: '0 4px 20px rgba(75,0,130,0.15)' }}>
+                  <Icon className="w-6 h-6" style={{ color: 'rgba(75,0,130,0.50)' }} />
                   <div>
                     <div className="font-display font-bold text-3xl text-white leading-none">{n}</div>
                     <div className="font-semibold text-sm text-white/80 mt-1" style={{ fontFamily: 'Sora,sans-serif' }}>{l}</div>
@@ -299,11 +384,11 @@ export default function TeamPage() {
 
           {/* Join CTA */}
           <div className="rounded-3xl p-10 relative overflow-hidden text-center"
-            style={{ background: 'linear-gradient(135deg,#250F47,#5B2D8E)' }}>
+            style={{ background: 'linear-gradient(135deg,#430075,#4b0082)' }}>
             <div className="wave-pattern absolute inset-0" />
             <div className="relative">
-              <div className="eyebrow justify-center mb-4" style={{ color: 'rgba(240,165,0,0.8)' }}>
-                <span className="w-5 h-0.5 rounded-full inline-block mr-2" style={{ background: '#F0A500' }} />
+              <div className="eyebrow justify-center mb-4" style={{ color: '#a57fc0' }}>
+                <span className="w-5 h-0.5 rounded-full inline-block mr-2" style={{ background: '#a57fc0' }} />
                 Get Involved
               </div>
               <h3 className="font-display font-bold text-2xl text-white mb-3">Join Our Community Team</h3>
@@ -320,11 +405,11 @@ export default function TeamPage() {
                       border: '1px solid rgba(255,255,255,0.12)',
                       fontFamily: 'Sora,sans-serif',
                     }}>
-                    <t.Icon className="w-3.5 h-3.5" style={{ color: '#F0A500' }} />
+                    <t.Icon className="w-3.5 h-3.5" style={{ color: '#a57fc0' }} />
                     {t.label}
                     {countByTeam[t.id] ? (
                       <span className="text-[10px] px-1.5 py-0.5 rounded-full font-bold"
-                        style={{ background: 'rgba(240,165,0,0.15)', color: '#F0A500' }}>
+                        style={{ background: 'rgba(75,0,130,0.10)', color: '#a57fc0' }}>
                         {countByTeam[t.id]}
                       </span>
                     ) : null}

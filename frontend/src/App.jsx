@@ -64,6 +64,7 @@ const PortalNotifications = lazy(() => import('./components/portal/PortalNotific
 const PortalVolunteerHours = lazy(() => import('./components/portal/PortalVolunteerHours'))
 const PortalEvents    = (props) => <LazyPortalPage name="PortalEvents" {...props}/>
 const PortalVolunteer = (props) => <LazyPortalPage name="PortalVolunteer" {...props}/>
+const PortalGallery   = (props) => <LazyPortalPage name="PortalGallery" {...props}/>
 
 // Admin pages
 const AdminDashboard         = lazy(() => import('./components/admin/AdminDashboard'))
@@ -202,6 +203,7 @@ export default function App() {
           <Route path="hours"           element={<PortalVolunteerHours/>}/>
           <Route path="notifications"   element={<PortalNotifications/>}/>
           <Route path="messages"        element={<PortalMessages/>}/>
+          <Route path="gallery"         element={<PortalGallery/>}/>
         </Route>
 
         {/* ── Admin panel ─────────────────────── */}

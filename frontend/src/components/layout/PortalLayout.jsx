@@ -18,6 +18,7 @@ const PORTAL_NAV = [
   { to: '/portal/hours',         icon: 'fa-clock',          label: 'Volunteer Hours'              },
   { to: '/portal/notifications', icon: 'fa-bell',           label: 'Notifications'                },
   { to: '/portal/messages',      icon: 'fa-comment-dots',   label: 'Messages'                     },
+  { to: '/portal/gallery',       icon: 'fa-camera',         label: 'Gallery Upload'               },
   { to: '/projects',             icon: 'fa-seedling',       label: 'Browse Projects'              },
   { to: '/forum',                icon: 'fa-comments',       label: 'Community Forum'              },
   { to: '/news',                 icon: 'fa-newspaper',      label: 'Village News'                 },

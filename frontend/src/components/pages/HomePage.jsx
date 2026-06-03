@@ -46,7 +46,7 @@ const TESTIS = [
     photo: 'https://res.cloudinary.com/dmxnsttmu/image/upload/v1778219170/zr7k9jpn3pg1hkwqshgp.jpg',
     text: 'Even from France, I feel deeply connected to home through this platform. Contributing to the health centre project was one of the most meaningful things I\'ve done for my roots — every report and photo keeps me close to the village.',
     name: 'Jean-Paul Tchamba', role: 'Diaspora Member, Paris', country: '🇫🇷',
-    avatar: 'JT', color: '#F0A500', colorDark: '#C87800',
+    avatar: 'JT', color: '#eeb549', colorDark: '#C87800',
   },
   {
     photo: 'https://res.cloudinary.com/dmxnsttmu/image/upload/v1778262556/WhatsApp_Image_2026-04-30_at_20.57.13_yl6xj3.jpg',
@@ -58,7 +58,7 @@ const TESTIS = [
     photo: 'https://res.cloudinary.com/dmxnsttmu/image/upload/q_auto/f_auto/v1778928806/WhatsApp_Image_2026-04-30_at_20.57.16_aynfja.jpg',
     text: 'I have donated to several organisations over the years, but none gave me the transparency and community feel of Nkenkak-Ngiesang. Every update and milestone report shows exactly where my contribution goes. This is how development should work.',
     name: 'Amina Koueye', role: 'Monthly Donor, Berlin', country: '🇩🇪',
-    avatar: 'AK', color: '#F0A500', colorDark: '#C87800',
+    avatar: 'AK', color: '#eeb549', colorDark: '#C87800',
   },
 ]
 
@@ -128,7 +128,7 @@ function FloatingDonate({ onClick }) {
     <button onClick={onClick}
       className="flex fixed bottom-24 right-6 z-40 items-center gap-2 px-5 py-3 rounded-full font-bold text-sm shadow-2xl transition-all duration-300"
       style={{
-        background:'linear-gradient(135deg,#F0A500,#FFB84D)',
+        background:'linear-gradient(135deg,#eeb549,#FFB84D)',
         color:'#fff',
         boxShadow:'0 8px 32px rgba(240,165,0,0.45)',
         opacity: visible ? 1 : 0,
@@ -162,14 +162,14 @@ function NewsletterSection() {
         style={{ background:'radial-gradient(circle,rgba(240,165,0,0.08),transparent 70%)', filter:'blur(40px)' }}/>
       <div className="relative max-w-2xl mx-auto px-6 text-center">
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
-          style={{ background:'linear-gradient(135deg,#F0A500,#FFB84D)' }}>
+          style={{ background:'linear-gradient(135deg,#eeb549,#FFB84D)' }}>
           <Mail className="w-7 h-7 text-white"/>
         </div>
         <div className="text-xs uppercase tracking-widest font-bold mb-3" style={{ color:'rgba(240,165,0,0.7)' }}>
           Stay Connected
         </div>
         <h2 className="font-display font-bold text-3xl text-white mb-3 leading-tight">
-          Never Miss a Village <span style={{ color:'#F0A500' }}>Update</span>
+          Never Miss a Village <span style={{ color:'#eeb549' }}>Update</span>
         </h2>
         <p className="text-sm mb-8 text-white/60">
           Get project milestones, event invitations, and community news delivered straight to your inbox — whether you're in the village or across the world.
@@ -257,7 +257,7 @@ function GallerySection({ gallery }) {
               <h2 className="font-display font-bold text-white leading-[1.12] mb-5"
                 style={{ fontSize:'clamp(1.9rem,3vw,2.6rem)' }}>
                 Life in<br/>
-                <span style={{ color:'#F0A500' }}>Nkenkak-<br/>Ngiesang</span><br/>
+                <span style={{ color:'#eeb549' }}>Nkenkak-<br/>Ngiesang</span><br/>
                 in pictures
               </h2>
               <div className="text-sm font-semibold mb-6 text-white/28" style={{ letterSpacing:'0.05em' }}>
@@ -269,7 +269,7 @@ function GallerySection({ gallery }) {
             </div>
             <Link to="/gallery"
               className="inline-flex items-center gap-2 text-sm font-bold px-6 py-3 rounded-full self-start transition-all hover:opacity-90 hover:-translate-y-0.5"
-              style={{ background:'linear-gradient(135deg,#F0A500,#FFB84D)', color:'#fff',
+              style={{ background:'linear-gradient(135deg,#eeb549,#FFB84D)', color:'#fff',
                        boxShadow:'0 6px 24px rgba(240,165,0,0.35)' }}>
               View All <ArrowRight className="w-4 h-4"/>
             </Link>
@@ -375,7 +375,7 @@ function GallerySection({ gallery }) {
                 onClick={e => { e.stopPropagation(); setLightboxIdx(i) }}
                 className="rounded-full transition-all duration-300"
                 style={{ width: i === lightboxIdx ? 24 : 7, height:7,
-                         background: i === lightboxIdx ? '#F0A500' : 'rgba(255,255,255,0.28)' }}/>
+                         background: i === lightboxIdx ? '#eeb549' : 'rgba(255,255,255,0.28)' }}/>
             ))}
           </div>
         </div>
@@ -618,15 +618,15 @@ export default function HomePage() {
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-24 grid lg:grid-cols-[1fr_520px] gap-12 items-center">
           <div>
             <div className="eyebrow mb-5">
-              <span className="w-5 h-0.5 rounded-full inline-block mr-2" style={{ background:'#F0A500' }}/>
+              <span className="w-5 h-0.5 rounded-full inline-block mr-2" style={{ background:'#eeb549' }}/>
               <span className="capitalize">{heroSlides[heroSlide]?.category || 'Village Community'}</span> Project
             </div>
             <h1 className="font-display font-extrabold text-white mb-6 leading-[1.08]"
               style={{ fontSize:'clamp(2.4rem,5.5vw,4rem)', textShadow:'0 4px 40px rgba(0,0,0,0.5)' }}>
               {heroSlides[heroSlide]?.title
                 ? <>{heroSlides[heroSlide].title.split(' ').slice(0,3).join(' ')}<br/>
-                    <span style={{ color:'#F0A500' }}>{heroSlides[heroSlide].title.split(' ').slice(3).join(' ') || 'Nkenkak-Ngiesang'}</span></>
-                : <>Building a Stronger<br/><span style={{ color:'#F0A500' }}>Nkenkak-Ngiesang</span></>}
+                    <span style={{ color:'#eeb549' }}>{heroSlides[heroSlide].title.split(' ').slice(3).join(' ') || 'Nkenkak-Ngiesang'}</span></>
+                : <>Building a Stronger<br/><span style={{ color:'#eeb549' }}>Nkenkak-Ngiesang</span></>}
             </h1>
             <p className="text-base mb-8 max-w-lg leading-relaxed text-white/70">
               {heroSlides[heroSlide]?.summary ||
@@ -712,7 +712,7 @@ export default function HomePage() {
                           </div>
                           <div className="h-1.5 rounded-full overflow-hidden" style={{ background:'rgba(255,255,255,0.08)' }}>
                             <div className="h-full rounded-full transition-all duration-700"
-                              style={{ width:`${pct}%`, background:'linear-gradient(90deg,#F0A500,#FFB84D)' }}/>
+                              style={{ width:`${pct}%`, background:'linear-gradient(90deg,#eeb549,#FFB84D)' }}/>
                           </div>
                         </>
                       )}
@@ -729,7 +729,7 @@ export default function HomePage() {
               {heroSlides.map((slide, i) => (
                 <button key={i} onClick={() => setHeroSlide(i)}
                   className="flex-1 h-14 rounded-2xl overflow-hidden relative transition-all duration-300"
-                  style={{ border: i===heroSlide ? '2px solid #F0A500' : '2px solid rgba(255,255,255,0.06)', opacity: i===heroSlide?1:0.45, transform: i===heroSlide?'scale(1.03)':'scale(1)' }}>
+                  style={{ border: i===heroSlide ? '2px solid #eeb549' : '2px solid rgba(255,255,255,0.06)', opacity: i===heroSlide?1:0.45, transform: i===heroSlide?'scale(1.03)':'scale(1)' }}>
                   {slide.image
                     ? <img src={slide.image} className="w-full h-full object-cover"/>
                     : <div className="w-full h-full" style={{ background:`linear-gradient(135deg,${slide.grad})` }}/>}
@@ -752,7 +752,7 @@ export default function HomePage() {
           {heroSlides.map((_,i) => (
             <button key={i} onClick={() => setHeroSlide(i)}
               className="h-1.5 rounded-full transition-all duration-300"
-              style={{ width:i===heroSlide?28:8, background:i===heroSlide?'#F0A500':'rgba(255,255,255,0.25)' }}/>
+              style={{ width:i===heroSlide?28:8, background:i===heroSlide?'#eeb549':'rgba(255,255,255,0.25)' }}/>
           ))}
         </div>
       </section>
@@ -1128,7 +1128,7 @@ export default function HomePage() {
       <TestimonialSlider/>
 
       {/* ════════════════ VOLUNTEER CTA ════════════════ */}
-      <section className="py-20 relative overflow-hidden" style={{ background:'linear-gradient(135deg,#F0A500,#FFB84D)' }}>
+      <section className="py-20 relative overflow-hidden" style={{ background:'linear-gradient(135deg,#eeb549,#FFB84D)' }}>
         <div className="wave-pattern absolute inset-0"/>
         <div className="max-w-7xl mx-auto px-6 relative grid lg:grid-cols-2 gap-12 items-center">
 
@@ -1166,7 +1166,7 @@ export default function HomePage() {
             <div className="flex items-center gap-4 flex-wrap">
               <button onClick={() => setJoinOpen(true)}
                 className="bg-white rounded-full px-6 py-3 text-sm font-semibold flex items-center gap-2 hover:shadow-gold transition-all"
-                style={{ color:'#F0A500' }}>
+                style={{ color:'#eeb549' }}>
                 <UserPlus className="w-4 h-4"/>Become A Volunteer
               </button>
               <Link to="/volunteers"
@@ -1234,61 +1234,39 @@ export default function HomePage() {
       )}
 
       {/* ════════════════ DIASPORA TEASER ════════════════ */}
-      <section className="py-20 relative overflow-hidden" style={{ background:'linear-gradient(135deg,#1A0A35,#250F47)' }}>
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage:'radial-gradient(circle at 30% 50%, #F0A500 0%, transparent 40%), radial-gradient(circle at 70% 30%, #7B4DB8 0%, transparent 40%)' }}/>
-        <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="relative hidden lg:block">
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { flag:'🇨🇲', country:'Cameroon',       label:'Home Village',      accent:'#F0A500' },
-                { flag:'🇫🇷', country:'France',          label:'Largest Diaspora',  accent:'#7B4DB8' },
-                { flag:'🇩🇪', country:'Germany',         label:'Active Community',  accent:'#F0A500' },
-                { flag:'🇬🇧', country:'United Kingdom',  label:'Growing Members',   accent:'#7B4DB8' },
-                { flag:'🇺🇸', country:'United States',   label:'Diaspora Members',  accent:'#F0A500' },
-                { flag:'🇨🇦', country:'Canada',          label:'New Members',       accent:'#7B4DB8' },
-              ].map((c, i) => (
-                <div key={i} className="flex items-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.02]"
-                  style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)' }}>
-                  <span className="text-3xl flex-shrink-0">{c.flag}</span>
-                  <div className="min-w-0">
-                    <div className="font-display font-bold text-sm text-white leading-tight">{c.country}</div>
-                    <div className="text-[10px] mt-0.5" style={{ color: c.accent }}>{c.label}</div>
-                  </div>
-                  <div className="ml-auto w-1.5 h-8 rounded-full flex-shrink-0" style={{ background: c.accent, opacity: 0.5 }}/>
-                </div>
-              ))}
-            </div>
-            <div className="mt-3 px-4 py-3 rounded-2xl flex items-center gap-3"
-              style={{ background:'rgba(240,165,0,0.08)', border:'1px solid rgba(240,165,0,0.15)' }}>
-              <Globe className="w-5 h-5 text-gold"/>
-              <span className="text-xs font-semibold text-white/60">
-                Members present in <strong className="text-gold">14+ countries</strong> across the world
+      <section className="py-16 px-6" style={{ background: '#2d004e' }}>
+        <div className="max-w-2xl mx-auto text-center">
+
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] mb-4" style={{ color: 'rgba(238,181,73,0.7)' }}>
+            Global Community
+          </p>
+
+          <h2 className="font-display font-bold text-white mb-4 leading-tight" style={{ fontSize: 'clamp(1.5rem,3vw,2.1rem)' }}>
+            Home is wherever<br/>
+            <span style={{ color: '#eeb549' }}>you are</span>
+          </h2>
+
+          <p className="text-sm text-white/50 mb-8 leading-relaxed max-w-md mx-auto">
+            Members in 14+ countries stay connected, contribute, and help shape the future of Nkenkak-Ngiesang from wherever life takes them.
+          </p>
+
+          {/* Flag strip */}
+          <div className="flex items-center justify-center gap-3 flex-wrap mb-10">
+            {['🇨🇲','🇫🇷','🇩🇪','🇬🇧','🇺🇸','🇨🇦','🇧🇪','🇨🇭'].map((flag, i) => (
+              <span key={i} className="text-2xl leading-none" style={{ opacity: i < 6 ? 1 : 0.4 }}>
+                {flag}
               </span>
-            </div>
+            ))}
+            <span className="text-xs font-semibold ml-1" style={{ color: 'rgba(255,255,255,0.25)' }}>+more</span>
           </div>
-          <div>
-            <div className="eyebrow mb-3 text-gold/80">
-              <span className="w-5 h-0.5 rounded-full inline-block mr-2 bg-gold"/>
-              Global Community
-            </div>
-            <h2 className="font-display font-bold text-white mb-4 leading-tight" style={{ fontSize:'clamp(1.6rem,3vw,2.4rem)' }}>
-              Our People, <br/><span style={{ color:'#F0A500' }}>Across the World</span>
-            </h2>
-            <p className="text-sm mb-6 text-white/65 leading-[1.8]">
-              Nkenkak-Ngiesang is home — no matter where life takes you. Our diaspora members in France, Germany, the USA, Canada, and beyond remain active contributors to village development.
-            </p>
-            <div className="flex flex-wrap gap-3 mb-7">
-              {['🇨🇲 Cameroon','🇫🇷 France','🇺🇸 USA','🇩🇪 Germany','🇬🇧 UK','🇨🇦 Canada'].map(c => (
-                <span key={c} className="px-3 py-1.5 rounded-full text-xs font-medium text-white/75"
-                  style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)' }}>
-                  {c}
-                </span>
-              ))}
-            </div>
-            <Link to="/diaspora" className="btn-gold inline-flex">
-              <MapPinned className="w-3 h-3"/>Explore Diaspora Map
-            </Link>
-          </div>
+
+          {/* Divider */}
+          <div className="w-12 h-px mx-auto mb-8" style={{ background: 'rgba(238,181,73,0.25)' }}/>
+
+          <Link to="/diaspora" className="btn-gold inline-flex">
+            <MapPinned className="w-3 h-3"/>Explore Diaspora Network
+          </Link>
+
         </div>
       </section>
 

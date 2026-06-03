@@ -6,15 +6,28 @@ import api from '../../services/api'
 import {
   Home, ChevronRight, LayoutGrid, List, Search, Calendar,
   CalendarDays, MapPin, Clock, Video, Users, CalendarPlus,
-  ArrowRight, Ticket, Sparkles, SlidersHorizontal, ChevronLeft,
+  ArrowRight, Ticket, Sparkles, ChevronLeft, Music2,
+  GraduationCap, HeartPulse, Trophy, HandCoins, Scale,
+  Tag, Wifi, TrendingUp, X, SlidersHorizontal,
 } from 'lucide-react'
 
 const CATS = ['all','culture','education','health','sport','community','fundraiser','governance']
-const CAT_ICONS = { culture:'🎭', education:'📚', health:'❤️‍🩹', sport:'⚽', community:'🤝', fundraiser:'💰', governance:'⚖️' }
+
+const CAT_ICONS = {
+  all:        LayoutGrid,
+  culture:    Music2,
+  education:  GraduationCap,
+  health:     HeartPulse,
+  sport:      Trophy,
+  community:  Users,
+  fundraiser: HandCoins,
+  governance: Scale,
+}
+
 const QUICK_FILTERS = [
-  { id: 'this-week', label: 'This Week' },
-  { id: 'free',      label: 'Free'      },
-  { id: 'online',    label: 'Online'    },
+  { id: 'this-week', label: 'This Week', Icon: CalendarDays },
+  { id: 'free',      label: 'Free',      Icon: Tag         },
+  { id: 'online',    label: 'Online',    Icon: Wifi        },
 ]
 
 export default function EventsPage() {
@@ -26,6 +39,11 @@ export default function EventsPage() {
   const [calMonth, setCalMonth] = useState(new Date())
 
   const { data, isLoading } = useQuery('events-page', () => api.get('/events').then(r => r.data))
+
+  const countByCat = useMemo(() => {
+    if (!data) return {}
+    return data.reduce((acc, e) => ({ ...acc, [e.category]: (acc[e.category] || 0) + 1 }), {})
+  }, [data])
 
   const filtered = useMemo(() => {
     if (!data) return []
@@ -58,8 +76,8 @@ export default function EventsPage() {
     <div>
       {/* Hero */}
       <div className="page-hero py-20 px-6 text-center">
-        <div className="eyebrow justify-center mb-3 text-gold/90">
-          <span className="w-5 h-0.5 rounded-full inline-block mr-2 bg-gold"/>Gatherings
+        <div className="eyebrow justify-center mb-3" style={{ color: '#eeb549' }}>
+          <span className="w-5 h-0.5 rounded-full inline-block mr-2" style={{ background: '#eeb549' }}/>Gatherings
         </div>
         <h1 className="font-display font-bold text-4xl text-white mb-3">Community Events</h1>
         <p className="text-sm text-white/60 max-w-md mx-auto mb-5">
@@ -67,7 +85,7 @@ export default function EventsPage() {
         </p>
         {totalUpcoming > 0 && (
           <div className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-full"
-            style={{ background: 'rgba(240,165,0,0.15)', color: '#F0A500', border: '1px solid rgba(240,165,0,0.25)' }}>
+            style={{ background: 'rgba(238,181,73,0.15)', color: '#eeb549', border: '1px solid rgba(238,181,73,0.35)' }}>
             <CalendarDays className="w-3 h-3"/>
             {totalUpcoming} upcoming event{totalUpcoming !== 1 ? 's' : ''}
           </div>
@@ -76,91 +94,190 @@ export default function EventsPage() {
           <Link to="/" className="hover:text-white transition-colors flex items-center gap-1">
             <Home className="w-3 h-3"/>Home
           </Link>
-          <ChevronRight className="w-3 h-3 text-gold"/>
-          <span className="text-gold">Events</span>
+          <ChevronRight className="w-3 h-3" style={{ color: '#eeb549' }}/>
+          <span style={{ color: '#eeb549' }}>Events</span>
         </div>
       </div>
 
-      <section className="py-16 bg-[#FAFAFA]">
+      <section className="py-16" style={{ background: '#F3EDF8' }}>
         <div className="max-w-6xl mx-auto px-6">
 
           {/* Featured Spotlight */}
           {spotlight && <FeaturedSpotlight event={spotlight}/>}
 
-          {/* Toolbar */}
-          <div className="flex flex-col gap-4 mb-8">
-            {/* Category pills */}
-            <div className="flex gap-2 flex-wrap">
-              {CATS.map(c => (
-                <button key={c} onClick={() => setCat(c)}
-                  className="px-4 py-2 rounded-full text-xs font-semibold transition-all capitalize flex items-center gap-1.5"
-                  style={{
-                    background: cat === c ? 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' : '#fff',
-                    color:      cat === c ? '#fff' : '#5B2D8E',
-                    boxShadow:  cat === c ? '0 4px 16px rgba(91,45,142,0.3)' : '0 2px 8px rgba(91,45,142,0.07)',
-                  }}>
-                  {c !== 'all' && <span>{CAT_ICONS[c]}</span>}
-                  {c === 'all' ? 'All Events' : c}
-                </button>
-              ))}
-            </div>
-
-            {/* Quick filters row */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mr-1">Quick:</span>
-              {QUICK_FILTERS.map(f => (
-                <button key={f.id}
-                  onClick={() => setQuickF(quickF === f.id ? null : f.id)}
-                  className="px-3.5 py-1.5 rounded-full text-[11px] font-semibold transition-all border"
-                  style={{
-                    background:   quickF === f.id ? 'rgba(240,165,0,0.12)' : '#fff',
-                    color:        quickF === f.id ? '#C87800' : '#6B7280',
-                    borderColor:  quickF === f.id ? 'rgba(240,165,0,0.35)' : 'rgba(0,0,0,0.08)',
-                  }}>
-                  {f.label}
-                </button>
-              ))}
-              {/* Sort */}
-              <div className="flex items-center gap-1.5 ml-auto">
-                <SlidersHorizontal className="w-3 h-3 text-muted-foreground/50"/>
-                <select value={sort} onChange={e => setSort(e.target.value)}
-                  className="text-[11px] font-semibold border rounded-lg px-2.5 py-1.5 outline-none cursor-pointer"
-                  style={{ background: '#fff', borderColor: 'rgba(91,45,142,0.12)', color: '#5B2D8E' }}>
-                  <option value="soonest">Soonest first</option>
-                  <option value="popular">Most popular</option>
-                </select>
+          {/* Toolbar card */}
+          <div className="bg-white rounded-2xl p-5 mb-6" style={{ boxShadow: '0 1px 10px rgba(75,0,130,0.08)', border: '1px solid rgba(75,0,130,0.08)' }}>
+            <div className="flex items-center justify-between pb-4 mb-4 border-b" style={{ borderColor: 'rgba(75,0,130,0.07)' }}>
+              <div>
+                <h2 className="font-display font-bold text-sm text-dark">Community Events</h2>
+                <p className="text-[11px] mt-0.5" style={{ color: 'rgba(75,0,130,0.45)' }}>Filter by category, quick filters or search</p>
               </div>
+              {!isLoading && (
+                <span className="text-[11px] font-bold px-3 py-1 rounded-full flex-shrink-0"
+                  style={{ background: 'rgba(75,0,130,0.07)', color: '#4b0082' }}>
+                  {filtered.length} event{filtered.length !== 1 ? 's' : ''}
+                </span>
+              )}
+            </div>
+            <div className="space-y-3">
+
+            {/* Row 1 — Category tabs — single segmented control */}
+            <div className="relative">
+              <div className="overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+                <div className="flex items-center p-1 rounded-2xl w-max"
+                  style={{ background: 'rgba(75,0,130,0.06)', border: '1px solid rgba(75,0,130,0.09)' }}>
+                  {CATS.flatMap((c, i) => {
+                    const Icon   = CAT_ICONS[c]
+                    const count  = c === 'all' ? (data?.length || 0) : (countByCat[c] || 0)
+                    const active = cat === c
+                    const prevActive = i > 0 && cat === CATS[i - 1]
+                    const sep = i > 0 && !active && !prevActive
+                      ? [<div key={`sep-${c}`} className="w-px h-4 flex-shrink-0" style={{ background: 'rgba(75,0,130,0.13)' }}/>]
+                      : []
+                    return [...sep, (
+                      <button key={c} onClick={() => setCat(c)}
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all capitalize flex-shrink-0 whitespace-nowrap"
+                        style={{
+                          background: active ? 'linear-gradient(135deg,#4b0082,#eeb549)' : 'transparent',
+                          color:      active ? '#fff' : '#A3A3A3',
+                          boxShadow:  active ? '0 2px 10px rgba(75,0,130,0.28)' : 'none',
+                        }}>
+                        <Icon className="w-3.5 h-3.5" style={{ opacity: active ? 1 : 0.6 }} />
+                        {c === 'all' ? 'All' : c}
+                        {count > 0 && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none"
+                            style={{
+                              background: active ? 'rgba(255,255,255,0.22)' : 'rgba(75,0,130,0.08)',
+                              color:      active ? 'rgba(255,255,255,0.95)' : '#eeb549',
+                            }}>
+                            {count}
+                          </span>
+                        )}
+                      </button>
+                    )]
+                  })}
+                </div>
+              </div>
+              <div className="absolute right-0 top-0 bottom-0 w-8 pointer-events-none rounded-r-2xl"
+                style={{ background: 'linear-gradient(to right, transparent, #fff)' }} />
             </div>
 
-            {/* Search + view toggles */}
-            <div className="flex items-center justify-between gap-3">
-              <div className="relative w-full max-w-xs">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5"
-                  style={{ color: 'rgba(91,45,142,0.4)' }}/>
+            {/* Row 2 — Search | Quick filters | Sort toggle | View toggle */}
+            <div className="flex items-center gap-2 flex-wrap">
+
+              {/* Search with clear button */}
+              <div className="relative flex-1 min-w-[160px] max-w-xs">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none"
+                  style={{ color: 'rgba(75,0,130,0.35)' }} />
                 <input
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                   placeholder="Search events…"
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs outline-none transition-all"
-                  style={{ background: '#fff', border: '1.5px solid rgba(91,45,142,0.12)', color: '#1A0A35' }}
-                  onFocus={e => { e.target.style.borderColor = '#5B2D8E' }}
-                  onBlur={e => { e.target.style.borderColor = 'rgba(91,45,142,0.12)' }}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl text-xs outline-none transition-all"
+                  style={{ background: '#F6F2FA', border: '1.5px solid rgba(75,0,130,0.1)', color: '#2d004e' }}
+                  onFocus={e => { e.target.style.borderColor = '#4b0082' }}
+                  onBlur={e => { e.target.style.borderColor = 'rgba(75,0,130,0.1)' }}
                 />
+                {search && (
+                  <button onClick={() => setSearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full flex items-center justify-center transition-colors hover:bg-primary-100"
+                    style={{ color: 'rgba(75,0,130,0.45)' }}>
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
               </div>
-              <div className="flex gap-1 p-1 rounded-xl flex-shrink-0" style={{ background: 'rgba(91,45,142,0.06)' }}>
-                {[['grid', LayoutGrid], ['list', List], ['calendar', Calendar]].map(([v, Icon]) => (
-                  <button key={v} onClick={() => setView(v)}
-                    className="w-9 h-9 rounded-lg flex items-center justify-center transition-all"
+
+              <div className="w-px h-5 rounded-full flex-shrink-0" style={{ background: 'rgba(75,0,130,0.12)' }} />
+
+              {/* Quick filters */}
+              {QUICK_FILTERS.map(({ id, label, Icon }) => {
+                const active = quickF === id
+                return (
+                  <button key={id}
+                    onClick={() => setQuickF(quickF === id ? null : id)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-all"
                     style={{
-                      background: view === v ? '#fff' : undefined,
-                      boxShadow:  view === v ? '0 1px 4px rgba(91,45,142,0.12)' : undefined,
-                      color:      view === v ? '#5B2D8E' : '#A3A3A3',
+                      background: active ? 'rgba(75,0,130,0.1)'           : '#fff',
+                      color:      active ? '#4b0082'                        : '#6B7280',
+                      border:     active ? '1px solid rgba(75,0,130,0.3)' : '1px solid rgba(0,0,0,0.08)',
                     }}>
-                    <Icon className="w-4 h-4"/>
+                    <Icon className="w-3 h-3" />
+                    {label}
+                  </button>
+                )
+              })}
+
+              <div className="w-px h-5 rounded-full flex-shrink-0" style={{ background: 'rgba(75,0,130,0.12)' }} />
+
+              {/* Sort — inline toggle buttons */}
+              <div className="flex items-center gap-0.5 p-1 rounded-xl flex-shrink-0"
+                style={{ background: 'rgba(75,0,130,0.05)', border: '1px solid rgba(75,0,130,0.08)' }}>
+                {[
+                  { v: 'soonest', Icon: Clock,       label: 'Soonest' },
+                  { v: 'popular', Icon: TrendingUp,  label: 'Popular' },
+                ].map(({ v, Icon: SIcon, label }) => (
+                  <button key={v} onClick={() => setSort(v)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all"
+                    style={{
+                      background: sort === v ? '#fff' : 'transparent',
+                      color:      sort === v ? '#4b0082' : '#A3A3A3',
+                      boxShadow:  sort === v ? '0 1px 4px rgba(75,0,130,0.12)' : 'none',
+                    }}>
+                    <SIcon className="w-3 h-3" />
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* View toggle */}
+              <div className="flex gap-0.5 p-1 rounded-xl ml-auto flex-shrink-0"
+                style={{ background: 'rgba(75,0,130,0.06)', border: '1px solid rgba(75,0,130,0.08)' }}>
+                {[['grid', LayoutGrid, 'Grid'], ['list', List, 'List'], ['calendar', Calendar, 'Calendar']].map(([v, Icon, title]) => (
+                  <button key={v} onClick={() => setView(v)} title={title}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+                    style={{
+                      background: view === v ? '#fff' : 'transparent',
+                      boxShadow:  view === v ? '0 1px 4px rgba(75,0,130,0.12)' : 'none',
+                      color:      view === v ? '#4b0082' : '#B0B0B0',
+                    }}>
+                    <Icon className="w-4 h-4" />
                   </button>
                 ))}
               </div>
             </div>
+          </div>
+            {/* Active filter chips */}
+            {!isLoading && (cat !== 'all' || quickF || search.trim()) && (
+              <div className="flex items-center gap-2 flex-wrap pt-3 mt-3 border-t" style={{ borderColor: 'rgba(75,0,130,0.07)' }}>
+                <SlidersHorizontal className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'rgba(75,0,130,0.4)' }} />
+                {cat !== 'all' && (() => { const I = CAT_ICONS[cat]; return (
+                  <span className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full"
+                    style={{ background: 'rgba(75,0,130,0.08)', color: '#4b0082' }}>
+                    {I && <I className="w-3 h-3" />}{cat}
+                    <button onClick={() => setCat('all')} className="ml-0.5 hover:opacity-60 transition-opacity"><X className="w-2.5 h-2.5" /></button>
+                  </span>
+                )})()}
+                {quickF && (() => { const f = QUICK_FILTERS.find(f => f.id === quickF); return f ? (
+                  <span className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full"
+                    style={{ background: 'rgba(75,0,130,0.1)', color: '#4b0082' }}>
+                    <f.Icon className="w-3 h-3" />{f.label}
+                    <button onClick={() => setQuickF(null)} className="ml-0.5 hover:opacity-60 transition-opacity"><X className="w-2.5 h-2.5" /></button>
+                  </span>
+                ) : null })()}
+                {search.trim() && (
+                  <span className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full"
+                    style={{ background: 'rgba(75,0,130,0.06)', color: '#4b0082' }}>
+                    "{search}"
+                    <button onClick={() => setSearch('')} className="ml-0.5 hover:opacity-60 transition-opacity"><X className="w-2.5 h-2.5" /></button>
+                  </span>
+                )}
+                <button onClick={() => { setCat('all'); setQuickF(null); setSearch('') }}
+                  className="text-[10px] font-bold transition-all hover:opacity-70"
+                  style={{ color: 'rgba(75,0,130,0.45)' }}>
+                  Clear all
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Upcoming */}
@@ -168,7 +285,7 @@ export default function EventsPage() {
             <div className="mb-14">
               <h2 className="font-display font-bold text-xl mb-6 flex items-center gap-2 text-dark">
                 <span className="w-1 h-6 rounded-full inline-block"
-                  style={{ background: 'linear-gradient(to bottom,#5B2D8E,#F0A500)' }}/>
+                  style={{ background: 'linear-gradient(to bottom,#4b0082,#eeb549)' }}/>
                 Upcoming Events
                 {!isLoading && (
                   <span className="text-sm font-normal ml-1 text-muted-foreground">{upcoming.length}</span>
@@ -178,7 +295,7 @@ export default function EventsPage() {
                 <div className={view === 'grid' ? 'grid md:grid-cols-3 gap-6' : 'space-y-4'}>
                   {[1,2,3].map(i => (
                     <div key={i} className="h-64 rounded-3xl animate-pulse"
-                      style={{ background: 'rgba(91,45,142,0.04)' }}/>
+                      style={{ background: 'rgba(75,0,130,0.04)' }}/>
                   ))}
                 </div>
               ) : view === 'calendar' ? (
@@ -213,8 +330,8 @@ export default function EventsPage() {
           {/* Empty state */}
           {!isLoading && filtered.length === 0 && (
             <div className="text-center py-20 rounded-3xl"
-              style={{ background: 'rgba(91,45,142,0.03)', border: '1px dashed rgba(91,45,142,0.12)' }}>
-              <CalendarDays className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(91,45,142,0.2)' }}/>
+              style={{ background: 'rgba(75,0,130,0.03)', border: '1px dashed rgba(75,0,130,0.12)' }}>
+              <CalendarDays className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(75,0,130,0.2)' }}/>
               <h3 className="font-display font-bold text-xl mb-2 text-dark">No events found</h3>
               <p className="text-sm text-muted-foreground">
                 {search.trim() ? `No results for "${search}"` : 'Check back soon — events are added regularly.'}
@@ -245,7 +362,7 @@ function FeaturedSpotlight({ event: e }) {
       {e.coverImage
         ? <img src={e.coverImage} alt=""
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"/>
-        : <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg,#1A0A35,#5B2D8E)'}}/>
+        : <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg,#2d004e,#4b0082)'}}/>
       }
       <div className="absolute inset-0"
         style={{ background: 'linear-gradient(to right, rgba(6,2,16,0.90) 35%, rgba(6,2,16,0.45) 100%)' }}/>
@@ -256,26 +373,27 @@ function FeaturedSpotlight({ event: e }) {
         <div className="flex-1">
           {e.isFeatured && (
             <div className="flex items-center gap-1.5 mb-3">
-              <Sparkles className="w-3.5 h-3.5 text-gold"/>
-              <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-gold">Featured Event</span>
+              <Sparkles className="w-3.5 h-3.5 text-[#eeb549]"/>
+              <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#eeb549]">Featured Event</span>
             </div>
           )}
-          {e.category && (
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-white/45 mb-2 capitalize">
-              {CAT_ICONS[e.category]} {e.category}
-            </p>
-          )}
+          {e.category && (() => { const CIcon = CAT_ICONS[e.category]; return CIcon ? (
+            <div className="flex items-center gap-1.5 mb-2">
+              <CIcon className="w-3 h-3" style={{ color: '#eeb549' }} />
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-white/45 capitalize">{e.category}</p>
+            </div>
+          ) : null })()}
           <h2 className="font-display font-bold text-2xl md:text-3xl text-white leading-tight mb-4 max-w-xl">
             {e.title}
           </h2>
           <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-white/65">
             <span className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-gold/70"/>
+              <Clock className="w-3.5 h-3.5 text-[#eeb549]/70"/>
               {format(d, 'EEEE, MMMM d · h:mm a')}
             </span>
             {e.venue && (
               <span className="flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-gold/70"/>{e.venue}
+                <MapPin className="w-3.5 h-3.5 text-[#eeb549]/70"/>{e.venue}
               </span>
             )}
             {e.registration_count > 0 && (
@@ -294,7 +412,7 @@ function FeaturedSpotlight({ event: e }) {
             </div>
           </div>
           <div className="flex items-center gap-1.5 text-xs font-bold px-5 py-2.5 rounded-2xl text-white"
-            style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)', boxShadow: '0 4px 16px rgba(91,45,142,0.45)' }}>
+            style={{ background: 'linear-gradient(135deg,#4b0082,#eeb549)', boxShadow: '0 4px 16px rgba(75,0,130,0.45)' }}>
             {isPaid ? `Get Ticket · ${Number(e.ticketPrice).toLocaleString()} XAF` : 'Register Free'}
             <ArrowRight className="w-3.5 h-3.5"/>
           </div>
@@ -313,9 +431,9 @@ function EventCard({ event: e }) {
   return (
     <Link to={`/events/${e.slug}`}
       className="overflow-hidden group block rounded-3xl hover:-translate-y-1.5 transition-all duration-300"
-      style={{ background: '#fff', boxShadow: '0 2px 16px rgba(91,45,142,0.07)', border: '1px solid rgba(91,45,142,0.07)' }}>
+      style={{ background: '#fff', boxShadow: '0 2px 16px rgba(75,0,130,0.07)', border: '1px solid rgba(75,0,130,0.07)' }}>
       {/* Cover */}
-      <div className="h-48 relative overflow-hidden" style={{ background: 'linear-gradient(135deg,#1A0A35,#5B2D8E)' }}>
+      <div className="h-48 relative overflow-hidden" style={{ background: 'linear-gradient(135deg,#2d004e,#4b0082)' }}>
         {e.coverImage
           ? <img src={e.coverImage} alt=""
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
@@ -330,7 +448,7 @@ function EventCard({ event: e }) {
         <div className="absolute top-3 right-3 z-10">
           <span className="text-[10px] font-bold px-2.5 py-1 rounded-full text-white"
             style={{
-              background: isPaid ? 'rgba(200,120,0,0.9)' : 'rgba(91,45,142,0.85)',
+              background: isPaid ? 'rgba(75,0,130,0.9)' : 'rgba(75,0,130,0.85)',
               backdropFilter: 'blur(8px)',
             }}>
             {isPaid ? `${Number(e.ticketPrice).toLocaleString()} XAF` : 'Free'}
@@ -356,7 +474,7 @@ function EventCard({ event: e }) {
         {e.isOnline && (
           <div className="absolute bottom-3 right-3 z-10">
             <span className="text-[10px] font-semibold px-2 py-1 rounded-full text-white flex items-center gap-1"
-              style={{ background: 'rgba(91,45,142,0.8)' }}>
+              style={{ background: 'rgba(75,0,130,0.8)' }}>
               <Video className="w-2.5 h-2.5"/>Online
             </span>
           </div>
@@ -365,14 +483,12 @@ function EventCard({ event: e }) {
 
       {/* Body */}
       <div className="p-5">
-        {e.category && (
+        {e.category && (() => { const CIcon = CAT_ICONS[e.category]; return CIcon ? (
           <div className="flex items-center gap-1.5 mb-2">
-            <span className="w-[2px] h-3 rounded-full bg-primary-500/30 flex-shrink-0"/>
-            <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-primary-500/60">
-              {CAT_ICONS[e.category]} {e.category}
-            </span>
+            <CIcon className="w-3 h-3 flex-shrink-0" style={{ color: 'rgba(75,0,130,0.45)' }} />
+            <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-primary-500/55 capitalize">{e.category}</span>
           </div>
-        )}
+        ) : null })()}
         <h3 className="font-display font-semibold text-[15px] leading-snug mb-3 line-clamp-2 text-dark">
           {e.title}
         </h3>
@@ -395,12 +511,12 @@ function EventCard({ event: e }) {
           )}
         </div>
         <div className="flex items-center justify-between pt-3.5 border-t"
-          style={{ borderColor: 'rgba(91,45,142,0.07)' }}>
+          style={{ borderColor: 'rgba(75,0,130,0.07)' }}>
           <span className="text-xs text-primary-500 font-semibold flex items-center gap-1">
             View Details <ArrowRight className="w-3 h-3"/>
           </span>
           {isPaid
-            ? <span className="flex items-center gap-1 text-[10px] font-bold text-gold/75">
+            ? <span className="flex items-center gap-1 text-[10px] font-bold text-[#eeb549]/75">
                 <Ticket className="w-3 h-3"/>Get Ticket
               </span>
             : <span className="text-[10px] font-bold text-primary-500/55 flex items-center gap-1">
@@ -458,9 +574,9 @@ function CalendarView({ events, month, onMonth }) {
   })
 
   return (
-    <div className="rounded-3xl overflow-hidden" style={{ background: '#fff', border: '1px solid rgba(91,45,142,0.08)' }}>
+    <div className="rounded-3xl overflow-hidden" style={{ background: '#fff', border: '1px solid rgba(75,0,130,0.08)' }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'rgba(91,45,142,0.07)' }}>
+      <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'rgba(75,0,130,0.07)' }}>
         <button onClick={() => onMonth(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}
           className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-primary-50 transition-colors text-primary-500">
           <ChevronLeft className="w-4 h-4"/>
@@ -472,7 +588,7 @@ function CalendarView({ events, month, onMonth }) {
         </button>
       </div>
       {/* Weekday headers */}
-      <div className="grid grid-cols-7 border-b" style={{ borderColor: 'rgba(91,45,142,0.07)' }}>
+      <div className="grid grid-cols-7 border-b" style={{ borderColor: 'rgba(75,0,130,0.07)' }}>
         {WEEKDAYS.map(d => (
           <div key={d} className="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50">
             {d}
@@ -483,7 +599,7 @@ function CalendarView({ events, month, onMonth }) {
       <div className="grid grid-cols-7">
         {/* Empty cells before first day */}
         {Array.from({ length: offset }).map((_, i) => (
-          <div key={`e${i}`} className="min-h-[80px] border-r border-b" style={{ borderColor: 'rgba(91,45,142,0.05)' }}/>
+          <div key={`e${i}`} className="min-h-[80px] border-r border-b" style={{ borderColor: 'rgba(75,0,130,0.05)' }}/>
         ))}
         {days.map((day, i) => {
           const key = format(day, 'yyyy-MM-dd')
@@ -494,18 +610,18 @@ function CalendarView({ events, month, onMonth }) {
             <div key={key}
               className="min-h-[80px] p-1.5 border-b"
               style={{
-                borderColor: 'rgba(91,45,142,0.05)',
-                borderRight: colPos < 6 ? '1px solid rgba(91,45,142,0.05)' : undefined,
+                borderColor: 'rgba(75,0,130,0.05)',
+                borderRight: colPos < 6 ? '1px solid rgba(75,0,130,0.05)' : undefined,
               }}>
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mb-1 ${isToday ? 'text-white' : 'text-dark/60'}`}
-                style={isToday ? { background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' } : {}}>
+                style={isToday ? { background: 'linear-gradient(135deg,#4b0082,#eeb549)' } : {}}>
                 {format(day, 'd')}
               </div>
               <div className="space-y-0.5">
                 {dayEvents.slice(0, 2).map(e => (
                   <Link key={e.id} to={`/events/${e.slug}`}
                     className="block text-[9px] font-semibold truncate px-1.5 py-0.5 rounded-md text-white leading-tight"
-                    style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' }}>
+                    style={{ background: 'linear-gradient(135deg,#4b0082,#eeb549)' }}>
                     {e.title}
                   </Link>
                 ))}
@@ -528,10 +644,10 @@ function EventListRow({ event: e }) {
   return (
     <Link to={`/events/${e.slug}`}
       className="flex gap-4 p-4 rounded-2xl group hover:-translate-y-0.5 transition-all block items-center"
-      style={{ background: '#fff', border: '1px solid rgba(91,45,142,0.08)', boxShadow: '0 2px 12px rgba(91,45,142,0.04)' }}>
+      style={{ background: '#fff', border: '1px solid rgba(75,0,130,0.08)', boxShadow: '0 2px 12px rgba(75,0,130,0.04)' }}>
       {/* Date badge */}
       <div className="flex-shrink-0 w-14 h-14 rounded-2xl flex flex-col items-center justify-center"
-        style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)', boxShadow: '0 4px 12px rgba(91,45,142,0.25)' }}>
+        style={{ background: 'linear-gradient(135deg,#4b0082,#eeb549)', boxShadow: '0 4px 12px rgba(75,0,130,0.25)' }}>
         <div className="font-display font-bold text-xl leading-none text-white">{format(d, 'd')}</div>
         <div className="text-[8px] font-bold uppercase tracking-wider text-white/70 mt-0.5">{format(d, 'MMM')}</div>
       </div>
@@ -539,14 +655,14 @@ function EventListRow({ event: e }) {
       {/* Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1 flex-wrap">
-          {e.category && (
-            <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-primary-500/60">
-              {CAT_ICONS[e.category]} {e.category}
+          {e.category && (() => { const CIcon = CAT_ICONS[e.category]; return CIcon ? (
+            <span className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-[0.1em] text-primary-500/60">
+              <CIcon className="w-2.5 h-2.5" />{e.category}
             </span>
-          )}
-          {e.isFeatured && <span className="text-[9px] text-gold/75 font-semibold">★ Featured</span>}
+          ) : null })()}
+          {e.isFeatured && <span className="text-[9px] text-[#eeb549]/75 font-semibold">★ Featured</span>}
           <span className="text-[9px] font-semibold ml-auto"
-            style={{ color: isPaid ? '#C87800' : 'rgba(91,45,142,0.5)' }}>
+            style={{ color: isPaid ? '#4b0082' : 'rgba(75,0,130,0.5)' }}>
             {isPaid ? `${Number(e.ticketPrice).toLocaleString()} XAF` : 'Free'}
           </span>
         </div>
@@ -579,7 +695,7 @@ function EventListRow({ event: e }) {
       {/* CTA */}
       <div className="flex-shrink-0">
         <span className="flex items-center gap-1.5 text-xs font-bold px-4 py-2.5 rounded-xl text-white"
-          style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)', boxShadow: '0 3px 10px rgba(91,45,142,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg,#4b0082,#eeb549)', boxShadow: '0 3px 10px rgba(75,0,130,0.3)' }}>
           {isPaid
             ? <><Ticket className="w-3 h-3"/>Ticket</>
             : <><CalendarPlus className="w-3 h-3"/>Register</>

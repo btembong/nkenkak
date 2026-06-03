@@ -64,7 +64,7 @@ export default function Footer({ onDonate }) {
 
       <footer>
         {/* Subscribe bar */}
-        <div className="relative py-14 px-6 bg-gradient-to-br from-[#250F47] to-primary-500">
+        <div className="relative py-14 px-6 bg-gradient-to-br from-[#2d004e] to-primary-500">
           <div className="absolute inset-0 opacity-20 overflow-hidden"
             style={{backgroundImage:"url('https://www.transparenttextures.com/patterns/cubes.png')"}}/>
           <div className="relative max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8">
@@ -87,7 +87,7 @@ export default function Footer({ onDonate }) {
                   placeholder="Enter your email address"
                   className="flex-1 px-5 py-4 rounded-l-2xl text-sm outline-none bg-white/10 border border-white/15 border-r-0 text-white placeholder:text-white/40"/>
                 <button type="submit"
-                  className="px-6 py-4 rounded-r-2xl font-bold text-sm whitespace-nowrap flex items-center gap-2 transition-opacity hover:opacity-90 bg-gradient-to-br from-gold to-[#FFB84D] text-dark">
+                  className="px-6 py-4 rounded-r-2xl font-bold text-sm whitespace-nowrap flex items-center gap-2 transition-opacity hover:opacity-90 bg-gradient-to-br from-[#eeb549] to-[#f5cc77]" style={{ color: '#2d004e' }}>
                   Subscribe <ArrowRight className="w-3 h-3"/>
                 </button>
               </form>
@@ -184,7 +184,7 @@ export default function Footer({ onDonate }) {
                 {galleryImages.length > 0
                   ? galleryImages.map((img, i) => (
                       <Link key={i} to="/gallery"
-                        className="aspect-square rounded-xl overflow-hidden block transition-all hover:opacity-80 hover:scale-105 bg-[#250F47]">
+                        className="aspect-square rounded-xl overflow-hidden block transition-all hover:opacity-80 hover:scale-105 bg-[#430075]">
                         <img src={img.url || img.imageUrl} alt={img.title || 'Gallery'}
                           className="w-full h-full object-cover"/>
                       </Link>
@@ -192,7 +192,7 @@ export default function Footer({ onDonate }) {
                   : Array.from({length:6}).map((_, i) => (
                       <Link key={i} to="/gallery"
                         className="aspect-square rounded-xl overflow-hidden flex items-center justify-center transition-all hover:opacity-80"
-                        style={{background:`linear-gradient(135deg,${['#250F47,#5B2D8E','#5B2D8E,#7B4DB8','#3D1A6B,#5B2D8E','#4A2478,#7B4DB8','#2E1067,#5B2D8E','#6B4DB8,#9B6FD8'][i]})`}}>
+                        style={{background:`linear-gradient(135deg,${['#2d004e,#4b0082','#4b0082,#a57fc0','#430075,#4b0082','#4b0082,#a57fc0','#2d004e,#4b0082','#430075,#a57fc0'][i]})`}}>
                         <Image className="w-4 h-4 text-gold/35"/>
                       </Link>
                     ))

@@ -11,12 +11,12 @@ import {
 const AMOUNTS = [5000, 10000, 25000, 50000, 100000, 250000]
 
 const CAT_META = {
-  education:      { Icon: GraduationCap, bg: 'linear-gradient(135deg,#250F47,#5B2D8E)' },
+  education:      { Icon: GraduationCap, bg: 'linear-gradient(135deg,#2d004e,#4b0082)' },
   health:         { Icon: HeartPulse,    bg: 'linear-gradient(135deg,#4A0E0E,#991B1B)' },
-  infrastructure: { Icon: Route,         bg: 'linear-gradient(135deg,#3D2200,#C87800)' },
+  infrastructure: { Icon: Route,         bg: 'linear-gradient(135deg,#2d004e,#4b0082)' },
   environment:    { Icon: Leaf,          bg: 'linear-gradient(135deg,#052e16,#16a34a)' },
-  culture:        { Icon: Music,         bg: 'linear-gradient(135deg,#2e1065,#7c3aed)' },
-  agriculture:    { Icon: Sprout,        bg: 'linear-gradient(135deg,#422006,#ca8a04)' },
+  culture:        { Icon: Music,         bg: 'linear-gradient(135deg,#430075,#4b0082)' },
+  agriculture:    { Icon: Sprout,        bg: 'linear-gradient(135deg,#2d004e,#eeb549)' },
 }
 
 const fmt = (n) => Number(n || 0).toLocaleString()
@@ -113,7 +113,7 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
         <div className="px-7 pt-5 pb-4 flex-shrink-0 border-b border-[#F0EBF8]">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-gradient-to-br from-gold to-[#FFB84D]">
+              <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-gradient-to-br from-[#eeb549] to-[#f5cc77]">
                 <HeartHandshake className="w-5 h-5 text-white"/>
               </div>
               <div>
@@ -133,12 +133,12 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
                 <div key={n} className="flex items-center flex-1">
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all"
-                      style={{ background: step >= n ? 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' : '#F3F4F6', color: step >= n ? '#fff' : '#9CA3AF' }}>
+                      style={{ background: step >= n ? '#4b0082' : '#F3F4F6', color: step >= n ? '#fff' : '#9CA3AF' }}>
                       {step > n ? <Check className="w-3 h-3"/> : n}
                     </div>
-                    <span className="text-[11px] font-semibold hidden sm:block" style={{ color: step >= n ? '#5B2D8E' : '#9CA3AF' }}>{label}</span>
+                    <span className="text-[11px] font-semibold hidden sm:block" style={{ color: step >= n ? '#4b0082' : '#9CA3AF' }}>{label}</span>
                   </div>
-                  {i < arr.length - 1 && <div className="flex-1 h-px mx-3 transition-all duration-500" style={{ background: step > n ? '#5B2D8E' : '#E5E7EB' }}/>}
+                  {i < arr.length - 1 && <div className="flex-1 h-px mx-3 transition-all duration-500" style={{ background: step > n ? '#4b0082' : '#E5E7EB' }}/>}
                 </div>
               ))}
             </div>
@@ -146,7 +146,7 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto px-7 py-6" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(91,45,142,0.2) transparent' }}>
+        <div className="flex-1 overflow-y-auto px-7 py-6" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(75,0,130,0.2) transparent' }}>
 
           {/* STEP 1: Project Selection */}
           {step === 1 && (
@@ -183,7 +183,7 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-72 overflow-y-auto pr-1"
-                  style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(91,45,142,0.2) transparent' }}>
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(75,0,130,0.2) transparent' }}>
                   {projects.map(p => {
                     const pct  = p.goalAmount > 0 ? Math.min(100, Math.round((p.raisedAmount / p.goalAmount) * 100)) : 0
                     const meta = CAT_META[p.category] || CAT_META.education
@@ -224,7 +224,7 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
             <form onSubmit={handleSubmit(onSubmit)} className="animate-fade-in">
               <div className="flex items-center gap-3 p-3 rounded-2xl mb-5 bg-primary-50 border border-primary-500/12">
                 <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0"
-                  style={{ background: selectedProject ? (CAT_META[selectedProject.category]?.bg || 'linear-gradient(135deg,#5B2D8E,#7B4DB8)') : 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' }}>
+                  style={{ background: selectedProject ? (CAT_META[selectedProject.category]?.bg || 'linear-gradient(135deg,#2d004e,#4b0082)') : 'linear-gradient(135deg,#2d004e,#4b0082)' }}>
                   {selectedProject?.coverImage
                     ? <img src={selectedProject.coverImage} className="w-full h-full object-cover"/>
                     : <div className="w-full h-full flex items-center justify-center"><Globe className="w-4 h-4 text-white"/></div>
@@ -250,10 +250,10 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
                       <button key={a} type="button" onClick={() => { setAmount(a); setCustom(false) }}
                         className="py-2.5 rounded-xl text-xs font-bold transition-all duration-200"
                         style={{
-                          background: !custom && amount === a ? 'linear-gradient(135deg,#F0A500,#FFB84D)' : '#F9FAFB',
+                          background: !custom && amount === a ? 'linear-gradient(135deg,#eeb549,#f5cc77)' : '#F9FAFB',
                           color:      !custom && amount === a ? '#fff' : '#374151',
                           border:     !custom && amount === a ? 'none' : '1.5px solid #E5E7EB',
-                          boxShadow:  !custom && amount === a ? '0 4px 14px rgba(240,165,0,0.3)' : 'none',
+                          boxShadow:  !custom && amount === a ? '0 4px 14px rgba(238,181,73,0.35)' : 'none',
                         }}>
                         {(a / 1000).toLocaleString()}K
                       </button>
@@ -262,13 +262,13 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
                   <input type="number" {...register('custom_amount')} placeholder="Custom amount (XAF)…"
                     onClick={() => setCustom(true)} onChange={() => setCustom(true)}
                     className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none mb-4 transition-all bg-gray-50 text-dark"
-                    style={{ border: custom ? '1.5px solid #F0A500' : '1.5px solid #E5E7EB' }}/>
+                    style={{ border: custom ? '1.5px solid #eeb549' : '1.5px solid #E5E7EB' }}/>
                   <div className="p-4 rounded-2xl text-center border border-gold/20" style={{ background: 'linear-gradient(135deg,#FFF8E8,#FFF3D0)' }}>
-                    <div className="text-[10px] mb-1 text-amber-800">You are donating</div>
+                    <div className="text-[10px] mb-1 text-muted-foreground">You are donating</div>
                     <div className="font-display font-extrabold text-2xl text-gold">
                       {finalAmount > 0 ? fmt(finalAmount) : '—'}<span className="text-sm font-semibold ml-1 text-gold/60">XAF</span>
                     </div>
-                    <div className="text-[10px] mt-1 text-amber-700">≈ {finalAmount > 0 ? (finalAmount / 655).toFixed(2) : '—'} USD</div>
+                    <div className="text-[10px] mt-1 text-muted-foreground">≈ {finalAmount > 0 ? (finalAmount / 655).toFixed(2) : '—'} USD</div>
                   </div>
                 </div>
 
@@ -303,8 +303,8 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
                   <ArrowLeft className="w-4 h-4"/>Back
                 </button>
                 <button type="submit" disabled={loading || finalAmount < 100}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-white transition-all disabled:opacity-60 bg-gradient-to-br from-gold to-[#FFB84D]"
-                  style={{ boxShadow: '0 4px 18px rgba(240,165,0,0.35)' }}>
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all disabled:opacity-60"
+                  style={{ background: 'linear-gradient(135deg,#eeb549,#f5cc77)', color: '#fff', boxShadow: '0 4px 18px rgba(238,181,73,0.45)' }}>
                   {loading
                     ? <><Loader2 className="w-4 h-4 animate-spin"/>Processing…</>
                     : <><Lock className="w-3 h-3"/>Pay {finalAmount > 0 ? `${fmt(finalAmount)} XAF` : ''} via Flutterwave</>
@@ -334,8 +334,8 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
                   style={{ background: 'linear-gradient(135deg,#FFF8E8,#FFE9A0)' }}>
                   <Check className="w-8 h-8 text-gold"/>
                 </div>
-                <div className="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center bg-gradient-to-br from-gold to-[#FFB84D]">
-                  <HeartHandshake className="w-4 h-4 text-white"/>
+                <div className="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center bg-gradient-to-br from-[#eeb549] to-[#f5cc77]">
+                  <HeartHandshake className="w-4 h-4 text-dark"/>
                 </div>
               </div>
               <h3 className="font-display font-bold text-2xl mb-2 text-dark">Thank You!</h3>
@@ -352,8 +352,8 @@ export default function DonationModal({ onClose, defaultProject = '' }) {
               )}
               <p className="text-sm font-semibold mb-7 text-gold">Nkenkak-Ngiesang thanks you from the heart.</p>
               <button onClick={onClose}
-                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm text-white transition-all hover:opacity-90 bg-gradient-to-br from-primary-500 to-primary-light"
-                style={{ boxShadow: '0 4px 18px rgba(91,45,142,0.3)' }}>
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm text-white transition-all hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg,#2d004e,#4b0082)', boxShadow: '0 4px 18px rgba(75,0,130,0.3)' }}>
                 <Check className="w-4 h-4"/>Done
               </button>
             </div>

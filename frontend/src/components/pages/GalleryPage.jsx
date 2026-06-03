@@ -17,18 +17,18 @@ const MEDIA_TABS  = [
 ]
 
 const PLACEHOLDERS = [
-  { id:'p1',  title:'Annual Harvest Festival', tags:['Culture'],    bg:'linear-gradient(135deg,#1A0A35,#5B2D8E)', Icon:Drum,           isFeatured:true },
-  { id:'p2',  title:'Village Youth Day',       tags:['Community'],  bg:'linear-gradient(135deg,#250F47,#7B4DB8)', Icon:Users },
-  { id:'p3',  title:'Water Pipeline Works',    tags:['Projects'],   bg:'linear-gradient(135deg,#3D1A6B,#5B2D8E)', Icon:Droplets },
-  { id:'p4',  title:'Traditional Attire',      tags:['Culture'],    bg:'linear-gradient(135deg,#4A2478,#9B6FD8)', Icon:Shirt },
-  { id:'p5',  title:'School Renovation',       tags:['Projects'],   bg:'linear-gradient(135deg,#1A0A35,#3D1A6B)', Icon:School,         isFeatured:true },
-  { id:'p6',  title:'Village Landscape',       tags:['Nature'],     bg:'linear-gradient(135deg,#2D0B55,#5B2D8E)', Icon:Mountain },
-  { id:'p7',  title:'Diaspora Forum 2024',     tags:['Events'],     bg:'linear-gradient(135deg,#3D1A6B,#7B4DB8)', Icon:Globe },
-  { id:'p8',  title:'Cultural Dance',          tags:['Culture'],    bg:'linear-gradient(135deg,#250F47,#5B2D8E)', Icon:Music },
-  { id:'p9',  title:'Harvest Feast',           tags:['Community'],  bg:'linear-gradient(135deg,#1A0A35,#4A2478)', Icon:UtensilsCrossed },
-  { id:'p10', title:'Village Farms',           tags:['Nature'],     bg:'linear-gradient(135deg,#250F47,#1A0A35)', Icon:Sprout },
-  { id:'p11', title:'Elders Meeting',          tags:['Community'],  bg:'linear-gradient(135deg,#3D1A6B,#5B2D8E)', Icon:Handshake },
-  { id:'p12', title:'Night Festival',          tags:['Events'],     bg:'linear-gradient(135deg,#1A0A35,#250F47)', Icon:Star },
+  { id:'p1',  title:'Annual Harvest Festival', tags:['Culture'],    bg:'linear-gradient(135deg,#2d004e,#4b0082)', Icon:Drum,           isFeatured:true },
+  { id:'p2',  title:'Village Youth Day',       tags:['Community'],  bg:'linear-gradient(135deg,#430075,#a57fc0)', Icon:Users },
+  { id:'p3',  title:'Water Pipeline Works',    tags:['Projects'],   bg:'linear-gradient(135deg,#430075,#4b0082)', Icon:Droplets },
+  { id:'p4',  title:'Traditional Attire',      tags:['Culture'],    bg:'linear-gradient(135deg,#4b0082,#a57fc0)', Icon:Shirt },
+  { id:'p5',  title:'School Renovation',       tags:['Projects'],   bg:'linear-gradient(135deg,#2d004e,#430075)', Icon:School,         isFeatured:true },
+  { id:'p6',  title:'Village Landscape',       tags:['Nature'],     bg:'linear-gradient(135deg,#430075,#4b0082)', Icon:Mountain },
+  { id:'p7',  title:'Diaspora Forum 2024',     tags:['Events'],     bg:'linear-gradient(135deg,#430075,#a57fc0)', Icon:Globe },
+  { id:'p8',  title:'Cultural Dance',          tags:['Culture'],    bg:'linear-gradient(135deg,#430075,#4b0082)', Icon:Music },
+  { id:'p9',  title:'Harvest Feast',           tags:['Community'],  bg:'linear-gradient(135deg,#2d004e,#4b0082)', Icon:UtensilsCrossed },
+  { id:'p10', title:'Village Farms',           tags:['Nature'],     bg:'linear-gradient(135deg,#430075,#2d004e)', Icon:Sprout },
+  { id:'p11', title:'Elders Meeting',          tags:['Community'],  bg:'linear-gradient(135deg,#430075,#4b0082)', Icon:Handshake },
+  { id:'p12', title:'Night Festival',          tags:['Events'],     bg:'linear-gradient(135deg,#2d004e,#430075)', Icon:Star },
 ]
 
 function isVideo(item) {
@@ -59,7 +59,7 @@ function GalleryTile({ item, index, onClick }) {
         <div className="w-full flex flex-col items-center justify-center relative overflow-hidden"
           style={{ background: item.bg || ph.bg, minHeight: 180, aspectRatio: index % 5 === 0 ? '4/5' : index % 3 === 0 ? '16/9' : '1/1' }}>
           <div className="wave-pattern absolute inset-0" />
-          <PlaceholderIcon className="w-12 h-12 relative z-10 mb-2" style={{ color: 'rgba(240,165,0,0.25)' }} />
+          <PlaceholderIcon className="w-12 h-12 relative z-10 mb-2" style={{ color: 'rgba(75,0,130,0.25)' }} />
           <span className="text-xs relative z-10 px-3 text-center tracking-wide"
             style={{ color: 'rgba(255,255,255,0.35)', fontFamily: 'Poppins,sans-serif' }}>
             {item.title || ph.title}
@@ -70,7 +70,7 @@ function GalleryTile({ item, index, onClick }) {
       {/* Video badge */}
       {video && (
         <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold"
-          style={{ background: 'rgba(26,10,53,0.85)', color: '#F0A500', fontFamily: 'Sora,sans-serif' }}>
+          style={{ background: 'rgba(26,10,53,0.85)', color: '#a57fc0', fontFamily: 'Sora,sans-serif' }}>
           <Play className="w-2 h-2"/> VIDEO
         </div>
       )}
@@ -78,16 +78,16 @@ function GalleryTile({ item, index, onClick }) {
       {/* Featured badge */}
       {item.isFeatured && (
         <div className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg,#F0A500,#FFB84D)' }}>
+          style={{ background: 'linear-gradient(135deg,#a57fc0,#a57fc0)' }}>
           <Star className="w-3 h-3 text-white fill-current"/>
         </div>
       )}
 
       {/* Hover overlay */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300"
-        style={{ background: 'linear-gradient(to top, rgba(26,10,53,0.9) 0%, rgba(91,45,142,0.6) 100%)' }}>
+        style={{ background: 'linear-gradient(to top, rgba(26,10,53,0.9) 0%, rgba(75,0,130,0.6) 100%)' }}>
         <div className="w-10 h-10 rounded-full flex items-center justify-center"
-          style={{ background: 'rgba(240,165,0,0.2)', border: '1.5px solid rgba(240,165,0,0.4)' }}>
+          style={{ background: 'rgba(75,0,130,0.2)', border: '1.5px solid rgba(75,0,130,0.4)' }}>
           {video ? <Play className="w-4 h-4 text-gold"/> : <Maximize2 className="w-4 h-4 text-gold"/>}
         </div>
         {item.title && (
@@ -97,7 +97,7 @@ function GalleryTile({ item, index, onClick }) {
         )}
         {item.tags?.length > 0 && (
           <span className="text-[10px] px-2.5 py-0.5 rounded-full font-semibold text-gold"
-            style={{ background: 'rgba(240,165,0,0.2)', fontFamily: 'Sora,sans-serif' }}>
+            style={{ background: 'rgba(75,0,130,0.2)', fontFamily: 'Sora,sans-serif' }}>
             {item.tags[0]}
           </span>
         )}
@@ -163,12 +163,12 @@ export default function GalleryPage() {
     <div>
       {/* Hero */}
       <div className="page-hero py-20 px-6 text-center">
-        <div className="eyebrow justify-center mb-3" style={{ color: 'rgba(240,165,0,0.9)' }}>
-          <span className="w-5 h-0.5 rounded-full inline-block mr-2" style={{ background: '#F0A500' }} />
+        <div className="eyebrow justify-center mb-3" style={{ color: 'rgba(75,0,130,0.9)' }}>
+          <span className="w-5 h-0.5 rounded-full inline-block mr-2" style={{ background: '#a57fc0' }} />
           Visual Stories
         </div>
         <h1 className="font-display font-bold text-4xl text-white mb-3">
-          Village <span style={{ color: '#F0A500' }}>Gallery</span>
+          Village <span style={{ color: '#a57fc0' }}>Gallery</span>
         </h1>
         <p className="text-sm max-w-lg mx-auto mb-4" style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'Poppins,sans-serif' }}>
           Photos, videos and memories from Nkenkak-Ngiesang — our celebrations, projects, and everyday life.
@@ -181,7 +181,7 @@ export default function GalleryPage() {
       </div>
 
       {/* Stats strip */}
-      <div style={{ background: 'linear-gradient(135deg,#1A0A35,#250F47)' }}>
+      <div style={{ background: 'linear-gradient(135deg,#2d004e,#430075)' }}>
         <div className="max-w-6xl mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
@@ -201,9 +201,9 @@ export default function GalleryPage() {
               <button key={val} onClick={() => setMainTab(val)}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all"
                 style={{
-                  background: mainTab === val ? 'rgba(240,165,0,0.2)' : 'rgba(255,255,255,0.05)',
-                  color: mainTab === val ? '#F0A500' : 'rgba(255,255,255,0.5)',
-                  border: `1px solid ${mainTab === val ? 'rgba(240,165,0,0.4)' : 'transparent'}`,
+                  background: mainTab === val ? 'rgba(75,0,130,0.2)' : 'rgba(255,255,255,0.05)',
+                  color: mainTab === val ? '#a57fc0' : 'rgba(255,255,255,0.5)',
+                  border: `1px solid ${mainTab === val ? 'rgba(75,0,130,0.4)' : 'transparent'}`,
                   fontFamily: 'Sora,sans-serif',
                 }}>
                 <Icon className="w-3 h-3"/>{label}
@@ -226,7 +226,7 @@ export default function GalleryPage() {
 
       {/* Albums view */}
       {mainTab === 'albums' && (
-        <section className="py-12" style={{background:'#F8F5FC'}}>
+        <section className="py-12" style={{background:'#F3EDF8'}}>
           <div className="max-w-6xl mx-auto px-6">
             {openAlbum ? (
               <div>
@@ -242,8 +242,8 @@ export default function GalleryPage() {
                 </div>
               </div>
             ) : albums.length === 0 ? (
-              <div className="text-center py-24 rounded-3xl" style={{background:'rgba(91,45,142,0.03)',border:'1px dashed rgba(91,45,142,0.1)'}}>
-                <Layers className="w-12 h-12 mx-auto mb-4" style={{color:'rgba(91,45,142,0.12)'}}/>
+              <div className="text-center py-24 rounded-3xl" style={{background:'rgba(75,0,130,0.03)',border:'1px dashed rgba(75,0,130,0.1)'}}>
+                <Layers className="w-12 h-12 mx-auto mb-4" style={{color:'rgba(75,0,130,0.12)'}}/>
                 <h3 className="font-display font-bold text-xl mb-2 text-dark">No albums yet</h3>
                 <p className="text-sm text-muted-foreground">Albums are created by admins to group related photos.</p>
               </div>
@@ -252,8 +252,8 @@ export default function GalleryPage() {
                 {albums.map(album => (
                   <button key={album.id} onClick={() => setOpenAlbum(album)}
                     className="group rounded-3xl overflow-hidden text-left transition-all hover:-translate-y-1"
-                    style={{background:'#fff',border:'1px solid rgba(91,45,142,0.08)',boxShadow:'0 4px 20px rgba(91,45,142,0.06)'}}>
-                    <div className="aspect-video overflow-hidden" style={{background:'linear-gradient(135deg,#1A0A35,#5B2D8E)'}}>
+                    style={{background:'#fff',border:'1px solid rgba(75,0,130,0.08)',boxShadow:'0 4px 20px rgba(75,0,130,0.06)'}}>
+                    <div className="aspect-video overflow-hidden" style={{background:'linear-gradient(135deg,#2d004e,#4b0082)'}}>
                       {album.items?.[0]?.url
                         ? <img src={album.items[0].thumbnail || album.items[0].url} alt={album.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
                         : <div className="w-full h-full flex items-center justify-center"><Images className="w-10 h-10 text-white/20"/></div>
@@ -275,56 +275,69 @@ export default function GalleryPage() {
       )}
 
       {mainTab === 'photos' && (
-        <section className="py-12" style={{ background: '#F8F5FC' }}>
+        <section className="py-12" style={{ background: '#F3EDF8' }}>
           <div className="max-w-6xl mx-auto px-6">
 
-            {/* Category + search row */}
-            <div className="flex flex-col sm:flex-row gap-3 items-center justify-between mb-8">
-              <div className="flex flex-wrap gap-2">
-                {CATEGORIES.map(c => (
-                  <button key={c} onClick={() => setActiveCat(c)}
-                    className="px-4 py-2 rounded-full text-xs font-semibold transition-all"
-                    style={{
-                      background: activeCat === c ? 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' : '#fff',
-                      color: activeCat === c ? '#fff' : '#5B2D8E',
-                      fontFamily: 'Sora,sans-serif',
-                      border: `1.5px solid ${activeCat === c ? 'transparent' : 'rgba(91,45,142,0.12)'}`,
-                      boxShadow: activeCat === c ? '0 4px 12px rgba(91,45,142,0.25)' : 'none',
-                    }}>
-                    {c}
-                  </button>
-                ))}
+            {/* Filter card */}
+            <div className="bg-white rounded-2xl p-5 mb-6" style={{ boxShadow: '0 1px 10px rgba(75,0,130,0.08)', border: '1px solid rgba(75,0,130,0.08)' }}>
+              <div className="flex items-center justify-between pb-4 mb-4 border-b" style={{ borderColor: 'rgba(75,0,130,0.07)' }}>
+                <div>
+                  <h2 className="font-display font-bold text-sm text-dark">Browse Gallery</h2>
+                  <p className="text-[11px] mt-0.5" style={{ color: 'rgba(75,0,130,0.45)' }}>Filter by category or search</p>
+                </div>
+                {!isLoading && (
+                  <span className="text-[11px] font-bold px-3 py-1 rounded-full flex-shrink-0"
+                    style={{ background: 'rgba(75,0,130,0.07)', color: '#4b0082' }}>
+                    {filtered.length} item{filtered.length !== 1 ? 's' : ''}
+                  </span>
+                )}
               </div>
-              <div className="relative">
-                <Search className="w-3.5 h-3.5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"/>
-                <input
-                  type="text"
-                  placeholder="Search gallery…"
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  className="input !pl-10 !w-52"
-                />
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="overflow-x-auto flex-shrink-0" style={{ scrollbarWidth: 'none' }}>
+                  <div className="flex items-center p-1 rounded-2xl w-max"
+                    style={{ background: 'rgba(75,0,130,0.06)', border: '1px solid rgba(75,0,130,0.09)' }}>
+                    {CATEGORIES.flatMap((c, i) => {
+                      const active = activeCat === c
+                      const prevActive = i > 0 && activeCat === CATEGORIES[i - 1]
+                      const sep = i > 0 && !active && !prevActive
+                        ? [<div key={`sep-${c}`} className="w-px h-4 flex-shrink-0" style={{ background: 'rgba(75,0,130,0.13)' }}/>]
+                        : []
+                      return [...sep, (
+                        <button key={c} onClick={() => setActiveCat(c)}
+                          className="px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex-shrink-0 whitespace-nowrap"
+                          style={{
+                            background: active ? 'linear-gradient(135deg,#4b0082,#a57fc0)' : 'transparent',
+                            color:      active ? '#fff' : '#A3A3A3',
+                            boxShadow:  active ? '0 2px 10px rgba(75,0,130,0.28)' : 'none',
+                          }}>
+                          {c}
+                        </button>
+                      )]
+                    })}
+                  </div>
+                </div>
+                <div className="relative flex-1 min-w-[160px] max-w-xs ml-auto">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'rgba(75,0,130,0.35)' }}/>
+                  <input type="text" placeholder="Search gallery…" value={search} onChange={e => setSearch(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2 rounded-xl text-xs outline-none transition-all"
+                    style={{ background: '#F6F2FA', border: '1.5px solid rgba(75,0,130,0.1)', color: '#2d004e' }}
+                    onFocus={e => { e.target.style.borderColor = '#4b0082' }}
+                    onBlur={e => { e.target.style.borderColor = 'rgba(75,0,130,0.1)' }}
+                  />
+                </div>
               </div>
             </div>
-
-            {/* Results count */}
-            {!isLoading && (
-              <p className="text-xs mb-6 text-muted-foreground">
-                {filtered.length} item{filtered.length !== 1 ? 's' : ''}
-                {search && <> matching "<span className="text-primary-500">{search}</span>"</>}
-              </p>
-            )}
 
             {/* Grid */}
             {isLoading ? (
               <div className="grid grid-cols-3 gap-3">
                 {Array.from({ length: 9 }).map((_, i) => (
-                  <div key={i} className="rounded-2xl animate-pulse" style={{ background: 'rgba(91,45,142,0.06)', height: i % 3 === 0 ? 280 : 200 }} />
+                  <div key={i} className="rounded-2xl animate-pulse" style={{ background: 'rgba(75,0,130,0.06)', height: i % 3 === 0 ? 280 : 200 }} />
                 ))}
               </div>
             ) : filtered.length === 0 ? (
-              <div className="text-center py-24 rounded-3xl" style={{ background: 'rgba(91,45,142,0.03)', border: '1px dashed rgba(91,45,142,0.1)' }}>
-                <Images className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(91,45,142,0.15)' }} />
+              <div className="text-center py-24 rounded-3xl" style={{ background: 'rgba(75,0,130,0.03)', border: '1px dashed rgba(75,0,130,0.1)' }}>
+                <Images className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(75,0,130,0.15)' }} />
                 <h3 className="font-display font-bold text-xl mb-2 text-dark">No items found</h3>
                 <p className="text-sm mb-4 text-muted-foreground">Try adjusting your filters or search term.</p>
                 <button onClick={() => { setActiveCat('All'); setSearch(''); setMediaTab('all') }} className="btn-secondary !text-xs !py-2 !px-5">
@@ -344,15 +357,15 @@ export default function GalleryPage() {
             )}
 
             {/* Upload CTA */}
-            <div className="mt-12 rounded-3xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#250F47,#3D1A6B)', border: '1px solid rgba(240,165,0,0.1)' }}>
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(240,165,0,0.12)', border: '1px solid rgba(240,165,0,0.2)' }}>
+            <div className="mt-12 rounded-3xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#430075,#430075)', border: '1px solid rgba(75,0,130,0.1)' }}>
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(75,0,130,0.12)', border: '1px solid rgba(75,0,130,0.2)' }}>
                 <Camera className="w-7 h-7 text-gold"/>
               </div>
               <h3 className="font-display font-bold text-xl text-white mb-2">Share Your Memories</h3>
               <p className="text-sm mb-5" style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'Poppins,sans-serif' }}>
                 Community member with photos or videos? Upload them to the gallery and preserve our shared history.
               </p>
-              <Link to="/portal" className="btn-gold">
+              <Link to="/portal/gallery" className="btn-gold">
                 <Upload className="w-4 h-4"/>Upload to Gallery
               </Link>
             </div>
@@ -390,18 +403,18 @@ export default function GalleryPage() {
           <div className="max-w-4xl w-full mx-20 flex flex-col items-center" onClick={e => e.stopPropagation()}>
             {lightbox.url ? (
               isVideo(lightbox) ? (
-                <video src={lightbox.url} controls autoPlay className="w-full rounded-2xl max-h-[70vh]" style={{ boxShadow: '0 0 80px rgba(91,45,142,0.4)' }} />
+                <video src={lightbox.url} controls autoPlay className="w-full rounded-2xl max-h-[70vh]" style={{ boxShadow: '0 0 80px rgba(75,0,130,0.4)' }} />
               ) : (
                 <img src={lightbox.url} alt={lightbox.title || ''} className="w-full rounded-2xl max-h-[75vh] object-contain"
-                  style={{ boxShadow: '0 0 80px rgba(91,45,142,0.4)' }} />
+                  style={{ boxShadow: '0 0 80px rgba(75,0,130,0.4)' }} />
               )
             ) : (
               <div className="w-full aspect-video rounded-2xl flex flex-col items-center justify-center relative overflow-hidden"
-                style={{ background: lightbox.bg || 'linear-gradient(135deg,#250F47,#5B2D8E)', boxShadow: '0 0 80px rgba(91,45,142,0.4)' }}>
+                style={{ background: lightbox.bg || 'linear-gradient(135deg,#430075,#4b0082)', boxShadow: '0 0 80px rgba(75,0,130,0.4)' }}>
                 <div className="wave-pattern absolute inset-0" />
                 {lightbox.Icon
-                  ? <lightbox.Icon className="w-20 h-20 relative z-10 mb-4" style={{ color: 'rgba(240,165,0,0.3)' }}/>
-                  : <Image className="w-20 h-20 relative z-10 mb-4" style={{ color: 'rgba(240,165,0,0.3)' }}/>
+                  ? <lightbox.Icon className="w-20 h-20 relative z-10 mb-4" style={{ color: 'rgba(75,0,130,0.3)' }}/>
+                  : <Image className="w-20 h-20 relative z-10 mb-4" style={{ color: 'rgba(75,0,130,0.3)' }}/>
                 }
                 <span className="text-sm relative z-10 text-white/50">
                   {lightbox.title || lightbox.label}
@@ -419,7 +432,7 @@ export default function GalleryPage() {
                   <div className="flex gap-1.5 mt-1">
                     {lightbox.tags.map(t => (
                       <span key={t} className="text-[10px] px-2.5 py-0.5 rounded-full font-semibold text-gold"
-                        style={{ background: 'rgba(240,165,0,0.15)', fontFamily: 'Sora,sans-serif' }}>{t}</span>
+                        style={{ background: 'rgba(75,0,130,0.15)', fontFamily: 'Sora,sans-serif' }}>{t}</span>
                     ))}
                   </div>
                 )}

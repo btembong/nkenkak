@@ -288,7 +288,7 @@ export default function Navbar({ onDonate }) {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 flex" style={{ background: 'rgba(26,10,53,0.95)', backdropFilter: 'blur(12px)' }}>
+        <div className="fixed inset-0 z-50 flex" style={{ background: 'rgba(45,0,78,0.95)', backdropFilter: 'blur(12px)' }}>
           <div className="flex-1 flex flex-col overflow-y-auto">
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
               <div className="flex items-center gap-3">

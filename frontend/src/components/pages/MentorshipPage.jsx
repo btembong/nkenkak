@@ -32,7 +32,7 @@ function MenteeApplyForm({ mentors = [] }) {
       <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: 'rgba(22,163,74,0.1)' }}>
         <i className="fas fa-check text-4xl" style={{ color: '#16a34a' }} />
       </div>
-      <h3 className="font-display font-bold text-2xl mb-3" style={{ color: '#1A0A35' }}>Application Submitted!</h3>
+      <h3 className="font-display font-bold text-2xl mb-3" style={{ color: '#2d004e' }}>Application Submitted!</h3>
       <p className="text-sm leading-relaxed mb-6" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>
         Thank you for applying to the Nkenkak-Ngiesang Mentorship Programme. Our team will review your application and match you with a suitable mentor within 5–7 days.
       </p>
@@ -45,11 +45,11 @@ function MenteeApplyForm({ mentors = [] }) {
     <div className="max-w-2xl mx-auto">
       <div className="card p-8">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' }}>
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,#4b0082,#a57fc0)' }}>
             <i className="fas fa-user-graduate text-white text-xl" />
           </div>
           <div>
-            <h3 className="font-display font-bold text-xl" style={{ color: '#1A0A35' }}>Mentee Application</h3>
+            <h3 className="font-display font-bold text-xl" style={{ color: '#2d004e' }}>Mentee Application</h3>
             <p className="text-xs" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>We will match you with the right mentor for your goals</p>
           </div>
         </div>
@@ -135,10 +135,10 @@ function MentorRegisterForm() {
 
   if (done) return (
     <div className="max-w-lg mx-auto text-center py-16">
-      <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: 'rgba(240,165,0,0.12)' }}>
-        <i className="fas fa-user-tie text-4xl" style={{ color: '#F0A500' }} />
+      <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: 'rgba(75,0,130,0.10)' }}>
+        <i className="fas fa-user-tie text-4xl" style={{ color: '#a57fc0' }} />
       </div>
-      <h3 className="font-display font-bold text-2xl mb-3" style={{ color: '#1A0A35' }}>Profile Submitted!</h3>
+      <h3 className="font-display font-bold text-2xl mb-3" style={{ color: '#2d004e' }}>Profile Submitted!</h3>
       <p className="text-sm leading-relaxed mb-6" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>
         Thank you for offering to mentor the next generation of Nkenkak-Ngiesang youth. Your profile is under review and will be published once approved by the programme coordinator — usually within 3 business days.
       </p>
@@ -152,11 +152,11 @@ function MentorRegisterForm() {
     <div className="max-w-2xl mx-auto">
       <div className="card p-8">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,#F0A500,#FFB84D)' }}>
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,#a57fc0,#a57fc0)' }}>
             <i className="fas fa-user-tie text-white text-xl" />
           </div>
           <div>
-            <h3 className="font-display font-bold text-xl" style={{ color: '#1A0A35' }}>Mentor Registration</h3>
+            <h3 className="font-display font-bold text-xl" style={{ color: '#2d004e' }}>Mentor Registration</h3>
             <p className="text-xs" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>Your profile will be reviewed before going live</p>
           </div>
         </div>
@@ -217,7 +217,7 @@ function MentorRegisterForm() {
               </select>
               <button type="button" onClick={addExpertise}
                 className="px-4 py-2 rounded-2xl text-sm font-semibold flex-shrink-0"
-                style={{ background: 'rgba(91,45,142,0.08)', color: '#5B2D8E', border: '1.5px solid rgba(91,45,142,0.15)', fontFamily: 'Sora,sans-serif' }}>
+                style={{ background: 'rgba(75,0,130,0.08)', color: '#4b0082', border: '1.5px solid rgba(75,0,130,0.15)', fontFamily: 'Sora,sans-serif' }}>
                 <i className="fas fa-plus" />
               </button>
             </div>
@@ -225,9 +225,9 @@ function MentorRegisterForm() {
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {expertiseList.map(e => (
                   <span key={e} className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full"
-                    style={{ background: 'rgba(91,45,142,0.08)', color: '#5B2D8E', fontFamily: 'Sora,sans-serif' }}>
+                    style={{ background: 'rgba(75,0,130,0.08)', color: '#4b0082', fontFamily: 'Sora,sans-serif' }}>
                     {e}
-                    <button type="button" onClick={() => setExpertiseList(p => p.filter(x => x !== e))} style={{ color: '#5B2D8E', lineHeight: 1 }}>×</button>
+                    <button type="button" onClick={() => setExpertiseList(p => p.filter(x => x !== e))} style={{ color: '#4b0082', lineHeight: 1 }}>×</button>
                   </span>
                 ))}
               </div>
@@ -286,26 +286,26 @@ export default function MentorshipPage() {
         </p>
         <div className="flex items-center justify-center gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'Poppins,sans-serif' }}>
           <Link to="/" className="hover:text-white transition-colors flex items-center gap-1"><i className="fas fa-home text-xs" />Home</Link>
-          <i className="fas fa-chevron-right text-xs" style={{ color: '#F0A500' }} />
-          <span style={{ color: '#F0A500' }}>Mentorship</span>
+          <i className="fas fa-chevron-right text-xs" style={{ color: '#a57fc0' }} />
+          <span style={{ color: '#a57fc0' }}>Mentorship</span>
         </div>
       </div>
 
       {/* How it works */}
-      <div className="py-14 bg-white" style={{ borderBottom: '1px solid rgba(91,45,142,0.06)' }}>
+      <div className="py-14 bg-white" style={{ borderBottom: '1px solid rgba(75,0,130,0.06)' }}>
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="section-title mb-4">How the <span style={{ color: '#F0A500' }}>Programme</span> Works</h2>
+          <h2 className="section-title mb-4">How the <span style={{ color: '#a57fc0' }}>Programme</span> Works</h2>
           <p className="text-base mb-10" style={{ color: '#555', fontFamily: 'Poppins,sans-serif', lineHeight: 1.8 }}>
             Our mentorship programme bridges the gap between the Nkenkak-Ngiesang diaspora and village youth. Professionals from around the world give back by sharing their skills, experience, and networks.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {STEPS.map((s, i) => (
               <div key={s.title} className="card p-6 text-center">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3" style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' }}>
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3" style={{ background: 'linear-gradient(135deg,#4b0082,#a57fc0)' }}>
                   <i className={`fas ${s.icon} text-xl text-white`} />
                 </div>
-                <div className="w-6 h-6 rounded-full flex items-center justify-center mx-auto mb-2 text-xs font-bold" style={{ background: 'rgba(240,165,0,0.15)', color: '#B07A00', fontFamily: 'Sora,sans-serif' }}>{i + 1}</div>
-                <h3 className="font-display font-bold text-lg mb-2" style={{ color: '#1A0A35' }}>{s.title}</h3>
+                <div className="w-6 h-6 rounded-full flex items-center justify-center mx-auto mb-2 text-xs font-bold" style={{ background: 'rgba(75,0,130,0.10)', color: '#4b0082', fontFamily: 'Sora,sans-serif' }}>{i + 1}</div>
+                <h3 className="font-display font-bold text-lg mb-2" style={{ color: '#2d004e' }}>{s.title}</h3>
                 <p className="text-sm" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif', lineHeight: 1.7 }}>{s.desc}</p>
               </div>
             ))}
@@ -314,7 +314,7 @@ export default function MentorshipPage() {
       </div>
 
       {/* Stats */}
-      <div className="py-10" style={{ background: 'linear-gradient(135deg,#1A0A35,#250F47)' }}>
+      <div className="py-10" style={{ background: 'linear-gradient(135deg,#2d004e,#430075)' }}>
         <div className="max-w-4xl mx-auto px-6 grid grid-cols-3 gap-6 text-center">
           {[
             { label: 'Mentors',   value: mentors.length || '—', icon: 'fa-user-tie' },
@@ -323,7 +323,7 @@ export default function MentorshipPage() {
           ].map(s => (
             <div key={s.label}>
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-2" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                <i className={`fas ${s.icon} text-lg`} style={{ color: '#F0A500' }} />
+                <i className={`fas ${s.icon} text-lg`} style={{ color: '#a57fc0' }} />
               </div>
               <div className="font-display font-bold text-3xl text-white">{s.value}</div>
               <div className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.55)', fontFamily: 'Poppins,sans-serif' }}>{s.label}</div>
@@ -333,32 +333,51 @@ export default function MentorshipPage() {
       </div>
 
       {/* Tabs */}
-      <section className="py-16 bg-white">
+      <section className="py-16" style={{ background: '#F3EDF8' }}>
         <div className="max-w-6xl mx-auto px-6">
 
-          {/* Tab bar */}
-          <div className="flex flex-wrap gap-2 justify-center mb-10">
-            {TABS.map(tab => (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                className="flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-all"
-                style={{
-                  background: activeTab === tab.id ? 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' : '#fff',
-                  color: activeTab === tab.id ? '#fff' : '#5B2D8E',
-                  fontFamily: 'Sora,sans-serif',
-                  border: `1.5px solid ${activeTab === tab.id ? 'transparent' : 'rgba(91,45,142,0.15)'}`,
-                  boxShadow: activeTab === tab.id ? '0 4px 16px rgba(91,45,142,0.3)' : 'none',
-                }}>
-                <i className={`fas ${tab.icon} text-xs`} />
-                {tab.label}
-              </button>
-            ))}
+          {/* Tab card */}
+          <div className="bg-white rounded-2xl p-5 mb-10" style={{ boxShadow: '0 1px 10px rgba(75,0,130,0.08)', border: '1px solid rgba(75,0,130,0.08)' }}>
+            <div className="flex items-center justify-between pb-4 mb-4 border-b" style={{ borderColor: 'rgba(75,0,130,0.07)' }}>
+              <div>
+                <h2 className="font-display font-bold text-sm text-dark">Mentorship Programme</h2>
+                <p className="text-[11px] mt-0.5" style={{ color: 'rgba(75,0,130,0.45)' }}>Browse mentors, apply as mentee, or become a mentor</p>
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <div className="overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+                <div className="flex items-center p-1 rounded-2xl w-max"
+                  style={{ background: 'rgba(75,0,130,0.06)', border: '1px solid rgba(75,0,130,0.09)' }}>
+                  {TABS.flatMap((tab, i) => {
+                    const active = activeTab === tab.id
+                    const prevActive = i > 0 && activeTab === TABS[i - 1].id
+                    const sep = i > 0 && !active && !prevActive
+                      ? [<div key={`sep-${tab.id}`} className="w-px h-4 flex-shrink-0" style={{ background: 'rgba(75,0,130,0.13)' }} />]
+                      : []
+                    return [...sep, (
+                      <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all flex-shrink-0 whitespace-nowrap"
+                        style={{
+                          background: active ? 'linear-gradient(135deg,#4b0082,#a57fc0)' : 'transparent',
+                          color:      active ? '#fff' : '#A3A3A3',
+                          boxShadow:  active ? '0 2px 10px rgba(75,0,130,0.28)' : 'none',
+                          fontFamily: 'Sora,sans-serif',
+                        }}>
+                        <i className={`fas ${tab.icon} text-[10px]`} />
+                        {tab.label}
+                      </button>
+                    )]
+                  })}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Tab: Browse mentors */}
           {activeTab === 'browse' && (
             <>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <h2 className="section-title">Meet Our <span style={{ color: '#F0A500' }}>Mentors</span></h2>
+                <h2 className="section-title">Meet Our <span style={{ color: '#a57fc0' }}>Mentors</span></h2>
                 <div className="relative">
                   <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-sm" style={{ color: '#A3A3A3' }} />
                   <input value={search} onChange={e => setSearch(e.target.value)}
@@ -368,27 +387,27 @@ export default function MentorshipPage() {
 
               {isLoading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[1,2,3,4,5,6].map(i => <div key={i} className="h-72 rounded-3xl animate-pulse" style={{ background: 'rgba(91,45,142,0.04)' }} />)}
+                  {[1,2,3,4,5,6].map(i => <div key={i} className="h-72 rounded-3xl animate-pulse" style={{ background: 'rgba(75,0,130,0.04)' }} />)}
                 </div>
               ) : filtered.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filtered.map(m => (
                     <div key={m.id} className="card p-6 flex flex-col">
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="w-16 h-16 rounded-2xl flex-shrink-0 overflow-hidden" style={{ background: 'linear-gradient(135deg,#5B2D8E,#7B4DB8)' }}>
+                        <div className="w-16 h-16 rounded-2xl flex-shrink-0 overflow-hidden" style={{ background: 'linear-gradient(135deg,#4b0082,#a57fc0)' }}>
                           {m.photoUrl
                             ? <img src={m.photoUrl} alt={m.name} className="w-full h-full object-cover" />
                             : <div className="w-full h-full flex items-center justify-center"><i className="fas fa-user text-2xl text-white opacity-60" /></div>}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-display font-bold text-sm" style={{ color: '#1A0A35' }}>{m.name}</h3>
-                          <p className="text-xs font-semibold" style={{ color: '#5B2D8E', fontFamily: 'Poppins,sans-serif' }}>{m.profession}</p>
+                          <h3 className="font-display font-bold text-sm" style={{ color: '#2d004e' }}>{m.name}</h3>
+                          <p className="text-xs font-semibold" style={{ color: '#4b0082', fontFamily: 'Poppins,sans-serif' }}>{m.profession}</p>
                           {m.company && <p className="text-xs truncate" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>{m.company}</p>}
                         </div>
                       </div>
                       {(m.city || m.country) && (
                         <p className="text-xs mb-3 flex items-center gap-1.5" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif' }}>
-                          <i className="fas fa-map-marker-alt text-[10px]" style={{ color: '#5B2D8E' }} />
+                          <i className="fas fa-map-marker-alt text-[10px]" style={{ color: '#4b0082' }} />
                           {[m.city, m.country].filter(Boolean).join(', ')}
                         </p>
                       )}
@@ -399,11 +418,11 @@ export default function MentorshipPage() {
                         <div className="flex flex-wrap gap-1.5 mb-4">
                           {m.expertise.slice(0, 4).map(e => (
                             <span key={e} className="text-[10px] font-semibold px-2.5 py-1 rounded-full"
-                              style={{ background: 'rgba(91,45,142,0.08)', color: '#5B2D8E', fontFamily: 'Sora,sans-serif' }}>{e}</span>
+                              style={{ background: 'rgba(75,0,130,0.08)', color: '#4b0082', fontFamily: 'Sora,sans-serif' }}>{e}</span>
                           ))}
                         </div>
                       )}
-                      <div className="mt-auto pt-3 flex items-center justify-between" style={{ borderTop: '1px solid rgba(91,45,142,0.06)' }}>
+                      <div className="mt-auto pt-3 flex items-center justify-between" style={{ borderTop: '1px solid rgba(75,0,130,0.06)' }}>
                         <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
                           style={{ background: m.isAvailable ? 'rgba(22,163,74,0.1)' : 'rgba(115,115,115,0.1)', color: m.isAvailable ? '#16a34a' : '#737373', fontFamily: 'Sora,sans-serif' }}>
                           <i className={`fas ${m.isAvailable ? 'fa-check-circle' : 'fa-times-circle'} mr-1`} />
@@ -417,7 +436,7 @@ export default function MentorshipPage() {
                         {m.linkedin && (
                           <a href={m.linkedin} target="_blank" rel="noreferrer"
                             className="w-8 h-8 rounded-xl flex items-center justify-center hover:opacity-80 transition-opacity"
-                            style={{ background: 'rgba(91,45,142,0.08)', color: '#5B2D8E' }}>
+                            style={{ background: 'rgba(75,0,130,0.08)', color: '#4b0082' }}>
                             <i className="fab fa-linkedin-in text-xs" />
                           </a>
                         )}
@@ -426,8 +445,8 @@ export default function MentorshipPage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-16 rounded-3xl" style={{ background: 'rgba(91,45,142,0.02)', border: '1px dashed rgba(91,45,142,0.1)' }}>
-                  <i className="fas fa-user-tie text-4xl mb-3 block" style={{ color: 'rgba(91,45,142,0.15)' }} />
+                <div className="text-center py-16 rounded-3xl" style={{ background: 'rgba(75,0,130,0.02)', border: '1px dashed rgba(75,0,130,0.1)' }}>
+                  <i className="fas fa-user-tie text-4xl mb-3 block" style={{ color: 'rgba(75,0,130,0.15)' }} />
                   <h4 className="font-display font-semibold mb-2" style={{ color: '#737373' }}>No mentors found</h4>
                   <p className="text-sm mb-4" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>Try a different search or apply as a mentee and we'll match you.</p>
                   <button onClick={() => setActiveTab('mentee')} className="btn-secondary !text-xs">Apply as Mentee Instead</button>
@@ -450,11 +469,11 @@ export default function MentorshipPage() {
           style={{ background: 'rgba(26,10,53,0.8)', backdropFilter: 'blur(8px)' }}
           onClick={e => e.target === e.currentTarget && setSelectedMentor(null)}>
           <div className="bg-white rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto" style={{ boxShadow: '0 32px 80px rgba(26,10,53,0.25)' }}>
-            <div className="px-7 pt-6 pb-4 border-b flex items-center justify-between" style={{ borderColor: 'rgba(91,45,142,0.08)' }}>
+            <div className="px-7 pt-6 pb-4 border-b flex items-center justify-between" style={{ borderColor: 'rgba(75,0,130,0.08)' }}>
               <div>
-                <h3 className="font-display font-bold text-xl" style={{ color: '#1A0A35' }}>Apply for Mentorship</h3>
+                <h3 className="font-display font-bold text-xl" style={{ color: '#2d004e' }}>Apply for Mentorship</h3>
                 <p className="text-xs mt-0.5" style={{ color: '#A3A3A3', fontFamily: 'Poppins,sans-serif' }}>
-                  Mentor: <span style={{ color: '#5B2D8E', fontWeight: 600 }}>{selectedMentor.name}</span>
+                  Mentor: <span style={{ color: '#4b0082', fontWeight: 600 }}>{selectedMentor.name}</span>
                 </p>
               </div>
               <button onClick={() => setSelectedMentor(null)} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100" style={{ color: '#A3A3A3' }}>
@@ -466,7 +485,7 @@ export default function MentorshipPage() {
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(22,163,74,0.1)' }}>
                   <i className="fas fa-check text-3xl" style={{ color: '#16a34a' }} />
                 </div>
-                <h4 className="font-display font-bold text-xl mb-2" style={{ color: '#1A0A35' }}>Application Submitted!</h4>
+                <h4 className="font-display font-bold text-xl mb-2" style={{ color: '#2d004e' }}>Application Submitted!</h4>
                 <p className="text-sm mb-6" style={{ color: '#737373', fontFamily: 'Poppins,sans-serif', lineHeight: 1.7 }}>
                   Thank you for applying to be mentored by <strong>{selectedMentor.name}</strong>. We will review your application and get back to you shortly.
                 </p>
@@ -509,7 +528,7 @@ export default function MentorshipPage() {
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={() => setSelectedMentor(null)}
                     className="flex-1 py-3 rounded-2xl text-sm font-semibold"
-                    style={{ background: 'rgba(91,45,142,0.05)', color: '#737373', border: '1px solid rgba(91,45,142,0.1)', fontFamily: 'Sora,sans-serif' }}>Cancel</button>
+                    style={{ background: 'rgba(75,0,130,0.05)', color: '#737373', border: '1px solid rgba(75,0,130,0.1)', fontFamily: 'Sora,sans-serif' }}>Cancel</button>
                   <button type="submit" disabled={applyMut.isLoading} className="btn-secondary flex-1 justify-center">
                     {applyMut.isLoading ? <><i className="fas fa-spinner animate-spin" />Sending…</> : <><i className="fas fa-paper-plane" />Send Application</>}
                   </button>

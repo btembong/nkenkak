@@ -12,15 +12,15 @@ function readTime(content = '') {
 }
 
 const CAT_STYLES = {
-  projects:  { grad: 'linear-gradient(135deg,#250F47,#5B2D8E)', Icon: Sprout },
-  education: { grad: 'linear-gradient(135deg,#3D1A6B,#5B2D8E)', Icon: GraduationCap },
-  health:    { grad: 'linear-gradient(135deg,#78350f,#C87800)',  Icon: HeartPulse },
-  community: { grad: 'linear-gradient(135deg,#250F47,#5B2D8E)', Icon: Users },
-  culture:   { grad: 'linear-gradient(135deg,#78350f,#C87800)',  Icon: Drum },
-  success:   { grad: 'linear-gradient(135deg,#78350f,#C87800)',  Icon: Star },
-  governance:{ grad: 'linear-gradient(135deg,#250F47,#5B2D8E)', Icon: Landmark },
+  projects:  { grad: 'linear-gradient(135deg,#2d004e,#4b0082)', Icon: Sprout },
+  education: { grad: 'linear-gradient(135deg,#430075,#4b0082)', Icon: GraduationCap },
+  health:    { grad: 'linear-gradient(135deg,#4A0E0E,#991B1B)',  Icon: HeartPulse },
+  community: { grad: 'linear-gradient(135deg,#2d004e,#4b0082)', Icon: Users },
+  culture:   { grad: 'linear-gradient(135deg,#430075,#4b0082)',  Icon: Drum },
+  success:   { grad: 'linear-gradient(135deg,#430075,#4b0082)',  Icon: Star },
+  governance:{ grad: 'linear-gradient(135deg,#2d004e,#4b0082)', Icon: Landmark },
 }
-const DEFAULT_STYLE = { grad: 'linear-gradient(135deg,#250F47,#5B2D8E)', Icon: Newspaper }
+const DEFAULT_STYLE = { grad: 'linear-gradient(135deg,#2d004e,#4b0082)', Icon: Newspaper }
 
 function isNew(dateStr) {
   if (!dateStr) return false
@@ -38,7 +38,7 @@ function AuthorAvatar({ name = 'A', avatarUrl, size = 7 }) {
     )
   }
   return (
-    <div className={`w-${size} h-${size} rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0 bg-gradient-to-br from-gold to-[#FFB84D]`}>
+    <div className={`w-${size} h-${size} rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0 bg-gradient-to-br from-[#4b0082] to-[#a57fc0]`}>
       {name[0]}
     </div>
   )
@@ -64,7 +64,7 @@ export default function NewsCard({ article: a, featured, horizontal }) {
               </div>}
           {_new && (
             <span className="absolute top-1.5 left-1.5 w-2 h-2 rounded-full bg-primary-400 animate-pulse"
-              style={{ boxShadow: '0 0 6px rgba(91,45,142,0.8)' }} />
+              style={{ boxShadow: '0 0 6px rgba(75,0,130,0.8)' }} />
           )}
         </div>
         <div className="min-w-0 flex-1">
@@ -161,7 +161,7 @@ export default function NewsCard({ article: a, featured, horizontal }) {
           {/* New indicator — dot only, top-left */}
           {_new && (
             <span className="absolute top-3 left-3 w-2.5 h-2.5 rounded-full bg-primary-400 animate-pulse z-10"
-              style={{ boxShadow: '0 0 8px rgba(91,45,142,0.9)' }} />
+              style={{ boxShadow: '0 0 8px rgba(75,0,130,0.9)' }} />
           )}
 
           {/* Read time — bottom-right functional label */}
