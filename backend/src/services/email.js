@@ -1,16 +1,5 @@
-const nodemailer = require('nodemailer')
-
-const transporter = nodemailer.createTransport({
-  host:   process.env.SMTP_HOST || 'smtp.gmail.com',
-  port:   parseInt(process.env.SMTP_PORT || '465'),
-  secure: process.env.SMTP_PORT ? process.env.SMTP_PORT === '465' : true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-})
-
-const FROM         = `"Nkenkak-Ngiesang Development Council" <${process.env.SMTP_USER}>`
+const BREVO_API    = 'https://api.brevo.com/v3/smtp/email'
+const FROM         = `"Nkenkak-Ngiesang Development Council" <${process.env.SENDER_EMAIL || process.env.SMTP_USER}>`
 const CLIENT       = process.env.CLIENT_URL || 'http://localhost:5173'
 const ADMIN_EMAIL  = process.env.SMTP_USER
 const LOGO_URL     = 'https://res.cloudinary.com/dmxnsttmu/image/upload/v1778254134/nkek-logo_jdaxf8.png'
@@ -169,12 +158,30 @@ ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;font-size:1
    LOW-LEVEL SEND
 ───────────────────────────────────── */
 exports.sendEmail = async ({ to, subject, html, text }) => {
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  if (!process.env.BREVO_API_KEY) {
     console.log('[EMAIL STUB]', subject, '->', to)
     return
   }
   try {
-    await transporter.sendMail({ from: FROM, to, subject, html: wrap(html), text })
+    const res = await fetch(BREVO_API, {
+      method: 'POST',
+      headers: {
+        'accept':       'application/json',
+        'api-key':      process.env.BREVO_API_KEY,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender:      { name: 'Nkenkak-Ngiesang Development Council', email: process.env.SENDER_EMAIL || process.env.SMTP_USER },
+        to:          [{ email: to }],
+        subject,
+        htmlContent: wrap(html),
+        textContent: text,
+      }),
+    })
+    if (!res.ok) {
+      const err = await res.text()
+      console.error('[EMAIL ERROR]', res.status, err)
+    }
   } catch (err) {
     console.error('[EMAIL ERROR]', err.message)
   }
