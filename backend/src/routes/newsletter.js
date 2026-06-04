@@ -53,9 +53,10 @@ router.post('/send', authenticate, isAdmin, async (req, res) => {
 router.post('/trigger-digest', authenticate, isAdmin, async (req, res) => {
   try {
     const { sendWeeklyDigest } = require('../services/digest')
-    res.json({ message: 'Digest triggered — sending in background' })
-    sendWeeklyDigest().catch(console.error)
+    await sendWeeklyDigest()
+    res.json({ message: 'Digest complete' })
   } catch (e) {
+    console.error('[Digest trigger error]', e)
     res.status(500).json({ error: e.message })
   }
 })
