@@ -10,7 +10,7 @@ async function sendWeeklyDigest() {
 
   const [news, events, projects] = await Promise.all([
     prisma.news.findMany({ where: { status: 'published', publishedAt: { gte: since } }, orderBy: { publishedAt: 'desc' }, take: 5, select: { title: true, excerpt: true, slug: true, coverImage: true } }),
-    prisma.event.findMany({ where: { isPublished: true, startDate: { gte: new Date() } }, orderBy: { startDate: 'asc' }, take: 3, select: { title: true, startDate: true, location: true, slug: true, coverImage: true } }),
+    prisma.event.findMany({ where: { isPublished: true, startDate: { gte: new Date() } }, orderBy: { startDate: 'asc' }, take: 3, select: { title: true, startDate: true, venue: true, slug: true, coverImage: true } }),
     prisma.project.findMany({ where: { status: 'active' }, orderBy: { raisedAmount: 'desc' }, take: 3, select: { title: true, raisedAmount: true, goalAmount: true, slug: true, coverImage: true } }),
   ])
 
@@ -30,7 +30,7 @@ async function sendWeeklyDigest() {
   const eventsHtml = events.map(e => `
     <tr><td style="padding:8px 0;border-bottom:1px solid #f0ebf8">
       <a href="${baseUrl}/events/${e.slug}" style="font-weight:700;color:#5B2D8E;text-decoration:none;font-size:14px">${e.title}</a>
-      <p style="margin:4px 0 0;color:#737373;font-size:12px">${new Date(e.startDate).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}${e.location ? ' · ' + e.location : ''}</p>
+      <p style="margin:4px 0 0;color:#737373;font-size:12px">${new Date(e.startDate).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}${e.venue ? ' · ' + e.venue : ''}</p>
     </td></tr>`).join('')
 
   const projectsHtml = projects.map(p => {

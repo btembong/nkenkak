@@ -35,6 +35,9 @@ app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
 
+// ── Trust proxy (required on Render) ──────────────────────────
+app.set('trust proxy', 1)
+
 // ── Rate limiting ─────────────────────────────────────────────
 app.use('/api/auth', rateLimit({ windowMs: 15*60*1000, max: 20, message: { error: 'Too many requests' } }))
 app.use('/api',      rateLimit({ windowMs: 15*60*1000, max: 500 }))
