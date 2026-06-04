@@ -261,21 +261,21 @@ async function main() {
 
   // ── Scholarships ──────────────────────────────────────────────
   const scholarships = [
-    { name:'Nguimfack Lionel', level:'University', year:2024, sponsor:'Nkenkak Development Fund', amount:350000, status:'active', isPublished:true,
+    { name:'Nguimfack Lionel', level:'University', year:2024, sponsorName:'Nkenkak Development Fund', amount:350000, status:'active',
       school:'University of Yaoundé I', bio:'Studying Computer Engineering at the University of Yaoundé I. Class valedictorian in 2023.' },
-    { name:'Tchamba Ines', level:'University', year:2024, sponsor:'Diaspora Chapter – France', amount:400000, status:'active', isPublished:true,
+    { name:'Tchamba Ines', level:'University', year:2024, sponsorName:'Diaspora Chapter – France', amount:400000, status:'active',
       school:'FMSB Yaoundé', bio:'Bachelor\'s degree in Medicine at FMSB Yaoundé. Aspires to return and serve the village clinic.' },
-    { name:'Fokou Rostand', level:'Secondary', year:2024, sponsor:'Nkenkak Development Fund', amount:120000, status:'active', isPublished:true,
+    { name:'Fokou Rostand', level:'Secondary', year:2024, sponsorName:'Nkenkak Development Fund', amount:120000, status:'active',
       school:'Gouvernement Bilingual High School Bafoussam', bio:'Top GCE O\'Level student at Gouvernement Bilingual High School Bafoussam. Ranked 3rd in region.' },
-    { name:'Wabo Christelle', level:'Vocational', year:2024, sponsor:'Women Empowerment Fund', amount:85000, status:'active', isPublished:true,
+    { name:'Wabo Christelle', level:'Vocational', year:2024, sponsorName:'Women Empowerment Fund', amount:85000, status:'active',
       school:'CETIC Bafoussam', bio:'Completing a professional diploma in Agri-business at CETIC Bafoussam.' },
-    { name:'Mbakop Steeve', level:'University', year:2023, sponsor:'Nkenkak Development Fund', amount:350000, status:'completed', isPublished:true,
+    { name:'Mbakop Steeve', level:'University', year:2023, sponsorName:'Nkenkak Development Fund', amount:350000, status:'completed',
       school:'University of Dschang', bio:'Graduated with a BSc in Civil Engineering, now contributing to the village road project.' },
-    { name:'Nkengfack Aurelie', level:'Secondary', year:2023, sponsor:'Diaspora Chapter – UK', amount:120000, status:'completed', isPublished:true,
+    { name:'Nkengfack Aurelie', level:'Secondary', year:2023, sponsorName:'Diaspora Chapter – UK', amount:120000, status:'completed',
       school:'University of Dschang', bio:'Achieved 5 As in GCE A\'Level exams. Now enrolled at the University of Dschang.' },
-    { name:'Tagne Junior', level:'University', year:2024, sponsor:'Chief\'s Council Bursary', amount:300000, status:'active', isPublished:true,
+    { name:'Tagne Junior', level:'University', year:2024, sponsorName:'Chief\'s Council Bursary', amount:300000, status:'active',
       school:'University of Dschang', bio:'Second year Law student at the University of Dschang. Passionate about community governance.' },
-    { name:'Kamga Sylvie', level:'Vocational', year:2023, sponsor:'Women Empowerment Fund', amount:85000, status:'completed', isPublished:true,
+    { name:'Kamga Sylvie', level:'Vocational', year:2023, sponsorName:'Women Empowerment Fund', amount:85000, status:'completed',
       school:'Centre Artisanal de Bafoussam', bio:'Completed fashion design training. Now runs a small tailoring business employing two village women.' },
   ]
   let schCount = 0
